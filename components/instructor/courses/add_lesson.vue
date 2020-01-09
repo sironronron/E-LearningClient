@@ -228,6 +228,9 @@
     }
 
     export default {
+
+        name: 'AddLessonName',
+
         props: ['course_id'],
 
         data: () => ({
@@ -349,6 +352,10 @@
                         id: data.id
                     }
                     this.$swal({
+                        toast: true,
+                        timer: 5000,
+                        position: 'bottom-end',
+                        showConfirmButton: false,
                         type: 'success',
                         text: 'Lesson is added'
                     })

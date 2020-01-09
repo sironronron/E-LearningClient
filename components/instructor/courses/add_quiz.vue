@@ -53,6 +53,9 @@
     import Form from 'vform'
 
     export default {
+
+        name: 'AddQuizMOdal',
+
         props: ['course_id'],
 
         data: () => ({

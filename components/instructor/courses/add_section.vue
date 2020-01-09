@@ -29,6 +29,8 @@
 
     export default {
 
+        name: 'add-section-modal',
+
         props: ['course_id'],
 
         data: () => ({

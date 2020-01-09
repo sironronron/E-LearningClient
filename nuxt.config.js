@@ -56,8 +56,9 @@ module.exports = {
     '~plugins/moment',
     '~plugins/pagination',
     '~plugins/vue-plyr',
-    // '~plugins/nuxt-client-init', // Comment this for SSR
     '~plugins/cloudinary',
+    '~plugins/vue-draggable',
+    // '~plugins/nuxt-client-init', // Comment this for SSR
     { src: '~plugins/carousel', mode: 'client' },
     { src: '~plugins/readmore', mode: 'client' },
     { src: '~plugins/offline-alert', mode: 'client' },

@@ -44,10 +44,10 @@
 							</a>
 							<div class="dropdown-menu dropdown-menu-2 dropdown-menu-right dropdown-menu-menus">
 								<div class="p-4">
-									<div class="row justify-content-center">
+									<div class="row justify-content-between">
 										<div class="col-lg-4 text-center" v-for="tab in tabs" :key="tab.id">
 											<router-link :to="{name: tab.route}">
-												<img :src="tab.icon" class="img-fluid category-logo mb-1" alt="">
+												<img :src="tab.icon" class="img-fluid category-logo mb-1" alt=""> <br>
 												<span class="mt-2 text-dark">{{tab.name}}</span>
 											</router-link>
 										</div>
@@ -64,9 +64,6 @@
 							</a>
 							<div class="dropdown-menu dropdown-menu-right">
 								<div>
-									<router-link :to="{ name: 'home' }" class="dropdown-item dropdown-item-2">
-										Go to home
-									</router-link>
 									<router-link :to="{ name: 'instructor.settings.account' }" class="dropdown-item dropdown-item-2" v-if="user.role_id === 3">
 										Account
 									</router-link>
@@ -119,13 +116,17 @@
                     {
                         icon: 'https://res.cloudinary.com/dl9phqhv0/image/upload/c_scale,h_60/v1576221878/Logos/wallet_hky1rf.svg',
                         name: 'Instructor Revenue',
-                        route: 'instructor.revenue'
                     },
                     {
                         icon: 'https://res.cloudinary.com/dl9phqhv0/image/upload/c_scale,h_60/v1576222108/Logos/maintenance_kzbydu.svg',
                         name: 'Settings',
                         route: 'instructor.settings.account'
-                    }
+					},
+					{
+						icon: 'https://res.cloudinary.com/dl9phqhv0/image/upload/c_scale,h_60/v1576466810/Online%20Learning%20Icon%20Pack/044-computer_xtzlgh.svg',
+						name: 'Home',
+						route: 'home'
+					}
                 ]
             }
 		},

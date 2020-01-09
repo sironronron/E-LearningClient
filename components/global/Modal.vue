@@ -27,7 +27,7 @@
         props: {
             form_action: { type: Function, default: null },
             form_event: { default: null }
-        }
+        },
     }
 </script>
 
