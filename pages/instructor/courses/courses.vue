@@ -106,6 +106,7 @@
                                                 <span class="badge badge-success" v-if="course.status === 'PUBLISHED'">{{course.status}}</span>
                                                 <span class="badge badge-warning" v-if="course.status === 'PENDING'">{{course.status}}</span>
                                                 <span class="badge badge-default" v-if="course.status === 'DRAFT'">{{course.status}}</span>
+                                                <span class="badge badge-default" v-if="course.status === 'UNPUBLISHED'">{{course.status}}</span>
                                             </td>
                                             <td style="display: none;">
                                                 <span class="badge badge-dark-lighten">$1800</span>

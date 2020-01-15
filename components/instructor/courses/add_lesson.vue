@@ -1,6 +1,6 @@
 <template>
     <transition name="fade" mode="out-in">
-        <modal :form_action="addSectionLesson" @keydown="form.onKeydown($event)">
+        <modal :form_action="addSectionLesson" @keydown="form.onKeydown($event)" header="Add new lesson">
 
             <template slot="header">
                 <h5 class="modal-title">Add new lesson</h5>

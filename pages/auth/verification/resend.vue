@@ -22,7 +22,7 @@
 								{{$t('send_verification_link')}}
 							</v-button>
 
-							<h6 class="mt-3">If you're still having problem, please contact us by clicking <a href="#">here</a>.</h6>
+							<h6 class="mt-3">If you're still having problem, please contact us by clicking <a href="/help-center/student">here</a>.</h6>
 
 						</form>
 

@@ -94,7 +94,7 @@
                                         <div class="row justify-content-center">
                                             <div class="col-lg-7">
 
-                                                <add-curriculums :course_id="course.id"></add-curriculums>
+                                                <add-curriculums :course_id="course.id" :sections="sections" :lessons="lessons" :quizzes="quizzes"></add-curriculums>
 
                                             </div>
                                         </div>
@@ -554,6 +554,9 @@
                             type: 'success',
                             text: res.data.message
                         })
+
+                        // Redirect to show
+                        this.$router.push({ name: 'instructor.courses.show', params: { slug: this.course.slug } })
                     })
                     .catch((err) => {
                         this.$swal({
@@ -613,7 +616,9 @@
             return {
                 categories: data.categories,
                 course: data.course,
-                sections: data.sections
+                sections: data.sections,
+                lessons: data.lessons,
+                quizzes: data.quizzes
             }
         },
 

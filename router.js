@@ -74,6 +74,9 @@ const routes = [
       { path: 'courses/:slug/edit', name: 'instructor.courses.edit', component: page('instructor/courses/edit.vue') },
       // Course Statuses
 
+      // Search
+      { path: 'courses/search', name: 'instructor.courses.search', component: page('instructor/courses/search.vue') },
+
       // Instructor Settings
       { path: 'settings',
         component: page('instructor/settings.vue'),

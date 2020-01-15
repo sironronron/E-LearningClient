@@ -31,7 +31,7 @@
 			<div class="container">
 				<h3>Frequently Asked Questions</h3>
 				<div class="row mt-4">
-					<div class="col-lg-9">
+					<div class="col-lg-12">
 						<div class="row">
 							<div class="col-lg-4 mb-3" v-for="(item, key) in faqs" :key="key">
 								<router-link :to="{ name: 'help-center.student.category.post', params: { categorySlug: item.category_id, postSlug: item.slug } }">
@@ -41,16 +41,6 @@
 								</router-link>
 							</div>
 						</div>
-					</div>
-					<div class="col-lg-3">
-						<router-link :to="{ name: 'help-center.contact' }">
-							<card class="p-1 bg-gradient-danger h-100 shadow-sm shadow--hover card-lift--hover rounded" style="height: 100%; cursor: pointer;">
-								<div class="text-center align-items-center mt-4">
-									<h1 class="display-1 text-white"><fa :icon="['fab', 'facebook-messenger']"  /></h1>
-									<h4 class="text-white mt-2">Contact Us</h4>
-								</div>
-							</card>
-						</router-link>
 					</div>
 				</div>
 			</div>
@@ -122,7 +112,12 @@
 </script>
 
 <style scoped>
-	
+	@media (min-width: 1200px) { 
+		.container {
+			max-width: 1040px !important;
+		}
+	}
+
 	.wrap {
 		border-radius: 2px;
 		text-align: center;

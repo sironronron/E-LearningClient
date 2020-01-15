@@ -1,7 +1,7 @@
 <template>
     <div>
 
-        <!-- // Add buttons -->
+           <!-- // Add buttons -->
         <div class="text-center">
             <button v-if="!showAddSectionModal" class="btn btn-outline-primary rounded btn-sm ml-1" @click.prevent="openSectionModal"><fa icon="plus" /> Add Section</button>
 
@@ -12,18 +12,31 @@
 
         <div v-if="!isLoading">
             <!-- // Sections & Lesson  -->
-            <template v-if="sections.length != 0">
+            <template v-if="sectionsNew.length != 0">
                 <div class="my-5">
-                    <section class="p-4 rounded bg-secondary mb-3" v-for="(section, index) in sections" :key="`${section.id}-section`">
-                        <h6 class="mb-4">Section {{index + 1}} : &nbsp; <b>{{section.title}}</b></h6>
-                        <div v-for="(lesson, index) in lessons" :key="`${index}-lesson`">
-                            <div v-if="lesson.course_section_id == section.id" class="p-3 bg-white border rounded mb-2">
-                                <h6 class="mb-0"><fa icon="play-circle" v-if="lesson.lesson_type === 'VIDEO'" /> <span class="text-muted">
-                                    Lesson {{index + 1}}</span><span class="font-weight-bold"> : {{lesson.title}}</span> 
-                                </h6>
+                    <draggable class="drag-area" v-model="sectionsNew"  :list="sectionsNew" :options="{animation: 200, group:'status'}" :element="'div'" :noTransitionOnDrag="false" @change="update">
+                        <section class="p-4 rounded bg-secondary mb-3" style="cursor: move;" v-for="(section, index) in sectionsNew" :key="`${section.id}-section`">
+                            <h6 class="mb-4">Section {{index + 1}} : &nbsp; <b>{{section.title}}</b></h6>
+                            <!-- // Lessons -->
+                            <div v-for="(lesson, index) in lessons" :key="`${index}-lesson`">
+                                <div v-if="lesson.course_section_id == section.id" class="p-3 bg-white border rounded mb-2">
+                                    <h6 class="mb-0"><fa icon="play-circle" v-if="lesson.lesson_type === 'VIDEO'" /> <span class="text-muted">
+                                        Lesson {{index + 1}}</span><span class="font-weight-bold"> : {{lesson.title}}</span> 
+                                    </h6>
+                                </div>
                             </div>
-                        </div>
-                    </section>
+                            <!-- // Quizzes -->
+                            <div v-for="(quiz, index) in quizzes" :key="`${index}-quiz`">
+                                <div v-if="quiz.course_curriculum_section_id == section.id" class="p-3 bg-white border rounded mb-2">
+                                    <h6 class="mb-0">
+                                        <fa icon="clipboard-list" fixed-width />
+                                        <span class="text-muted">Quiz {{index + 1 }}</span>
+                                        <span class="font-weight-bold"> : {{quiz.title}}</span>
+                                    </h6>
+                                </div>
+                            </div>
+                        </section>
+                    </draggable>
                 </div>
             </template>
 
@@ -53,7 +66,7 @@
         </transition>
 
         <transition name="fade">
-            <add-quiz-modal :course_id="course_id" v-if="showAddQuizModal" @close="closeQuizModal"></add-quiz-modal>
+            <add-quiz-modal :course_id="course_id" v-if="showAddQuizModal" @close="closeQuizModal" @clicked="saveNewQuiz"></add-quiz-modal>
         </transition>
 
     </div>
@@ -62,6 +75,7 @@
 <script>
     let myBody = null
 
+    import Form from 'vform'
     import axios from 'axios'
 
     // Modals
@@ -69,40 +83,49 @@
     import AddLessonModal from './add_lesson'
     import AddQuizModal from './add_quiz'
 
+    // Draggable
+    import draggable from 'vuedraggable'
+
     export default {
 
-        props: ['course_id'],
+        props: ['course_id', 'sections', 'lessons', 'quizzes'],
 
         components: {
-            AddSectionModal, AddLessonModal, AddQuizModal
+            AddSectionModal, AddLessonModal, AddQuizModal,
+            draggable
         },
 
-        data: () => ({
+        data: function() {
+            return {
+                sectionsNew: this.sections,
+                // Modals 
+                showAddSectionModal: false,
+                showAddLessonModal: false,
+                showAddQuizModal: false,
 
-            // Curriculum types
-            sections: [],
-            lessons: [],
+                isLoading: false,
 
-            // Modals 
-            showAddSectionModal: false,
-            showAddLessonModal: false,
-            showAddQuizModal: false,
-
-            isLoading: false
-
-        }),
-
-        created() {
-            this.getCurriculums()
-        },
+                hover: false
+            }
+        },  
 
         methods: {
 
-            getCurriculums: function () {
-                axios.get(`/instructor/courses/${this.$route.params.slug}/edit`)
-                .then((res) => {
-                    this.sections = res.data.sections
-                    this.lessons = res.data.lessons
+            async update () {
+                let data
+                
+                this.sectionsNew.map((section, index) => {
+                    section.order_index = index + 1;
+                });
+
+                const response = await axios.post(`/instructor/courses/section/order_index/${this.course_id}`, {
+                    sections: this.sectionsNew
+                })
+
+                .then((response) => {
+                    console.log('Success', response.data);
+                }).catch((error) => {
+                    console.log(error);
                 })
             },
 
@@ -168,11 +191,19 @@
                 })
             },
 
-            // Save New Quiz
             saveNewQuiz(value) {
-                //
-            }
+                this.quizzes.push({
+                    id: value.id,
+                    title: value.title,
+                    instruction: value.course_id,
+                    course_id: value.course_id,
+                    course_curriculum_section_id: value.course_curriculum_section_id,
+                })
+            },
 
+            toggleHoverSection: function () {
+                this.hoverSection = !this.hoverSection
+            }
         },
 
         mounted: function () {

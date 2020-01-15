@@ -110,6 +110,12 @@ body {
     color: #29303b;
 }
 
+p, ul {
+    background-color: transparent !important;
+}
+
+
+
 @media (min-width: 1200px) { 
     .container {
     	max-width: 1140px !important;
@@ -298,7 +304,7 @@ p {
     margin-bottom: 40px;
 }
 .course-curriculum-box .course-curriculum-title {
-    padding-right: 31px;
+    padding-right: 0.7em;
 }
 .course-curriculum-box .course-curriculum-title .title {
     font-size: 22px;
@@ -315,11 +321,12 @@ p {
     width: 130px;
     display: inline-block;
     text-align: right;
+    padding-right: 21px;
 }
 
 .course__curriculum-accordion .lecture__group-title {
     position: relative;
-    padding: 10px 30px 10px 45px;
+    padding: 0px 10px 0px 45px;
     background: #f9f9f9;
     border: 1px solid #e8e9eb;
     cursor: pointer;
@@ -352,7 +359,7 @@ p {
     font-family: Font Awesome\ 5 Free;
     font-weight: 900;
     position: absolute;
-    left: 22px;
+    left: 35px;
     font-size: 10px;
     top: 16px;
     color: #007791;
@@ -390,6 +397,12 @@ p {
     font-size: 13px;
     top: 17px;
 }
+
+.course__curriculum-accordion .lecture-list .lecture-quiz:before {
+    content: "\f303" !important;
+}
+
+
 
 .course__curriculum-accordion .lecture-list .lecture.has-preview .lecture-title {
     cursor: pointer;

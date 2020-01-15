@@ -319,7 +319,7 @@
 					countCourses: data.countCourses
 				}
 			} catch (e) {
-				return
+				error({ statusCode: 404, message: 'Page not found' })
 			}
 		},
 

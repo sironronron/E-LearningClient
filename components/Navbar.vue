@@ -82,10 +82,19 @@
 								<fa icon="shopping-cart" class="h5 mb-0" fixed-width />
 							</a>
 							<div class="dropdown-menu dropdown-menu-right">
-								<div class="p-3 text-center">
-									<h6>Your cart is empty.</h6>
-									<h6 class="mt-2 text-small mb-0"><a href="#">Keep Shopping</a></h6>
-								</div>
+								<template v-if="carts.length != 0">
+									<div>
+										{{carts.length}}
+									</div>
+								</template>
+								<template v-else>
+									<div>
+										<div class="p-3 text-center">
+											<h6>Your cart is empty.</h6>
+											<h6 class="mt-2 text-small mb-0"><a href="#">Keep Shopping</a></h6>
+										</div>
+									</div>
+								</template>
 							</div>
 						</li>
 						<li class="nav-item dropdown">
@@ -176,7 +185,8 @@
 			appName: process.env.appName,
 			categories: [],
 			isLoading: false,
-			search: ''
+			search: '',
+			carts: []
 		}),
 		
 		computed: {
@@ -187,6 +197,7 @@
 
 		created() {
 			this.getCategories()
+			this.getCarts()
 		},
 
 		methods: {
@@ -205,6 +216,16 @@
 				.then((res) => {
 					this.isLoading = false
 					this.categories = res.data.categories
+				})
+			},
+			getCarts() {
+				this.isLoading = true
+				axios.get('/cart/cartItems')
+				.then((res) => {
+					this.isLoading = false
+					this.carts = res.data.carts
+				}).catch((err) => {
+					console.log(err)
 				})
 			}
 		}

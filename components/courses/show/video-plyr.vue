@@ -4,11 +4,11 @@
             <div class="modal with-transitions fade show" tabindex="-1" role="dialog" style="display: block;">
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content bg-dark">
-                        <div class="modal-header">
-                            <h5 class="modal-title text-white">Course Overview</h5>
+                        <div class="modal-header border-bottom-0">
+                            <h5 class="modal-title text-white"><span style="color: #76c5d6 !important;">Course preview: </span> {{ title }} </h5>
                             <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" @click="$emit('close')"><span aria-hidden="true" class="text-white">&times;</span></button>
                         </div>
-                        <div class="modal-body">
+                        <div class="modal-body p-0">
                             <!-- // Youtube -->
                             <vue-plyr v-if="courseOverviewURL.course_overview_provider === 'Youtube'">
                                 <div class="plyr__video-embed">
@@ -51,6 +51,9 @@
     import axios from 'axios'
 
     export default {
+
+        props: ['title'],
+
         data: () => ({
             courseOverviewURL: []
         }),

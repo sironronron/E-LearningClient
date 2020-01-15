@@ -48,6 +48,8 @@
                 </section>
             </div>
 
+            
+
             <!-- // Main Course -->
             <section class="section-sm">
                 <div class="container">
@@ -83,30 +85,19 @@
                                 </template>
                             </div>
 
-                            <!-- // Course Requirements and For who -->
+                            <!-- // Course content -->
+                            <section-accordion :sections="sections" :lessons="lessons" :duration="duration" :countLessons="countLessons" :quizzes="quizzes"></section-accordion>
+
+                            <!-- // Course Requirements -->
                             <div class="mt-5">
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <h4>Who this course is for?</h4>
-                                        <div class="mt-4">
-                                            <ul class="pl-3 text-justify">
-                                                <li v-for="who in course.whos" :key="who.id">
-                                                    {{who.description}}
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <h4>Requirements</h4>
-                                        <div class="mt-4">
-                                            <ul class="pl-3 text-justify">
-                                                <li v-for="(item, key) in course.requirements" :key="key">
-                                                    {{item.description}}
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>             
+                                <h4>Requirements</h4>
+                                <div class="mt-4">
+                                    <ul class="pl-3 text-justify">
+                                        <li v-for="(item, key) in course.requirements" :key="key">
+                                            {{item.description}}
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
 
                             <!-- // Course Description -->
@@ -116,6 +107,17 @@
                                     <client-only>
                                         <read-more more-str="read more" less-str="read less" :max-chars="1000" :text="course.description"></read-more>
                                     </client-only>
+                                </div>
+                            </div>
+
+                            <div class="mt-5">
+                                <h4>Who this course is for?</h4>
+                                <div class="mt-4">
+                                    <ul class="pl-3 text-justify">
+                                        <li v-for="who in course.whos" :key="who.id">
+                                            {{who.description}}
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
 
@@ -159,60 +161,6 @@
                                 </div>
                             </div>
 
-                            <!-- // Course content -->
-                            <div class="mt-5 course-curriculum-box">
-                                <div class="course-curriculum-title clearfix">
-                                    <div class="title float-left">Curriculum for this course</div>
-                                    <div class="float-right m-t-5">
-                                        <span @click="toggle" class="collapse-all" style="cursor: pointer;" v-if="!show">
-                                            Expand All
-                                        </span>
-                                        <span @click="toggle" class="collapse-all" style="cursor: pointer;" v-else>
-                                            Collapse All
-                                        </span>
-                                        <span class="total-lectures">
-                                            {{countLessons}} Lessons              
-                                        </span>
-                                        <span class="total-time">
-                                            {{duration}} Hours              
-                                        </span>
-                                    </div>
-                                </div>
-                                <!-- // Course Curriculum Accordion -->
-                                <div class="course__curriculum-accordion">
-                                    <div class="lecture__group-wrapper">
-                                        <div v-for="(item, index) in sections" :key="`${index}-section`" >
-                                            <!-- // Lecture -->
-                                            <div class="lecture__group-title clearfix" :aria-expanded="show ? 'true' : 'false'">
-                                                <!-- // Lesson Title -->
-                                                <div class="title float-left">
-                                                    <!-- <fa icon="plus" fixed-width class="text-primary font-weight-300" /> -->
-                                                    {{ item.title }}
-                                                </div>
-                                                <!-- // Lesson Data -->
-                                                <div class="float-right">
-                                                    <span class="total-lectures">
-                                                        {{ item.lessons.length }} Lessons
-                                                    </span>
-                                                    <span class="total-time">
-                                                        00:15:00 Hours
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <!-- // Lectures -->
-                                            <div class="lecture-list">
-                                                <ul class="list-unstyled mb-0">
-                                                    <li v-for="(lesson, index) in item.lessons" :key="`${index}-lesson`" class="lecture has-preview" v-show="show">
-                                                        <span class="lecture-title">{{ lesson.title }}</span>
-                                                        <span class="lecture-time float-right">{{ lesson.duration }}</span>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
                             <!-- // Course Tutor  -->
                             <div class="mt-5" id="course-instructor">
                                 <div class="row">
@@ -250,12 +198,13 @@
                         </div>
                         <!-- // Card Course Video Overview -->
                         <div class="col-lg-4 hidden-xs-down">
-                            <div class="sticky-top">
+                            <div>
                                 <div class="card shadow-sm" style="margin-top: -335px;">
                                     <div class="card-body p-0">
                                         <div class="preview-video-box">
                                             <a href="#" @click="openPlayerModal">
                                                 <img :src="course.image" class="img-fluid" style="width: 100%; height: 215px;" alt="">
+                                                <span class="play-btn"></span>
                                             </a>
                                         </div>
                                         <div class="p-4">
@@ -264,8 +213,8 @@
                                                 <div class="d-flex">
                                                     <div>
                                                         <client-only>
-                                                            <span v-if="!course.has_discount">₱{{course.price | numeral}}</span>
-                                                            <span v-else>₱{{course.discount | numeral}}</span>
+                                                            <span class="font-weight-bold" v-if="!course.has_discount">₱{{course.price | numeral}}</span>
+                                                            <span class="font-weight-bold" v-else>₱{{course.discount | numeral}}</span>
                                                         </client-only>
                                                     </div>
                                                     <div v-if="course.has_discount" class="ml-2">
@@ -277,13 +226,14 @@
                                                 </div>
                                                 </h2>
                                             </div>
-                                            <div class="mt-4">
-                                                <button class="btn btn-danger btn-lg text-capitalize btn-block">
-                                                    Buy Now
-                                                </button>
-                                                <button class="btn btn-outline-neutral btn-lg text-capitalize btn-block text-dark border">
-                                                    Add to cart
-                                                </button>
+                                            <add-to-cart :course_id="course.id" :price="course.has_discount == true ? course.discount : course.price"></add-to-cart>
+                                            <div class="mt-3">
+                                                <p class="font-weight-bold mb-2">Includes:</p>
+                                                <ul class="list-unstyled small" style="color: #505763;">
+                                                    <li v-for="item in includes" :key="item.id" class="mb-1">
+                                                        <fa :icon="item.icon" fixed-width /> &nbsp; {{item.value}} 
+                                                    </li>
+                                                </ul>
                                             </div>
                                         </div>
                                     </div>
@@ -296,7 +246,7 @@
             </section>
 
             <transition name="fade" mode="out-in">
-                <video-plyr v-if="isModalVisible" @close="closePlayerModal"></video-plyr>
+                <video-plyr v-if="isModalVisible" @close="closePlayerModal" :title="course.title"></video-plyr>
             </transition>
 
         </div>
@@ -309,7 +259,12 @@
 
     import axios from 'axios'
     import MightLikes from '../../components/global/MightLike'
+    
+    // Modals
     import VideoPlyr from '../../components/courses/show/video-plyr'
+    import SectionAccordion from '../../components/courses/show/accordion'
+
+    import AddToCart from '../../components/courses/show/add-to-cart'
 
     if (process.client) {
         let Youtube = document.createElement('script')
@@ -319,7 +274,8 @@
     export default {
         
         components: {
-            MightLikes, VideoPlyr
+            MightLikes, VideoPlyr, AddToCart,
+            SectionAccordion
         },
     
         layout: 'default',
@@ -332,22 +288,51 @@
             isModalVisible: false,
             isExpandedOutcome: false,
             MightLikes: [],
-            show: false
         }),      
 
         async asyncData({ params, error }) {
             try {
                 let { data } = await axios.get(`/course/${params.slug}`)
                 return {
+                    // Main Data
                     course: data.course,
+
+                    // Computation of discount percentage
                     percentage: ((1 - (data.course.discount / data.course.price)) * 100).toFixed(0),
+                    
+                    // Course the user might like
                     mightLikes: data.mightLikes,
+
+                    // Course Content
                     sections: data.sections,
+                    lessons: data.lessons,
+                    quizzes: data.quizzes,
+
+                    duration: data.totalDuration,
                     countLessons: data.countLessons,
-                    duration: data.totalDuration
+                    
                 }
             } catch (e) {
                 error({ statusCode: 500, message: 'Something went wrong!' })
+            }
+        },
+
+        computed: {
+            includes() {
+                return [
+                    {
+                        icon: ['far', 'file-video'],
+                        value: `${this.duration} Hours on demand video` 
+                    },
+                    {
+                        icon: ['far', 'file'],
+                        value: `${this.lessons.length} Lessons`
+                    },
+                    {
+                        icon: ['far', 'compass'],
+                        value: 'Full Lifetime Access'
+                    }
+                ]
             }
         },
 
@@ -370,10 +355,6 @@
                 this.isModalVisible = false
                 myBody.classList.remove('modal-open')
             },
-
-            toggle() {
-                this.show = !this.show
-            }
         },
 
         mounted () {
@@ -453,8 +434,23 @@
         &_body {
             cursor: pointer;
         }
-        &_body:hover {
+        &_body:hover {  
             background: whitesmoke;
         }
+    }
+    .play-btn {
+        left: 0;
+        top: -50px;
+        width: 100%;
+        height: 55%;
+        position: absolute;
+        background: url(https://res.cloudinary.com/dl9phqhv0/image/upload/v1578625817/Logos/icon-play_z0hvqf.svg) no-repeat;
+        background-size: auto 50%;
+        background-position: 50%;
+        visibility: visible;
+        -webkit-transition: -webkit-transform .15s ease-in-out;
+        -moz-transition: -moz-transform .15s ease-in-out;
+        -o-transition: -o-transform .15s ease-in-out;
+        transition: transform .15s ease-in-out;
     }
 </style>

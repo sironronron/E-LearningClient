@@ -11,11 +11,8 @@
             </template>
 
             <div class="card-body p-2 text-center">
-                <p class="text-muted small">
-                    <fa icon="camera" fixed-width />
-                    Course Thumbnail
-                </p>
                 <button type="button" class="btn btn-link btn-sm text-capitalize" data-toggle="modal" data-target="#exampleModal">
+                    <fa icon="camera" fixed-width />
                     Change Thumbnail
                 </button>
             </div>
@@ -33,6 +30,7 @@
                     </div>
                     <form @submit.prevent="change">
                         <div class="modal-body">
+                            <alert-error :form="form" message="Can't upload thumbnail."></alert-error>
                             <input class="mt-3" type="file" name="image" accept="image/*" @change="selectFile">
                         </div>
                         <div class="modal-footer">
@@ -74,7 +72,8 @@
             form: new Form({
                 image: '',
                 imagePreview: '',
-            })
+            }),
+            error: {}
         }),
 
         created() {

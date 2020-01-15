@@ -1,6 +1,6 @@
 <template>
     <transition name="fade" mode="out-in">
-        <modal :form_action="addSection" @keydown="form.onKeydown($event)">
+        <modal :form_action="addSection" @keydown="form.onKeydown($event)" header="Add New Section">
             <template slot="header">
                 <h5 class="modal-title">Add new section</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="$emit('close')">

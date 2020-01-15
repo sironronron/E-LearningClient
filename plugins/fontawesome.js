@@ -7,7 +7,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 import {
-  faEnvelope, faEdit, faThumbsUp, faThumbsDown
+  faEnvelope, faEdit, faThumbsUp, faThumbsDown, faFileVideo, faFile, faCompass
 } from '@fortawesome/free-regular-svg-icons'
 
 import {
@@ -21,7 +21,7 @@ library.add(
   faPencilAlt, faSearch, faCartPlus, faBars, faBullseye, faCheck, faClock, faEnvelope, faKey, faUser, faGooglePlusSquare,
   faFacebookSquare, faGoogle, faStar, faBell, faCheckCircle, faFacebookMessenger, faClipboardCheck, faClipboardList,
   faClock, faPiggyBank, faInstagram, faPinterest, faTwitterSquare, faQuestionCircle, faInfoCircle, faArchive, faCogs, faWallet, faBookOpen, faPlus, faLink, faUnlink, faBookmark, faStar, faTags, faPenNib, faBackspace, faTimes, faPlusCircle, faPollH, faDollarSign, faPhotoVideo, faCheckDouble,
-  faFilter, faComment, faCircle, faYoutubeSquare, faMinus, faLanguage, faPlayCircle, faTh, faEdit, faSchool, faArrowLeft, faArrowRight, faCalendarAlt, faShoppingCart, faHistory, faPlay, faThumbsUp, faThumbsDown, faPencilRuler, faLaptopCode, faChartBar, faCoins, faTv, faBook, faDog, faCamera, faMusic, faAtom
+  faFilter, faComment, faCircle, faYoutubeSquare, faMinus, faLanguage, faPlayCircle, faTh, faEdit, faSchool, faArrowLeft, faArrowRight, faCalendarAlt, faShoppingCart, faHistory, faPlay, faThumbsUp, faThumbsDown, faPencilRuler, faLaptopCode, faChartBar, faCoins, faTv, faBook, faDog, faCamera, faMusic, faAtom, faFileVideo, faFile, faCompass
 )
 
 Vue.component('fa', FontAwesomeIcon)
