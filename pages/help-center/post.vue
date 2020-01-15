@@ -43,10 +43,14 @@
             <div class="container">
 
                 <div class="row">
-                    <div class="col-lg-8 mr-3">
-                        <!-- // Post -->
-                        <span v-html="post.body">{{post.body}}</span>
-                    </div>
+                    <transition name="fade" mode="out-in">
+                        <div class="col-lg-8 mr-3">
+                            <!-- // Post -->
+                            <client-only>
+                                <span v-html="post.body">{{post.body}}</span>
+                            </client-only>
+                        </div>
+                    </transition>
                     <div class="col-lg-3 border-left">
                         <div class="ml-3">
                             <div class="mb-4">
@@ -94,7 +98,7 @@
     import axios from 'axios'
 
     export default {
-        scrollToTop: false,
+        scrollToTop: true,
 
         head() {
             return { title: this.post.title }

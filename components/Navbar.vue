@@ -37,9 +37,9 @@
 					</li> -->
 				</ul>
 
-				<form class="mx-2 my-auto d-inline w-47" @submit.prevent="submit">
+				<form class="mx-2 my-auto d-inline w-47" @submit.prevent="submit" @keydown="form.onKeydown($event)">
 					<div class="input-group input-group-alternative">
-						<input aria-describedby="addon-right addon-left" type="text" v-model="search" name="search" placeholder="Search for courses" class="form-inline form-control rounded-left">
+						<input aria-describedby="addon-right addon-left" type="text" v-model="form.search_term" name="search" placeholder="Search for courses" class="form-inline form-control rounded-left">
 						<div class="input-group-prepend">
 							<a type="button" class="input-group-text">
 								<fa icon="search" fixed-width />
@@ -175,6 +175,8 @@
 	import LocaleDropdown from './LocaleDropdown'
 	import axios from 'axios'
 
+	import Form from 'vform'
+
 	export default {
 
 		components: {
@@ -185,8 +187,10 @@
 			appName: process.env.appName,
 			categories: [],
 			isLoading: false,
-			search: '',
-			carts: []
+			carts: [],
+			form: new Form({
+				search_term: '',
+			})
 		}),
 		
 		computed: {
@@ -201,8 +205,9 @@
 		},
 
 		methods: {
-			submit() {
-                this.$router.push('/search_query?q=' + this.search)
+			async submit() {
+				let { data } = await this.form.post('/search/userSearches')
+				this.$router.push('/search_query?q=' + this.form.search_term)
             },
 			async logout () {
 				// Log out the user.

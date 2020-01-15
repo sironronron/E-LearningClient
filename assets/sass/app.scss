@@ -462,3 +462,33 @@ p {
 .layout-enter, .layout-leave-to {
     opacity: 0;
 }
+
+// Second navbar on course view
+.course__header-area.duplicated {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 9;
+    background-color:
+    rgba(41,48,59,.8);
+    padding: 10px 0;
+}
+
+section.course__header-area {
+    background-color: #29303b;
+    color: #fff;
+    padding: 60px 0;
+}
+
+.course__header-area.duplicated .title {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 28px;
+    margin-bottom: 0;
+    color: #fff;
+}
+
+.course__header-area.duplicated .subtitle, .course__header-area.duplicated .course-badge, .course__header-area.duplicated .created-row {
+    display: none;
+}

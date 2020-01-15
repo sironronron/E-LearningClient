@@ -48,7 +48,7 @@
                 </section>
             </div>
 
-            
+            <popup-navbar :course="course" :items="includes" :percentage="percentage"></popup-navbar>
 
             <!-- // Main Course -->
             <section class="section-sm">
@@ -198,8 +198,8 @@
                         </div>
                         <!-- // Card Course Video Overview -->
                         <div class="col-lg-4 hidden-xs-down">
-                            <div>
-                                <div class="card shadow-sm" style="margin-top: -335px;">
+                            <div :class="{ 'd-none' : showPopup }" class="ml-lg-3">
+                                <div class="card shadow-sm" style="margin-top: -335px; width: 350px;">
                                     <div class="card-body p-0">
                                         <div class="preview-video-box">
                                             <a href="#" @click="openPlayerModal">
@@ -235,6 +235,11 @@
                                                     </li>
                                                 </ul>
                                             </div>
+                                            <div class="mt-3 text-center border-top">
+                                                <button class="btn btn-link text-capitalize pb-0" @click="openShareButtonsModal">
+                                                    <fa icon="share-square" fixed-width /> Share
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -244,6 +249,10 @@
                     </div>
                 </div>
             </section>
+
+            <transition name="fade" mode="out-in">
+                <share-buttons v-if="showShareButtons" @close="closeShareButtonsModal"></share-buttons>
+            </transition>
 
             <transition name="fade" mode="out-in">
                 <video-plyr v-if="isModalVisible" @close="closePlayerModal" :title="course.title"></video-plyr>
@@ -264,6 +273,11 @@
     import VideoPlyr from '../../components/courses/show/video-plyr'
     import SectionAccordion from '../../components/courses/show/accordion'
 
+    // Popup navbar
+    import PopupNavbar from '../../components/courses/show/popup-navbar'
+
+    import ShareButtons from '../../components/courses/show/share'
+
     import AddToCart from '../../components/courses/show/add-to-cart'
 
     if (process.client) {
@@ -275,7 +289,7 @@
         
         components: {
             MightLikes, VideoPlyr, AddToCart,
-            SectionAccordion
+            SectionAccordion, PopupNavbar, ShareButtons
         },
     
         layout: 'default',
@@ -284,11 +298,19 @@
             return { title: this.course.title }
         },
 
-        data: () => ({
-            isModalVisible: false,
-            isExpandedOutcome: false,
-            MightLikes: [],
-        }),      
+        data: function () {
+            return {
+                isModalVisible: false,
+                isExpandedOutcome: false,
+                MightLikes: [],
+
+                showShareButtons: false,
+
+                // Detect scroll
+                showPopup: false,
+                lastScrollPosition: 0
+            }
+        },
 
         async asyncData({ params, error }) {
             try {
@@ -336,6 +358,16 @@
             }
         },
 
+        mounted: function () {
+            myBody = document.getElementsByTagName('body')[0]
+
+            window.addEventListener('scroll', this.onScroll)
+        },
+
+        beforeDestroy: function () {
+            window.removeEventListener('scroll', this.onScroll)
+        },
+
         methods: {
             showOutcome() {
                 this.isExpandedOutcome = true
@@ -355,12 +387,33 @@
                 this.isModalVisible = false
                 myBody.classList.remove('modal-open')
             },
+
+            // Open share buttons modal
+            openShareButtonsModal: function() {
+                this.showShareButtons = true
+
+                // Add class to body
+                myBody.classList.toggle('modal-open')
+            },
+
+            closeShareButtonsModal: function () {
+                this.showShareButtons = false
+                myBody.classList.remove('modal-open')
+            },
+
+            onScroll: function () {
+                const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop
+
+                if (currentScrollPosition < 0) {
+                    return
+                }
+
+                this.showPopup = currentScrollPosition >= 350
+                this.lastScrollPosition = currentScrollPosition
+            }
         },
 
-        mounted () {
-            myBody = document.getElementsByTagName('body')[0]
-        }
-
+        
     }
 
 </script>
@@ -440,9 +493,9 @@
     }
     .play-btn {
         left: 0;
-        top: -50px;
+        top: -7px;
         width: 100%;
-        height: 55%;
+        height: 40%;
         position: absolute;
         background: url(https://res.cloudinary.com/dl9phqhv0/image/upload/v1578625817/Logos/icon-play_z0hvqf.svg) no-repeat;
         background-size: auto 50%;
@@ -452,5 +505,11 @@
         -moz-transition: -moz-transform .15s ease-in-out;
         -o-transition: -o-transform .15s ease-in-out;
         transition: transform .15s ease-in-out;
+    }
+    .preview-video-box a:hover > .play-btn {
+        -webkit-transform: scale(1.2);
+        -ms-transform: scale(1.2);
+        -o-transform: scale(1.2);
+        transform: scale(1.2);
     }
 </style>

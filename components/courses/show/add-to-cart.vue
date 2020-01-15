@@ -16,6 +16,9 @@
                     <button class="btn btn-danger btn-lg text-capitalize btn-block border rounded" @click="openLoginModal">
                         Add to cart
                     </button>
+                    <button class="btn btn-neutral btn-danger btn-lg text-capitalize btn-block text-dark rounded border" @click="openLoginModal">
+                        Buy Now
+                    </button>
                 </div>
             </template>
         </div>

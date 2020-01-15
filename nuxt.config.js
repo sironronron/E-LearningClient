@@ -59,6 +59,7 @@ module.exports = {
     '~plugins/cloudinary',
     '~plugins/vue-draggable',
     // '~plugins/nuxt-client-init', // Comment this for SSR
+    { src: '~plugins/clipboard2', mode: 'client' },
     { src: '~plugins/carousel', mode: 'client' },
     { src: '~plugins/readmore', mode: 'client' },
     { src: '~plugins/offline-alert', mode: 'client' },
