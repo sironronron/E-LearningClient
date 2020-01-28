@@ -10,6 +10,8 @@
 						<hr class="full-width-hr mb-4 mt-4">
 
 						<form @submit.prevent="reset" @keydown="form.onKeydown($event)">
+							
+							<alert-success :form="form" :message="status"></alert-success>
 
 							<div class="form-group mb-3">
 								<input type="email" name="email" v-model="form.email" :class="{ 'is-invalid' : form.errors.has('email') }" class="form-control rounded" placeholder="Email Address" disabled>

@@ -70,13 +70,8 @@
 
 <script>
 	import Form from 'vform'
-	import PasswordStrength from 'vue-password-strength-meter'
 
 	export default {
-
-		components: {
-			PasswordStrength	
-		},
 
 		middleware: 'guest',
 

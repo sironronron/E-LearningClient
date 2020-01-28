@@ -52,9 +52,7 @@
         }),
 
         created() {
-            this.form.keys().forEach((key) => {
-                this.form[key] = this.user[key]
-            })
+            this.form.fill(this.user)
         },
 
         methods: {

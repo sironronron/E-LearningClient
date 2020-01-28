@@ -1,6 +1,6 @@
 <template>
     <transition name="fade" mode="out-in">
-        <modal :form_action="addQuiz" @keydown="form.onKeydown($event)">
+        <modal :form_action="addQuiz" @keydown="form.onKeydown($event)" header="Add new quiz">
 
             <template slot="header">
                 <h5 class="modal-title">
@@ -40,7 +40,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <v-button :loading="form.button" class="btn-primary rounded btn-sm">Add Quiz</v-button>
+                    <v-button :loading="form.busy" class="btn-primary rounded btn-sm">Add Quiz</v-button>
                 </div>
             </template>
         
@@ -53,6 +53,9 @@
     import Form from 'vform'
 
     export default {
+
+        name: 'AddQuizMOdal',
+
         props: ['course_id'],
 
         data: () => ({
@@ -79,14 +82,24 @@
                 })
             },
             
-            async addQuiz() {
+            async addQuiz(event) {
                 try {
-                    const { data } = await this.form.post('/instructor/courses/section/add_quiz/post')
+                    const { data } = await this.form.post('/instructor/courses/section/add_quiz/post/' + this.course_id)
                     this.$swal({
                         type: 'success',
                         text: 'Quiz has been saved'
                     })
+
+                    var quizData = {
+                        id: data.id,
+                        title: data.title,
+                        course_id: data.course_id,
+                        course_curriculum_section_id: data.course_curriculum_section_id,
+                        instruction: data.instruction,
+                    }
+
                     this.$emit('close')
+                    this.$emit('clicked', quizData)
                 } catch (e) {
                     return
                 } 

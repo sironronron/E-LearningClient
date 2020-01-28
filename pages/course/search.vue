@@ -6,52 +6,6 @@
             <div class="container">
                 <div class="p-2">
                     <h5>{{searchResults.length}} results for <strong>{{searchQuery}}</strong></h5>
-                    <div class="mt-3">
-                        <div class="row">
-                            <!-- // Star and Duration Filter  -->
-                            <div class="col-lg-6">
-                                <div class="d-flex justify-content-start">
-                                    <div class="dropdown">
-                                        <button class="btn btn-neutral dropdown-toggle text-capitalize text-dark font-weight-400" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border-top: 2px solid #f4c150;">
-                                            Ratings
-                                        </button>
-                                        <div class="dropdown-menu dropdown-menu-left dropdown-menu-ratings">
-                                            
-                                        </div>
-                                    </div>
-                                    <div class="dropdown">
-                                        <button class="btn btn-neutral dropdown-toggle text-capitalize text-dark font-weight-400" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border-top: 2px solid #cc87b4;">
-                                            Duration
-                                        </button>
-                                        <div class="dropdown-menu dropdown-menu-left dropdown-menu-ratings">
-                                            
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- // Advance Filters -->
-                            <div class="col-lg-6">
-                                <div class="d-flex justify-content-end">
-                                    <div class="dropdown">
-                                        <button class="btn btn-neutral dropdown-toggle text-capitalize text-dark font-weight-400" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            All Filters
-                                        </button>
-                                        <div class="dropdown-menu dropdown-menu-ratings">
-                                            
-                                        </div>
-                                    </div>
-                                    <div class="dropdown">
-                                        <button class="btn btn-neutral dropdown-toggle text-capitalize text-dark font-weight-400" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            Sort
-                                        </button>
-                                        <div class="dropdown-menu dropdown-menu-ratings">
-                                            
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -199,7 +153,7 @@
         },
 
         watchQuery: ['q'],
-
+        
         async asyncData({query, error}) {
             try {
                 let { data } = await axios.get('/search_query?q=' + query.q)
@@ -242,7 +196,6 @@
                     this.searchResults = res.data.searchResults
                 }).catch((err) => {
                     this.isLoading = !this.isLoading
-                    console.log(err)
                 })
             }
         },

@@ -11,6 +11,8 @@
 
 						<form @submit.prevent="send" @keydown="form.onKeydown($event)">
 
+							<alert-success :form="form" :message="status"></alert-success>
+
 							<div class="form-group">
 								<div>
 									<input type="email" name="email" v-model="form.email" :class="{ 'is-invalid' : form.errors.has('email') }" class="form-control" placeholder="Email Address">
@@ -22,7 +24,7 @@
 								{{$t('send_verification_link')}}
 							</v-button>
 
-							<h6 class="mt-3">If you're still having problem, please contact us by clicking <a href="#">here</a>.</h6>
+							<h6 class="mt-3">If you're still having problem, please contact us by clicking <a href="/help-center/student">here</a>.</h6>
 
 						</form>
 

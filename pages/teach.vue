@@ -126,7 +126,7 @@
 
 <style scoped>
     .bg-image {
-        background: #505763 url(https://udemy-images.udemy.com/teaching/header-image.jpg) right top no-repeat;
+        background: #505763 url(https://res.cloudinary.com/dl9phqhv0/image/upload/v1579573300/HQ%20Images/header-image_nck8x2.jpg) right top no-repeat;
         background-size: cover;
     }
 

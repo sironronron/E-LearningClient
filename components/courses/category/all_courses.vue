@@ -79,7 +79,6 @@
                     this.isLoading = false
                     this.courses = res.data.courses
                 }).catch((err) => {
-                    console.log(err)
                 })
             }
         }
