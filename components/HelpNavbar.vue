@@ -86,6 +86,11 @@
 </script>
 
 <style scoped>
+	@media (min-width: 1200px) { 
+		.container {
+			max-width: 1040px !important;
+		}
+	}
 	.profile-photo {
 		width: 2rem;
 		height: 2rem;

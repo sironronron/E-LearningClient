@@ -20,7 +20,7 @@
                     <div class="col-lg-6">
                         <div class="align-content-lg-end">
                             <!-- // Search Form  -->
-                            <form class="my-auto d-inline w-25" @submit.prevent="submit">
+                            <form class="my-auto d-inline float-right" @submit.prevent="submit">
 								<div class="input-group input-group-alternative">
 									<input aria-describedby="addon-right addon-left" v-model="search" type="text" name="search" placeholder="Search for solutions" class="form-inline form-control">
 									<div class="input-group-prepend">
@@ -40,12 +40,11 @@
             <div class="container">
 
                 <div class="row">
-                    <div class="col-lg-9">
+                    <div class="col-lg-8 mr-3">
                         <!-- // Posts -->
-                        <h4 class="font-weight-300">{{category.name}} - General</h4>
                         <template v-if="posts.length != 0">
                             <div>
-                                <ul class="list-unstyled mt-3">
+                                <ul class="list-unstyled">
                                     <li v-for="(item, key) in posts" :key="key">
                                         <router-link :to="{ name: 'help-center.student.category.post', params: { categorySlug: category.id, postSlug: item.slug } }" class="btn btn-link p-0 font-weight-400 text-capitalize">{{item.title}}</router-link>
                                     </li>
@@ -58,21 +57,23 @@
                             </div>
                         </template>
                     </div>
-                    <div class="col-lg-3">
-                        <!-- // Categories -->
-                        <h6><b>Student Topics</b></h6>
-                        <div class="pt-3">
-                            <ul class="list-unstyled small">
-                                <li class="mb-3" v-for="cat in categories" :key="cat.id">
-                                    <router-link :to="{ name: 'help-center.student.category', params: { slug: cat.slug } }" class="text-dark">
-                                        <svg width="15" height="15"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <image :xlink:href="cat.icon" height="15" width="15"/>
-                                        </svg>
-                                        <span class="ml-2">{{cat.name}}</span>
-                                    </router-link>
-                                </li>
-                            </ul>
+                    <div class="col-lg-3 border-left">
+                        <div class="ml-3">
+                            <!-- // Categories -->
+                            <h6><b>Student Topics</b></h6>
+                            <div class="pt-2">
+                                <ul class="list-unstyled small">
+                                    <li class="mb-2" v-for="cat in categories" :key="cat.id">
+                                        <router-link :to="{ name: 'help-center.student.category', params: { slug: cat.slug } }" class="text-dark active">
+                                            <svg width="15" height="15"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <image :xlink:href="cat.icon" height="15" width="15"/>
+                                            </svg>
+                                            <span class="ml-2">{{cat.name}}</span>
+                                        </router-link>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -119,6 +120,10 @@
     }
 </script>
 
-<style>
-
+<style lang="scss" scoped>
+    @media (min-width: 1200px) { 
+		.container {
+			max-width: 1040px !important;
+		}
+	}
 </style>

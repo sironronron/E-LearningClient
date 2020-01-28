@@ -9,7 +9,7 @@
         <div class="mt-3">
             <div class="row">
                 <div class="col-lg-12">
-                    <card class="shadow-sm">
+                    <card class="border">
                         <h4 class="header-title mb-3">
                             Edit Course Form
                             <router-link :to="{ name: 'instructor.courses' }" class="btn btn-outline-secondary btn-rounded btn-sm float-right">
@@ -94,43 +94,7 @@
                                         <div class="row justify-content-center">
                                             <div class="col-lg-7">
 
-                                                <div class="text-center" v-if="form.status == 'APPROVED' || form.status == 'PUBLISHED'">
-                                                    <button v-if="!showAddSectionModal" class="btn btn-outline-primary rounded btn-sm ml-1" @click.prevent="openSectionModal"><fa icon="plus" /> Add Section</button>
-
-                                                    <button v-if="!showAddLessonModal" class="btn btn-outline-primary rounded btn-sm ml-1" @click.prevent="openLessonModal"><fa icon="plus" /> Add Lesson</button>
-
-                                                    <button v-if="!showAddQuizModal" class="btn btn-outline-primary rounded btn-sm ml-1" @click.prevent="openQuizModal"><fa icon="plus" /> Add Quiz</button>
-
-                                                    <a href="javascript::void(0)" class="btn btn-outline-primary rounded btn-sm ml-1" onclick="showAjaxModal('http://demo.academy-lms.com/default/modal/popup/section_add/26', 'Add new section')"><fa icon="plus" /> Sort Sections</a>
-                                                </div>
-
-                                                <template v-if="sections.length != 0">                                                        
-                                                    <div class="my-5">
-
-                                                        <div>
-                                                            <section class="p-4 rounded bg-secondary mb-3" v-for="(section, index) in sections" :key="`${section.id}-section`">
-                                                                <h6 class="mb-4">Section {{index + 1}}: &nbsp; <b>{{section.title}}</b></h6>
-                                                                <div v-for="(lesson, index) in section.lessons" :key="`${index}-lesson`" class="p-3 bg-white border rounded mb-2">
-                                                                    <h6 class="mb-0"><fa icon="play-circle" v-if="lesson.lesson_type === 'VIDEO'" /> <span class="text-muted">Lesson {{index + 1}}</span><span class="font-weight-bold">: {{lesson.title}}</span> </h6>
-                                                                </div>
-                                                                <div v-for="(quiz, index) in section.quizzes" :key="`${index}-quiz`" class="p-3 bg-white border rounded mb-2">
-                                                                    <h6 class="mb-0"><fa icon="question-circle" /> <span class="text-muted">Quiz {{index + 1}}</span><span class="font-weight-bold">: {{quiz.title}}</span> </h6>
-                                                                </div>
-                                                            </section>
-                                                        </div>
-
-                                                    </div>
-                                                </template>
-
-                                                <template v-else>
-                                                    <div class="my-5">
-                                                        <div class="text-center">
-                                                            <img src="https://res.cloudinary.com/dl9phqhv0/image/upload/c_scale,h_130/v1576466809/Online%20Learning%20Icon%20Pack/042-book_iscdda.svg" class="img-fluid" width="130" height="130" alt="">
-                                                            <h6 v-if="form.status === 'APPROVED' || form.status === 'PUBLISHED'">You don't have any curriculums yet.</h6>
-                                                            <h6 v-else>Your course is not yet approved, so you won't be able to add any curriculums yet.</h6>
-                                                        </div>
-                                                    </div>
-                                                </template>
+                                                <add-curriculums :course_id="course.id" :sections="sections" :lessons="lessons" :quizzes="quizzes"></add-curriculums>
 
                                             </div>
                                         </div>
@@ -140,6 +104,17 @@
                                     <div v-if="step == 2"  id="basic">
                                         <div class="row justify-content-center">
                                             <div class="col-lg-8">
+
+                                                <div class="form-group row mb-4">
+                                                    <label for="status" class="col-form-label col-lg-2">Status</label>
+                                                    <div class="col-lg-10">
+                                                        <select name="status" id="" v-model="form.status" :class="{ 'is-invalid' : form.errors.has('status') }" class="custom-select form-control rounded">
+                                                            <option v-for="(item, key) in statuses" :key="key" :value="item.value">
+                                                                {{item.name}}
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
 
                                                 <div class="form-group row mb-4">
                                                     <label for="title" class="col-form-label col-lg-2">Course Title <span class="text-danger">*</span></label>
@@ -209,7 +184,7 @@
                                         <div class="row justify-content-center">
                                             <div class="col-lg-8">
 
-                                                <div class="form-group row mb-2" v-for="(requirement, index) in form.requirements" :key="`${index+1}-${requirement.id}`">
+                                                <div class="form-group row mb-3" v-for="(requirement, index) in form.requirements" :key="`${index+1}-${requirement.id}`">
                                                     <label for="description" class="col-lg-2 col-form-label">Requirement {{index + 1}} <span class="text-danger">*</span></label>
                                                     <div class="col-lg-9">
                                                         <input type="text" name="description" v-model="requirement.description" :class="{ 'is-invalid' : form.errors.has(`requirements.${index}.description`) }" class="form-control rounded" placeholder="Place your requirement">
@@ -352,6 +327,49 @@
                                                     <div class="col-lg-10">
                                                         <input type="text" name="course_overview_url" v-model="form.course_overview_url" :class="{ 'is-invalid' : form.errors.has('course_overview_url') }" class="form-control rounded" placeholder="Video Url">
                                                         <has-error :form="form" field="course_overview_url"></has-error>
+                                                        <div>
+                                                            <button class="btn btn-link btn-sm text-capitalize p-0" @click.prevent="toggleShowEmbed">
+                                                                <span v-if="!showEmbed">Show Embed</span>
+                                                                <span v-else>Hide Embed</span>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div v-if="showEmbed" class="form-group row mb-4">
+                                                    <div class="col-lg-2"></div>
+                                                    <div class="col-lg-10">
+                                                        <div>
+                                                            <!-- // Youtube -->
+                                                            <vue-plyr v-if="form.course_overview_provider === 'Youtube'">
+                                                                <div class="plyr__video-embed">
+                                                                    <iframe
+                                                                    :src="`https://www.youtube.com/embed/${form.course_overview_url}?iv_load_policy=3&modestbranding=1&playsinline=1&showinfo=0&rel=0&enablejsapi=1`"
+                                                                    allowfullscreen allowtransparency allow="autoplay">
+                                                                    </iframe>
+                                                                </div>
+                                                            </vue-plyr>
+
+                                                            <!-- // Vimeo -->
+                                                            <vue-plyr v-else-if="form.course_overview_provider === 'Vimeo'">
+                                                                <div class="plyr__video-embed">
+                                                                    <iframe
+                                                                        :src="`https://player.vimeo.com/video/${form.course_overview_url}?loop=false&byline=false&portrait=false&title=false&speed=true&transparent=0&gesture=media`"
+                                                                        allowfullscreen allowtransparency allow="autoplay">
+                                                                    </iframe>
+                                                                </div>
+                                                            </vue-plyr>
+
+                                                            <!-- // HTML 5 -->
+                                                            <vue-plyr v-else-if="form.course_overview_provider === 'HTML5'">
+                                                                <video :poster="form.image" src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer.mp4">
+                                                                    <source src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4" type="video/mp4" size="576">
+                                                                    <source src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-720p.mp4" type="video/mp4" size="720">
+                                                                    <source src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4" type="video/mp4" size="1080">
+                                                                    <track kind="captions" label="English" srclang="en" src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer.vtt" default>
+                                                                </video>
+                                                            </vue-plyr>
+                                                        </div>
                                                     </div>
                                                 </div>
 
@@ -374,7 +392,7 @@
                                         <div class="row justify-content-center">
                                             <div class="col-lg-8">
 
-                                                <div class="form-group row mb-4">
+                                                <div class="form-group row mb-4">   
                                                     <label for="keywords" class="col-lg-2 col-form-label">Meta Keywords <span class="text-danger">*</span></label>
                                                     <div class="col-lg-10">
                                                         <input type="text" name="meta_keywords" v-model="form.meta_keywords" :class="{ 'is-invalid' : form.errors.has('meta_keywords') }" class="form-control rounded" placeholder="Separate your keywords with comma">
@@ -416,7 +434,7 @@
                                     <div class="row justify-content-center mt-3">
                                         <div class="col-lg-auto">
                                             <!-- // Previous button -->
-                                            <button v-if="step <= 1" class="btn btn-sm btn-default" disabled>
+                                            <button v-if="step <= 1" class="btn btn-sm btn-default" disabled @click.prevent="prev()">
                                                 <fa icon="arrow-left" fixed-width /> 
                                             </button>
                                             
@@ -447,18 +465,6 @@
             </div>
         </div>
 
-        <transition name="fade">
-            <add-section-modal :course_id="course.id" v-if="showAddSectionModal" @close="closeSectionModal" @clicked="saveNewSection"></add-section-modal>
-        </transition>
-
-        <transition name="fade">
-            <add-lesson-modal :course_id="course.id" v-if="showAddLessonModal" @close="closeLessonModal" @clicked="saveNewLesson"></add-lesson-modal>
-        </transition>
-
-        <transition name="fade">
-            <add-quiz-modal :course_id="course.id" v-if="showAddQuizModal" @close="closeQuizModal"></add-quiz-modal>
-        </transition>
-
     </div>
 </template>
 
@@ -468,25 +474,26 @@
     import axios from 'axios'
     import Form from 'vform'
 
-    // Modals
-    import AddSectionModal from '../../../components/instructor/courses/add_section'
-    import AddLessonModal from '../../../components/instructor/courses/add_lesson'
-    import AddQuizModal from '../../../components/instructor/courses/add_quiz'
+    // Curriculums
+    import AddCurriculums from '../../../components/instructor/courses/add_curriculum'
 
     // Change Image Component
     import ChangeImage from '../../../components/instructor/courses/change_image'
 
     if (process.client) {
         let objectToFormData = document.createElement('script')
+        let Youtube = document.createElement('script')
+
         objectToFormData.setAttribute('src', "https://cdn.rawgit.com/cretueusebiu/412715093d6e8980e7b176e9de663d97/raw/aea128d8d15d5f9f2d87892fb7d18b5f6953e952/objectToFormData.js")
         document.head.appendChild(objectToFormData)
+
+        Youtube.setAttribute('src', "https://www.youtube.com/iframe_api")
     }
 
     export default {
 
         components: {
-            AddSectionModal, AddLessonModal,
-            AddQuizModal, ChangeImage
+            ChangeImage, AddCurriculums
         },
 
         scrollToTop: true,
@@ -536,9 +543,7 @@
                 // Add Config for Froala WYSIWYG   
             },
             step: 1,
-            showAddSectionModal: false,
-            showAddLessonModal: false,
-            showAddQuizModal: false
+            showEmbed: false
         }),
 
         methods: {
@@ -560,6 +565,9 @@
                             type: 'success',
                             text: res.data.message
                         })
+
+                        // Redirect to show
+                        this.$router.push({ name: 'instructor.courses.show', params: { slug: this.course.slug } })
                     })
                     .catch((err) => {
                         this.$swal({
@@ -608,66 +616,8 @@
                 this.step--
             },
 
-            openSectionModal: function () {
-                this.showAddSectionModal = true
-
-                // Add Class to bdy
-                myBody.classList.toggle('modal-open')
-            },
-
-            closeSectionModal: function () {
-                this.showAddSectionModal = false
-                myBody.classList.remove('modal-open')
-            },
-
-            openLessonModal: function () {
-                this.showAddLessonModal = true
-
-                // Add Class to Body
-                myBody.classList.toggle('modal-open')
-            },
-
-            closeLessonModal: function () {
-                this.showAddLessonModal = false
-                myBody.classList.remove('modal-open')
-            },
-
-            openQuizModal: function () {
-                this.showAddQuizModal = true
-
-                // Add Class to Body
-                myBody.classList.toggle('modal-open')
-            },
-            
-            closeQuizModal: function () {
-                this.showAddQuizModal = false
-                myBody.classList.remove('modal-open')
-            },
-
-            // Emit Data
-            saveNewSection(value) {
-                this.sections.push({
-                    id: value.id,
-                    title: value.title,
-                    slug: value.slug
-                })
-            },
-
-            // Save New Lesson
-            saveNewLesson(index, value) {
-                this.sections[index].lessons.push({
-                    course_section_id: value.course_section_id,
-                    lesson_image: value.lesson_image,
-                    title: value.title,
-                    lesson_type: value.lesson_type,
-                    lesson_provider: value.lesson_provider,
-                    thumbnail: value.thumbnail,
-                    video_url: value.video_url,
-                    duration: value.duration,
-                    lesson_attachment: value.lesson_attachment,
-                    summary: value.summary,
-                    id: value.id
-                })
+            toggleShowEmbed: function() {
+                this.showEmbed = !this.showEmbed
             }
 
         },
@@ -677,19 +627,36 @@
             return {
                 categories: data.categories,
                 course: data.course,
-                sections: data.sections
+                sections: data.sections,
+                lessons: data.lessons,
+                quizzes: data.quizzes
             }
         },
 
         created() {
-            this.form.keys().forEach((key) => {
-                this.form[key] = this.course[key]
-            })
+            this.form.fill(this.course)
         },
 
         computed: {
             discountPercentage() {
                 return this.percentage = ((1 - (this.form.discount / this.form.price)) * 100).toFixed(0)
+            },
+
+            statuses: function () {
+                return [
+                    {
+                        value: 'UNPUBLISHED',
+                        name: 'Unpublished'
+                    },
+                    {
+                        value: 'DRAFT',
+                        name: 'Draft',
+                    },
+                    {
+                        value: 'PUBLISHED',
+                        name: 'Published'
+                    }
+                ]
             }
         },
 

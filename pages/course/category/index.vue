@@ -27,13 +27,13 @@
 								</a>
 							</h5>
 						</li>
-						<li class="nav-item">
+						<!-- <li class="nav-item">
 							<h5>
 								<a @click="showTrending" type="button" href="#trending" :class="{ 'router-link-active' : isTrending == true }" class="nav-link" aria-label="trending">
 									Trending
 								</a>
 							</h5>
-						</li>
+						</li> -->
 					</ul>
 			
 					<template v-if="isMostPopular == true">
@@ -206,60 +206,8 @@
 					<h3 class="font-weight-600 mb-3">All {{category.name}} Courses</h3>
 						<!-- // Filters -->
 					<div>
-						<div class="jumbotron bg-secondary mb-0 rounded p-2">
-							<div class="container">
-								<div class="p-2">
-									<div>
-										<div class="row">
-											<!-- // Star and Duration Filter  -->
-											<div class="col-lg-6">
-												<div class="d-flex justify-content-start">
-													<div class="dropdown">
-														<button class="btn btn-neutral dropdown-toggle text-capitalize text-dark font-weight-400" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border-top: 2px solid #f4c150;">
-															Ratings
-														</button>
-														<div class="dropdown-menu dropdown-menu-left dropdown-menu-ratings">
-															
-														</div>
-													</div>
-													<div class="dropdown">
-														<button class="btn btn-neutral dropdown-toggle text-capitalize text-dark font-weight-400" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border-top: 2px solid #cc87b4;">
-															Duration
-														</button>
-														<div class="dropdown-menu dropdown-menu-left dropdown-menu-ratings">
-															
-														</div>
-													</div>
-												</div>
-											</div>
-											<!-- // Advance Filters -->
-											<div class="col-lg-6">
-												<div class="d-flex justify-content-end">
-													<div class="dropdown">
-														<button class="btn btn-neutral dropdown-toggle text-capitalize text-dark font-weight-400" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-															All Filters
-														</button>
-														<div class="dropdown-menu dropdown-menu-ratings">
-															
-														</div>
-													</div>
-													<div class="dropdown">
-														<button class="btn btn-neutral dropdown-toggle text-capitalize text-dark font-weight-400" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-															Sort
-														</button>
-														<div class="dropdown-menu dropdown-menu-ratings">
-															
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="d-block py-3">
-							<p class="float-right">{{countCourses}} courses</p>
+						<div class="d-block">
+							<p class="mb-0">{{countCourses}} courses</p>
 						</div>
 
 						<!-- // Course Lists -->
@@ -319,7 +267,7 @@
 					countCourses: data.countCourses
 				}
 			} catch (e) {
-				return
+				error({ statusCode: 404, message: 'Page not found' })
 			}
 		},
 

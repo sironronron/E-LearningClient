@@ -1,23 +1,54 @@
 <template>
     <div>
 
-        <form @submit.prevent="change">
+        <div class="card rounded-bottom">
             <!-- // If Image exists -->
             <template v-if="form.image == ''">
-                <div>
-                    <img :src="image.image" class="img-fluid rounded shadow-sm img_preview" alt="">
-                </div>
+                <img :src="image.image" class="card-image-top rounded-top img-fluid shadow-sm img_preview" alt="">
             </template>
             <template v-else>
-                <div>
-                    <img :src="form.imagePreview" class="img-fluid rounded shadow-sm img_preview" alt="">
-                </div>
+                <img :src="form.imagePreview" class="card-image-top rounded-top img-fluid shadow-sm img_preview" alt="">
             </template>
-            <input class="mt-3" type="file" name="image" accept="image/*" @change="selectFile">
-            <v-button :loading="form.busy" class="btn-sm">
-                Change Image
-            </v-button>
-        </form>
+
+            <div class="card-body p-2 text-center">
+                <button type="button" class="btn btn-link btn-sm text-capitalize" data-toggle="modal" data-target="#exampleModal">
+                    <fa icon="camera" fixed-width />
+                    Change Thumbnail
+                </button>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Change Thumbnail</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form @submit.prevent="change">
+                        <div class="modal-body">
+                            <alert-error :form="form" message="Can't upload thumbnail."></alert-error>
+                            <input class="mt-3" type="file" name="image" accept="image/*" @change="selectFile">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <v-button :loading="form.busy">
+                                Change Image
+                            </v-button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        
+
+        
+
+        
 
 
     </div>
@@ -41,7 +72,8 @@
             form: new Form({
                 image: '',
                 imagePreview: '',
-            })
+            }),
+            error: {}
         }),
 
         created() {
@@ -77,7 +109,6 @@
                 .then((res) => {
                     this.image = res.data.image
                 }).catch((err) => {
-                    console.log(err)
                 })
             }
         }
@@ -91,5 +122,8 @@
         height: 135px;
         width: 240px;
         object-fit: cover;
+    }
+    .card {
+        width: 240px;
     }
 </style>
