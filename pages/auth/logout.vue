@@ -50,12 +50,17 @@
                                                 <fa icon="star" fixed-width style="color: #f4c150" />
                                             </div>
                                             <div class="price float-right">
-                                                <h6 class="mt-3" v-if="course.has_discount == 1"><small class="text-muted"><strike>₱{{course.price}}</strike> </small>&nbsp; <b>₱{{course.discount}}</b> </h6>
-                                                <h6 class="mt-3" v-else>
-                                                    <client-only>
-                                                        <b>₱{{course.price | numeral('0,0.00')}}</b>
-                                                    </client-only>
-                                                </h6>
+                                                <template v-if="course.free_course != 1">
+                                                    <h6 class="mt-3" v-if="course.has_discount == 1"><small class="text-muted"><strike>₱{{course.price}}</strike> </small>&nbsp; <b>₱{{course.discount}}</b> </h6>
+                                                    <h6 class="mt-3" v-else>
+                                                        <client-only>
+                                                            <b>₱{{ course.price | numeral('0,0') }}</b>
+                                                        </client-only>
+                                                    </h6>
+                                                </template>
+                                                <template v-else>													
+                                                    <h6 class="mt-3">Free Course</h6>
+                                                </template>
                                             </div>
                                         </div>
                                     </div>

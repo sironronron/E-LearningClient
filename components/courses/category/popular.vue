@@ -2,9 +2,9 @@
 	<div>
 		<template v-if="!isLoading">
 			<client-only>
-				<carousel :perPage="5" :loop="true" :paginationEnabled="false" >
+				<carousel :perPage="5" :loop="false" :paginationEnabled="false" >
 					<slide v-for="(course, key) in mostPopular" :key="key" style="margin-right: 10px;" class="py-4">
-						<router-link :to="{ name: 'course.show', params: { slug: course.slug } }">
+						<router-link v-if="course.views.length > 10" :to="{ name: 'course.show', params: { slug: course.slug } }">
 							<div class="card border shadow-sm shadow--hover rounded">
 								<img :src="course.image" class="card-img-top border-bottom" alt="">
 								<div class="card-body py-3">
@@ -13,7 +13,7 @@
 											<strong>{{course.title}}</strong>
 										</h6>
 									</div>
-									<p class="mt-1 mb-1 small text-muted">{{course.user}}</p>
+									<p class="mt-1 mb-1 small text-muted">{{course.user.name}} - {{ course.views.length }} Views</p>
 									<div class="rating">
 										<fa icon="star" fixed-width style="color: #f4c150" />
 										<fa icon="star" fixed-width style="color: #f4c150" />
@@ -75,7 +75,7 @@
 					this.isLoading = false
 					this.mostPopular = res.data.mostPopular
 				}).catch((err) => {
-					console.log(err)
+					return
 				})
 			}
 		}

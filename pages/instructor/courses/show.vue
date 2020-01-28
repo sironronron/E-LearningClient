@@ -191,7 +191,7 @@
                     <!-- // Actions -->
                     <div class="row mt-3">
                         <div class="col-lg-6">
-                            <router-link :to="{ name: 'course.show', params: { slug: course.slug } }" class="btn btn-default btn-block text-capitalize">
+                            <router-link :to="{ name: 'student.courses.learn', params: { slug: course.slug } }" class="btn btn-default btn-block text-capitalize">
                                 View course
                             </router-link>
                         </div>

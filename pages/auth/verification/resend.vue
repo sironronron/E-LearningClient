@@ -11,6 +11,8 @@
 
 						<form @submit.prevent="send" @keydown="form.onKeydown($event)">
 
+							<alert-success :form="form" :message="status"></alert-success>
+
 							<div class="form-group">
 								<div>
 									<input type="email" name="email" v-model="form.email" :class="{ 'is-invalid' : form.errors.has('email') }" class="form-control" placeholder="Email Address">

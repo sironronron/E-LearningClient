@@ -5,6 +5,7 @@ import { scrollBehavior } from '~/utils'
 Vue.use(Router)
 
 const page = path => () => import(`~/pages/${path}`).then(m => m.default || m)
+const comp = path => () => import(`~/components/${path}`).then(m => m.default || m)
 
 const routes = [
   // Welcome Path
@@ -25,6 +26,15 @@ const routes = [
   { path: '/email/verify/:id', name: 'verification.verify', component: page('auth/verification/verify.vue') },
   { path: '/email/resend', name: 'verification.resend', component: page('auth/verification/resend.vue') },
 
+  // Cart
+  { path: '/cart', name: 'cart', component: page('cart/cart.vue') },
+    // Subscription Page
+    { path: '/cart/subscribe/course/:id', name: 'cart.subscribe.course', component: page('cart/subscribe/index.vue') },
+
+  // courses student enrolled routes
+  { path: '/course/:slug/learn/:lesson', name: 'course.learn', component: page('course/enrolled/learn/lesson/index.vue') },
+
+
   // User Settings
   { path: '/home', name: 'home', component: page('home.vue') },
   { path: '/student/account',
@@ -36,6 +46,22 @@ const routes = [
       { path: 'change-avatar', name: 'settings.avatar', component: page('settings/avatar.vue') }
     ]
   },
+
+  // My Courses
+  { path: '/student/account/my-courses/learning/all', name: 'student.courses', component: page('user/my-courses.vue') },
+  { 
+    path: '/student/account/my-courses/learning/', 
+    component: page('user/course/learning-course.vue'),
+    children: [
+      { path: '', redirect: { name: 'student.courses.learn' } },
+      { path: ':slug/show/overview', name: 'student.courses.learn', component: page('user/course/overview.vue') },
+      { path: ':slug/show/q-and-a', name: 'student.courses.learn.qanda', component: page('user/course/qanda.vue') },
+      { path: ':slug/show/q-and-a/:id', name: 'student.courses.learn.qna.reply', component: page('user/course/qandareply.vue') },
+      { path: ':slug/show/announcements', name: 'student.courses.learn.announcements', component: page('user/course/announcements.vue') },
+    ]
+  },
+
+
 
   // Help Center
   {
@@ -71,7 +97,24 @@ const routes = [
       // Course Show
       { path: 'courses/show/:slug', name: 'instructor.courses.show', component: page('instructor/courses/show.vue') },
       // Course Edit
-      { path: 'courses/:slug/edit', name: 'instructor.courses.edit', component: page('instructor/courses/edit.vue') },
+      { 
+        path: 'courses/:slug/edit', 
+        name: 'instructor.courses.edit', 
+        component: page('instructor/courses/edit.vue'),
+
+        // Edit Lesson Modal Router
+        children: [
+          {
+            path: 'section/:id',
+            component: comp('instructor/courses/edit_section.vue'),
+            props: true,
+            name: 'instructor.courses.section.edit',
+            meta: {
+              showEditSectionModal: true
+            }
+          }
+        ] 
+      },
       // Course Statuses
 
       // Search

@@ -1,7 +1,9 @@
 <template>
     <div class="mt-5 course-curriculum-box">
         <div class="course-curriculum-title clearfix">
-            <div class="title float-left">Curriculum for this course</div>
+            <div class="float-left">
+                <h4>Curriculum for this course</h4>
+            </div>
             <div class="float-right m-t-5">
                 <span class="total-lectures">
                     {{countLessons}} Lessons              
@@ -26,7 +28,7 @@
                                 {{section.lessons.length}} Lessons
                             </span>
                             <span class="total-time d-inline-block">
-                                00:15:00 Hours
+                                 Hours
                             </span>
                         </div>
                     </div>
@@ -60,6 +62,7 @@
     let myBody = null
 
     export default {
+
         props: [
             'sections', 'lessons', 'duration', 'countLessons', 'quizzes'
         ],

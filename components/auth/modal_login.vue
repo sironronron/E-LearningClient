@@ -99,6 +99,8 @@
 
                 this.$emit('close')
 
+                this.$router.go()
+
             },
 
             goToForgotPassword: function () {

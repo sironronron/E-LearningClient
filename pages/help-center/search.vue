@@ -42,7 +42,7 @@
                 <div class="row">
                     <div class="col-lg-8 mr-3">
                         <!-- // Search Results -->
-                        <h4 class="font-weight-300">Results for - "{{searchQuery}}"</h4>
+                        <h4 class="font-weight-300">Found {{ searchResults.length }} articles</h4>
                         <template v-if="searchResults.length != 0">
                             <div v-for="(group) in groups" :key="group.id">
                                 <ul class="list-unstyled mt-3">

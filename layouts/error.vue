@@ -26,7 +26,7 @@
                     <div v-else class="title">
                         <h2>An error occured</h2>
                         <p class="description">
-                            Our smart monkeys is doing their best to resolve this issue. Please <a href="#" class="text-priamry">contact us</a> for more info.
+                            Our smart monkeys is doing their best to resolve this issue. Please <router-link :to="{ name: 'help-center.contact' }" class="text-priamry">contact us</router-link> for more info.
                             <br><br>
                             Visit our support page for any questions. ({{error.statusCode}})
                         </p>

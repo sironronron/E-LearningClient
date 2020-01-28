@@ -30,26 +30,36 @@
                     <div class="ml-3">
                         <div class="card shadow-sm" style="position: fixed; margin-top: 0; width: 350px; top: 10px">
                             <div class="card-body p-0">
+                                <div v-if="enrolled" class="p-1 px-3 bg-info w-100">
+                                    <p class="mb-0 text-white">
+                                        <small><fa icon="info-circle" /> You purchased this course on {{ enrolled_at.pivot.created_at | moment(' L') }} </small>
+                                    </p>
+                                </div>
                                 <div class="p-4">
                                     <div class="pricing">
                                         <h2 class="font-weight-500">
                                         <div class="d-flex">
-                                            <div>
-                                                <client-only>
-                                                    <span class="font-weight-bold" v-if="!course.has_discount">₱{{course.price | numeral}}</span>
-                                                    <span class="font-weight-bold" v-else>₱{{course.discount | numeral}}</span>
-                                                </client-only>
-                                            </div>
-                                            <div v-if="course.has_discount" class="ml-2">
-                                                <client-only>
-                                                    <strike class="text-muted small"><small>₱{{course.price | separator }}</small></strike>
-                                                    <span class="text-danger small"><small>{{percentage}}% off</small></span>
-                                                </client-only>
-                                            </div>
+                                            <template v-if="!course.free_course">
+                                                <div>
+                                                    <client-only>
+                                                        <span class="font-weight-bold" v-if="!course.has_discount">₱{{course.price | numeral}}</span>
+                                                        <span class="font-weight-bold" v-else>₱{{course.discount | numeral}}</span>
+                                                    </client-only>
+                                                </div>
+                                                <div v-if="course.has_discount" class="ml-2">
+                                                    <client-only>
+                                                        <strike class="text-muted small"><small>₱{{course.price | separator }}</small></strike>
+                                                        <span class="text-danger small"><small>{{percentage}}% off</small></span>
+                                                    </client-only>
+                                                </div>
+                                            </template>
+                                            <template v-else>
+                                                <h2 v-if="!enrolled" class="font-weight-bold mb-0">Free Course </h2> 
+                                            </template>
                                         </div>
                                         </h2>
                                     </div>
-                                    <add-to-cart :course_id="course.id" :price="course.has_discount == true ? course.discount : course.price"></add-to-cart>
+                                    <add-to-cart :enrolled="enrolled" :course_id="course.id" :free_course="course.free_course == 1 ? true : false"  :price="course.has_discount == true ? course.discount : course.price"></add-to-cart>
                                     <div class="mt-3">
                                         <p class="font-weight-bold mb-2 text-dark">Includes:</p>
                                         <ul class="list-unstyled small" style="color: #505763;">
@@ -72,7 +82,7 @@
         </div>
 
         <transition name="fade" mode="out-in">
-            <share-buttons v-if="showShareButtons" @close="closeShareButtonsModal"></share-buttons>
+            <share-buttons v-if="showShareButtons" @close="closeShareButtonsModal" :course="course"></share-buttons>
         </transition>
 
     </section>
@@ -93,7 +103,7 @@
             AddToCart, ShareButtons
         },
 
-        props: ['course', 'items', 'percentage'],
+        props: ['course', 'items', 'percentage', 'enrolled', 'enrolled_at'],
 
         data: function () {
             return {

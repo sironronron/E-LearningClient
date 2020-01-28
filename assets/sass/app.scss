@@ -160,6 +160,24 @@ p, ul {
     margin-right: 1rem;
 }
 
+.grid-course-name-2 {
+    height: 14px;
+}
+.grid-course-name-2 {
+    position: relative;
+    font-size: 13px;
+    height: 14px;
+    display: -webkit-box;
+    line-height: 1.15em;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+.grid-course-name-2 {
+    text-overflow: ellipsis;
+    text-transform: capitalize;
+    overflow: hidden;
+}
+
 
 .grid-course-name {
     height: 43px;
@@ -300,6 +318,11 @@ p {
     transition: opacity .3s ease;
 }
 
+.modal-wrapper {
+    display: table-cell;
+    vertical-align: middle;
+}
+
 .course-curriculum-box {
     margin-bottom: 40px;
 }
@@ -335,7 +358,17 @@ p {
     color: #505763;
 }
 
-.course__curriculum-accordion .lecture__group-title .title {
+.course__curriculum-accordion .lecture__group-title-2 {
+    position: relative;
+    padding: 10px 15px;
+    background: #f9f9f9;
+    border-bottom: 1px solid #e8e9eb;
+    cursor: pointer;
+    height: auto;
+    color: #505763;
+}
+
+.course__curriculum-accordion .lecture__group-title-2 .title {
     max-width: 60%;
     font-weight: 600;
 }
@@ -365,10 +398,43 @@ p {
     color: #007791;
 }
 
+.course__curriculum-accordion .lecture__group-title-2[aria-expanded="false"]:after {
+    content: "\f078";
+}
+
+.course__curriculum-accordion .lecture__group-title-2[aria-expanded="true"]:after {
+    content: "\f077";
+}
+
+.course__curriculum-accordion .lecture__group-title-2:after {
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    line-height: 1;
+    font-family: Font Awesome\ 5 Free;
+    font-weight: 900;
+    position: absolute;
+    left: 19rem;
+    font-size: 13px;
+    top: 16px;
+    color: #007791;
+}
+
+
 .course__curriculum-accordion .lecture__group-title .total-time {
     width: 130px;
     display: inline-block;
     text-align: right;
+}
+
+.course__curriculum-accordion .lecture-list-2 .lecture {
+    padding: 12px 30px 12px 15px;
+    position: relative;
+    border-bottom: 1px solid #e8e9eb;
+    color: #686f7a;
 }
 
 .course__curriculum-accordion .lecture-list .lecture {

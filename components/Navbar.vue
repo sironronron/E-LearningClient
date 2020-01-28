@@ -14,7 +14,7 @@
 					<li class="nav-item dropdown">
 						<a href="#" class="nav-link" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							<fa icon="th" fixed-width />
-							Courses
+							Categories
 						</a>
 						<div class="dropdown-menu">
 							<template v-if="!isLoading">
@@ -38,10 +38,10 @@
 				</ul>
 
 				<form class="mx-2 my-auto d-inline w-47" @submit.prevent="submit" @keydown="form.onKeydown($event)">
-					<div class="input-group input-group-alternative">
+					<div class="input-group">
 						<input aria-describedby="addon-right addon-left" type="text" v-model="form.search_term" name="search" placeholder="Search for courses" class="form-inline form-control rounded-left">
 						<div class="input-group-prepend">
-							<a type="button" class="input-group-text">
+							<a type="button" class="input-group-text btn btn-outline-danger">
 								<fa icon="search" fixed-width />
 							</a>
 						</div>
@@ -67,27 +67,17 @@
 							</a>
 						</li>
 						<li class="nav-item dropdown">
-							<a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<router-link :to="{ name: 'student.courses' }" class="nav-link" role="button" >
 								My Courses
-							</a>
-							<div class="dropdown-menu dropdown-menu-right">
-								<div class="p-3 text-center">
-									<h6>Start learning from over 100,000 courses today.</h6>
-									<h6 class="mt-2 text-small mb-0"><router-link :to="{ name: 'home' }">Browse now</router-link></h6>
-								</div>
-							</div>
+							</router-link>
 						</li>
 						<li class="nav-item dropdown">
 							<a href="#" class="nav-link" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								<fa icon="shopping-cart" class="h5 mb-0" fixed-width />
+								<!-- <span v-if="carts.length != 0" class="badge bg-danger text-white rounded-circle" style="float: right; margin-top: -10px; margin-left: -10px; z-index: 10001;">{{carts.length}}</span> -->
+								<span style="z-index: 100;"><fa icon="shopping-cart" class="h5 mb-0" fixed-width /></span>
 							</a>
 							<div class="dropdown-menu dropdown-menu-right">
-								<template v-if="carts.length != 0">
-									<div>
-										{{carts.length}}
-									</div>
-								</template>
-								<template v-else>
+								<template>
 									<div>
 										<div class="p-3 text-center">
 											<h6>Your cart is empty.</h6>
@@ -185,12 +175,18 @@
 
 		data: () => ({
 			appName: process.env.appName,
+			
 			categories: [],
+
+			// Get My Courses
+			courses: [],
+
 			isLoading: false,
-			carts: [],
+
 			form: new Form({
 				search_term: '',
 			})
+
 		}),
 		
 		computed: {
@@ -201,7 +197,6 @@
 
 		created() {
 			this.getCategories()
-			this.getCarts()
 		},
 
 		methods: {
@@ -209,12 +204,14 @@
 				let { data } = await this.form.post('/search/userSearches')
 				this.$router.push('/search_query?q=' + this.form.search_term)
             },
+
 			async logout () {
 				// Log out the user.
 				await this.$store.dispatch('auth/logout')
 				// Redirect to login.
 				this.$router.push({ name: 'logout' })
 			},
+
 			getCategories() {
 				this.isLoading = true
 				axios.get('/getCategories')
@@ -223,16 +220,7 @@
 					this.categories = res.data.categories
 				})
 			},
-			getCarts() {
-				this.isLoading = true
-				axios.get('/cart/cartItems')
-				.then((res) => {
-					this.isLoading = false
-					this.carts = res.data.carts
-				}).catch((err) => {
-					console.log(err)
-				})
-			}
+
 		}
 	}
 </script>
@@ -242,6 +230,12 @@
 		.container {
 			max-width: 100% !important;
 		}
+	}
+
+	.has-courses {
+		max-height: 341px;
+		overflow-y: auto;
+		position: relative;
 	}
 
 	.profile-photo {

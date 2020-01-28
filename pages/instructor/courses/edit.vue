@@ -106,6 +106,17 @@
                                             <div class="col-lg-8">
 
                                                 <div class="form-group row mb-4">
+                                                    <label for="status" class="col-form-label col-lg-2">Status</label>
+                                                    <div class="col-lg-10">
+                                                        <select name="status" id="" v-model="form.status" :class="{ 'is-invalid' : form.errors.has('status') }" class="custom-select form-control rounded">
+                                                            <option v-for="(item, key) in statuses" :key="key" :value="item.value">
+                                                                {{item.name}}
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group row mb-4">
                                                     <label for="title" class="col-form-label col-lg-2">Course Title <span class="text-danger">*</span></label>
                                                     <div class="col-lg-10">
                                                         <input type="text" name="title" v-model="form.title" :class="{ 'is-invalid' : form.errors.has('title') }" class="form-control rounded" placeholder="Course Title">
@@ -423,7 +434,7 @@
                                     <div class="row justify-content-center mt-3">
                                         <div class="col-lg-auto">
                                             <!-- // Previous button -->
-                                            <button v-if="step <= 1" class="btn btn-sm btn-default" disabled>
+                                            <button v-if="step <= 1" class="btn btn-sm btn-default" disabled @click.prevent="prev()">
                                                 <fa icon="arrow-left" fixed-width /> 
                                             </button>
                                             
@@ -623,14 +634,29 @@
         },
 
         created() {
-            this.form.keys().forEach((key) => {
-                this.form[key] = this.course[key]
-            })
+            this.form.fill(this.course)
         },
 
         computed: {
             discountPercentage() {
                 return this.percentage = ((1 - (this.form.discount / this.form.price)) * 100).toFixed(0)
+            },
+
+            statuses: function () {
+                return [
+                    {
+                        value: 'UNPUBLISHED',
+                        name: 'Unpublished'
+                    },
+                    {
+                        value: 'DRAFT',
+                        name: 'Draft',
+                    },
+                    {
+                        value: 'PUBLISHED',
+                        name: 'Published'
+                    }
+                ]
             }
         },
 

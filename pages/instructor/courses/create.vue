@@ -443,7 +443,7 @@
                         description: ''
                     }
                 ],
-                free_course: false,
+                free_course: true,
                 price: '',
                 has_discount: false,
                 discount: '',

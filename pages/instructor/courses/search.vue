@@ -169,7 +169,6 @@
                     searchQuery: query.search_query
                 }
             } catch (e) {
-                console.log(e)
             }
         },
 

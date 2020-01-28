@@ -109,7 +109,6 @@
                 .then((res) => {
                     this.image = res.data.image
                 }).catch((err) => {
-                    console.log(err)
                 })
             }
         }

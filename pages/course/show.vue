@@ -25,7 +25,7 @@
                                         <small>
                                             <span class="d-inline-block average-rating text-white mr-2">4</span><span class="text-white mr-2">(2 Ratings)</span>
                                             <span class="enrolled-num text-white">
-                                                3 Students enrolled
+                                                {{ students }} Students enrolled
                                             </span>
                                         </small>
                                     </div>
@@ -33,8 +33,8 @@
                                         <small>
                                             <span class="created-by text-white">
                                                 Created by
-                                                <a href="#course-instructor" :to="{ name: 'course.instructor.show', params: { username: course.user.username } }">
-                                                    {{course.user.name}}
+                                                <a href="#course-instructor" :to="{ name: 'course.instructor.show', params: { username: instructor.username } }">
+                                                    {{instructor.name}}
                                                 </a>
                                             </span>
                                             <span class="last-updated-date text-white ml-2">Last updated {{course.updated_at | moment(' L')}}</span>
@@ -48,7 +48,7 @@
                 </section>
             </div>
 
-            <popup-navbar :course="course" :items="includes" :percentage="percentage"></popup-navbar>
+            <popup-navbar :enrolled_at="enrolled_at" :enrolled="enrolled_course" :course="course" :items="includes" :percentage="percentage"></popup-navbar>
 
             <!-- // Main Course -->
             <section class="section-sm">
@@ -86,7 +86,7 @@
                             </div>
 
                             <!-- // Course content -->
-                            <section-accordion :sections="sections" :lessons="lessons" :duration="duration" :countLessons="countLessons" :quizzes="quizzes"></section-accordion>
+                            <section-accordion :sections="sections" :lessons="lessons" :duration="duration" :countLessons="countLessons" :quizzes="quizzes" :totalLessonDuration="totalLessonDuration"></section-accordion>
 
                             <!-- // Course Requirements -->
                             <div class="mt-5">
@@ -147,13 +147,18 @@
                                             </div>
                                             <div class="col-lg-2">
                                                 <div class="float-right">
-                                                    <div v-if="item.has_discount == 0">
-                                                        <h6 class="font-weight-bold text-right">₱{{item.price | numeral('0,0.00')}}</h6>
-                                                    </div>
-                                                    <div v-if="item.has_discount == 1">
-                                                        <h6 class="font-weight-bold text-right">₱{{item.discount | numeral('0,0.00')}}</h6>
-                                                        <h6 class="text-muted float-right"><strike>₱{{item.price | numeral('0,0.00')}}</strike></h6>
-                                                    </div>
+                                                    <template v-if="!item.free_course">
+                                                        <div v-if="item.has_discount == 0">
+                                                            <h6 class="font-weight-bold text-right">₱{{item.price | numeral('0,0.00')}}</h6>
+                                                        </div>
+                                                        <div v-if="item.has_discount == 1">
+                                                            <h6 class="font-weight-bold text-right">₱{{item.discount | numeral('0,0.00')}}</h6>
+                                                            <h6 class="text-muted float-right"><strike>₱{{item.price | numeral('0,0.00')}}</strike></h6>
+                                                        </div>
+                                                    </template>
+                                                    <template v-else>
+                                                        <h5 class="text-right"><strong>Free Course</strong></h5> 
+                                                    </template>
                                                 </div>
                                             </div>
                                         </div>
@@ -165,29 +170,29 @@
                             <div class="mt-5" id="course-instructor">
                                 <div class="row">
                                     <div class="col-lg-3">
-                                        <template v-if="course.user.avatar != 'users/default.png'" >
+                                        <template v-if="instructor.avatar != 'users/default.png'" >
                                             <client-only>
-                                                <cld-image :publicId="`${course.user.avatar_public_id}.png`" alt="" >
+                                                <cld-image :publicId="`${instructor.avatar_public_id}.png`" alt="" >
                                                     <cld-transformation height="130" width="130" crop="fill" radius="100" />
                                                 </cld-image>
                                             </client-only>
                                         </template>
                                         
-                                        <img v-if="course.user.avatar == 'users/default.png'" :src="course.user.photo_url" class="rounded-circle img-fluid course__user-img" alt="">
+                                        <img v-if="instructor.avatar == 'users/default.png'" :src="instructor.photo_url" class="rounded-circle img-fluid course__user-img" alt="">
 
                                         <ul class="list-unstyled mt-3">
                                             <li class=" mb-1"><fa icon="star" fixed-width /> <b>4.5</b> Instructor rating</li>
                                             <li class=" mb-1"><fa icon="comment" fixed-width /> <b>160,475</b> Reviews</li>
                                             <li class=" mb-1"><fa icon="user" fixed-width /> <b>644,590</b> Students</li>
-                                            <li class=""><fa icon="play-circle" fixed-width /> <b>51</b> Courses</li>
+                                            <li class=""><fa icon="play-circle" fixed-width /> <b>{{ instructor.courses.length }}</b> Courses</li>
                                         </ul>
                                     </div>
                                     <div class="col-lg-8">
-                                        <h5 class="mt-2 mb-1"><b>{{course.user.name}}</b></h5>
-                                        <h6 class="text-dark">{{course.user.introduction}}</h6>
+                                        <h5 class="mt-2 mb-1"><b>{{instructor.name}}</b></h5>
+                                        <h6 class="text-dark">{{instructor.introduction}}</h6>
                                         <div class="mt-3">
                                             <client-only>
-                                                <read-more v-if="course.user.biography" more-str="read more" less-str="read less" :max-chars="500" :text="course.user.biography"></read-more>
+                                                <read-more v-if="instructor.biography" more-str="read more" less-str="read less" :max-chars="500" :text="instructor.biography"></read-more>
                                             </client-only>
                                         </div>
                                     </div>
@@ -207,26 +212,36 @@
                                                 <span class="play-btn"></span>
                                             </a>
                                         </div>
+                                        <div v-if="enrolled_course" class="p-1 px-3 bg-info w-100">
+                                            <p class="mb-0 text-white">
+                                                <small><fa icon="info-circle" /> You purchased this course on {{ enrolled_at.pivot.created_at | moment(' L') }} </small>
+                                            </p>
+                                        </div>
                                         <div class="p-4">
                                             <div class="pricing">
                                                 <h2 class="font-weight-500">
                                                 <div class="d-flex">
-                                                    <div>
-                                                        <client-only>
-                                                            <span class="font-weight-bold" v-if="!course.has_discount">₱{{course.price | numeral}}</span>
-                                                            <span class="font-weight-bold" v-else>₱{{course.discount | numeral}}</span>
-                                                        </client-only>
-                                                    </div>
-                                                    <div v-if="course.has_discount" class="ml-2">
-                                                        <client-only>
-                                                            <strike class="text-muted small"><small>₱{{course.price | separator }}</small></strike>
-                                                            <span class="text-danger small"><small>{{percentage}}% off</small></span>
-                                                        </client-only>
-                                                    </div>
+                                                    <template v-if="!course.free_course">
+                                                        <div>
+                                                            <client-only>
+                                                                <span class="font-weight-bold" v-if="!course.has_discount">₱{{course.price | numeral}}</span>
+                                                                <span class="font-weight-bold" v-else>₱{{course.discount | numeral}}</span>
+                                                            </client-only>
+                                                        </div>
+                                                        <div v-if="course.has_discount" class="ml-2">
+                                                            <client-only>
+                                                                <strike class="text-muted small"><small>₱{{course.price | separator }}</small></strike>
+                                                                <span class="text-danger small"><small>{{percentage}}% off</small></span>
+                                                            </client-only>
+                                                        </div>
+                                                    </template>
+                                                    <template v-else>
+                                                        <h2 class="font-weight-bold mb-0" v-if="!enrolled_course">Free Course </h2>
+                                                    </template>
                                                 </div>
                                                 </h2>
                                             </div>
-                                            <add-to-cart :course_id="course.id" :price="course.has_discount == true ? course.discount : course.price"></add-to-cart>
+                                            <add-to-cart :enrolled="enrolled_course" :course_id="course.id" :free_course="course.free_course == 1 ? true : false" :price="course.has_discount == true ? course.discount : course.price" :courseInCart="courseInCart" :slug="course.slug"></add-to-cart>
                                             <div class="mt-3">
                                                 <p class="font-weight-bold mb-2">Includes:</p>
                                                 <ul class="list-unstyled small" style="color: #505763;">
@@ -251,7 +266,7 @@
             </section>
 
             <transition name="fade" mode="out-in">
-                <share-buttons v-if="showShareButtons" @close="closeShareButtonsModal"></share-buttons>
+                <share-buttons v-if="showShareButtons" @close="closeShareButtonsModal" :course="course"></share-buttons>
             </transition>
 
             <transition name="fade" mode="out-in">
@@ -280,11 +295,6 @@
 
     import AddToCart from '../../components/courses/show/add-to-cart'
 
-    if (process.client) {
-        let Youtube = document.createElement('script')
-        Youtube.setAttribute('src', "https://www.youtube.com/iframe_api")
-    }
-
     export default {
         
         components: {
@@ -308,7 +318,9 @@
 
                 // Detect scroll
                 showPopup: false,
-                lastScrollPosition: 0
+                lastScrollPosition: 0,
+
+                courseInCart: false
             }
         },
 
@@ -316,6 +328,8 @@
             try {
                 let { data } = await axios.get(`/course/${params.slug}`)
                 return {
+                    instructor: data.instructor,
+
                     // Main Data
                     course: data.course,
 
@@ -332,6 +346,14 @@
 
                     duration: data.totalDuration,
                     countLessons: data.countLessons,
+
+                    totalLessonDuration: data.totalLessonDuration,
+
+                    addedToCart: data.addedToCart,
+
+                    enrolled_course: data.enrolled_course,
+                    enrolled_at: data.enrolled_at,
+                    students: data.enrolled_students
                     
                 }
             } catch (e) {
@@ -355,6 +377,14 @@
                         value: 'Full Lifetime Access'
                     }
                 ]
+            },
+
+            courseAddedToCart: function () {
+                if (addedToCart) {
+                    this.courseInCart = true 
+                } else {
+                    this.courseInCart = false
+                }
             }
         },
 
@@ -493,7 +523,6 @@
     }
     .play-btn {
         left: 0;
-        top: -7px;
         width: 100%;
         height: 40%;
         position: absolute;

@@ -83,7 +83,7 @@
                                     <tbody>
                                         <tr role="row" class="odd" v-for="course in allCourses.data" :key="course.id">
                                             <td>
-                                                <router-link :to="{ name: 'instructor.courses.edit', params: { slug: course.slug } }">
+                                                <router-link :to="{ name: 'instructor.courses.show', params: { slug: course.slug } }">
                                                     {{course.title}}
                                                 </router-link>
                                                 <br>

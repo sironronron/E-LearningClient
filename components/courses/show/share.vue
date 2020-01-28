@@ -11,11 +11,11 @@
                 <div class="modal-body">
                     
                     <!-- // Copy input -->
-                    <form class="mx-2 my-auto d-inline">
+                    <div class="d-inline">
 					    <div class="input-group">
 						    <input aria-describedby="addon-right addon-left" type="text" name="search" v-model="url" placeholder="Search for courses" class="form-inline form-control rounded-left">
 						    <div class="input-group-prepend">
-							    <button type="button" v-clipboard:copy="url" v-clipboard:success="onCopy" v-clipboard:error="onError" class="input-group-text btn btn-outline-danger rounded-right" >
+							    <button type="button" v-clipboard:copy="url" v-clipboard:success="onCopy" v-clipboard:error="onError" class="input-group-text btn btn-outline-danger rounded-right text-capitalize" >
                                     <template v-if="!onSuccess">
                                         <fa :icon="['far', 'copy']" fixed-width /> &nbsp; Copy
                                     </template>
@@ -25,13 +25,41 @@
 							    </button>
 						    </div>
 					    </div>
-				    </form>
+				    </div>
 
-                    <div class="row justify-content-between">
-                        <div class="col-lg-2"></div>
-                        <div class="col-lg-2"></div>
-                        <div class="col-lg-2"></div>
-                    </div>
+                    <div class="mt-3">
+                        <h6 class="text-dark">Share on</h6>
+                        <div class="d-flex mt-2">
+                             <social-sharing :url="url"
+                                    :title="course.title"
+                                    :description="course.excerpt"
+                                    inline-template>
+                                <div>
+                                    <network network="email">
+                                        <span class="btn btn-outline-primary btn-sm">
+                                            <fa :icon="['far', 'envelope']" fixed-width />
+                                        </span>
+                                    </network>
+                                    <network network="facebook">
+                                        <span class="btn btn-outline-primary btn-sm">
+                                            <fa :icon="['fab', 'facebook-f']" fixed-width />
+                                        </span>
+                                    </network>
+                                    <network network="linkedin">
+                                        <span class="btn btn-outline-primary btn-sm">
+                                            <fa :icon="['fab', 'linkedin-in']" fixed-width />
+                                        </span>
+                                    </network>
+                                    <network network="twitter">
+                                        <span class="btn btn-outline-primary btn-sm">
+                                            <fa :icon="['fab', 'twitter']" fixed-width />
+                                        </span>
+                                    </network>
+                                </div>
+                            </social-sharing>
+                        </div>
+                    </div>   
+                    
 
                 </div>
             </template>
@@ -45,19 +73,21 @@
 
         name: 'ShareButtons',
 
+        props: ['course'],
+
         data: function () {
             return {
                 url: '',
                 message: '',
 
                 onSuccess: false,
-                onError: false
+                onErrorCopy: false
             }
         },
 
         created: function () {
             var currentUrl = window.location.pathname
-            this.url = 'http://localhost:3000' + currentUrl
+            this.url = 'http://192.168.2.112:3000' + currentUrl
         },
 
         methods: {
@@ -67,7 +97,7 @@
             },
 
             onError: function (e) {
-                this.onError = true
+                this.onErrorCopy = true
                 this.message = 'Copy failed'
             }
         }

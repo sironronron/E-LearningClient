@@ -9,7 +9,7 @@ module.exports = {
 
   env: {
     apiUrl: process.env.API_URL || process.env.APP_URL + '/api',
-    appName: process.env.APP_NAME || 'E-Learning',
+    appName: process.env.APP_NAME || 'Heroacademy',
     appLocale: process.env.APP_LOCALE || 'en',  
     githubAuth: !!process.env.GITHUB_CLIENT_ID,
     facebookAuth: !!process.env.FACEBOOK_CLIENT_ID,
@@ -58,7 +58,11 @@ module.exports = {
     '~plugins/vue-plyr',
     '~plugins/cloudinary',
     '~plugins/vue-draggable',
+  
     // '~plugins/nuxt-client-init', // Comment this for SSR
+  
+    { src: '~plugins/tags-input', mode: 'client' },
+    { src: '~plugins/social-share', mode: 'client' },
     { src: '~plugins/clipboard2', mode: 'client' },
     { src: '~plugins/carousel', mode: 'client' },
     { src: '~plugins/readmore', mode: 'client' },
@@ -81,15 +85,15 @@ module.exports = {
 
   manifest: {
     short_name: 'EL',
-    name: 'E-Learning',
+    name: 'Heroacademy',
     start_url: '/',
     theme_color: '#bc4e9c'
   },
 
-  // server: {
-  //   port: 3000, // default: 3000
-  //   host: '0.0.0.0' // default: localhost
-  // },
+  server: {
+    port: 3000, // default: 3000
+    host: '0.0.0.0' // default: localhost
+  },
 
   build: {
     extractCSS: true
