@@ -17,13 +17,9 @@
                                     <h4 class="text-white font-weight-300 mt-2">{{course.excerpt}}</h4>
                                     <div class="rating-row">
                                         <span class="course-badge best-seller mr-2">{{course.level}}</span>
-                                        <fa icon="star" fixed-width style="color: #f4c150" />
-                                        <fa icon="star" fixed-width style="color: #f4c150" />
-                                        <fa icon="star" fixed-width style="color: #f4c150" />
-                                        <fa icon="star" fixed-width style="color: #f4c150" />
-                                        <fa icon="star" fixed-width style="color: whitesmoke" />
+                                        <star-rating :star-size="15" :inline="true" :read-only="true" :show-rating="false" :rating="avgRating" :increment="0.5" :star-points="[23,2, 14,17, 0,19, 10,34, 7,50, 23,43, 38,50, 36,34, 46,19, 31,17]"></star-rating>
                                         <small>
-                                            <span class="d-inline-block average-rating text-white mr-2">4</span><span class="text-white mr-2">(2 Ratings)</span>
+                                            <span class="d-inline-block average-rating text-white mr-2">{{ avgRating }}</span><span class="text-white mr-2">({{ course.ratings_count }} Ratings)</span>
                                             <span class="enrolled-num text-white">
                                                 {{ students }} Students enrolled
                                             </span>
@@ -47,8 +43,137 @@
                     </div>
                 </section>
             </div>
+            
+            <!-- // Popup -->
+            <section class="course__header-area duplicated" :class="{ 'd-none' : !showPopup }">
+                <div class="container">
+                    <div class="row align-items-end">
+                        <div class="col-lg-8">
+                            <div class="course-header-wrap">
+                                <h1 class="title">{{course.title}}</h1>
+                                <div class="rating-row">
+                                    <span class="course-badge best-seller">{{ course.level }}</span>
+                                    <star-rating :rating="avgRating" :inline="true" :read-only="true" :show-rating="false" :increment="0.5" :star-size="17"></star-rating>
+                                    <span class="d-inline-block average-rating">{{ avgRating }}</span>&nbsp;<span>({{ course.ratings_count }} Ratings)</span>
+                                    <span class="enrolled-num">
+                                    - {{ students }} Students enrolled
+                                    </span>
+                                </div>
+                                <div class="created-row">
+                                    <span class="created-by">
+                                        Created by <a href="http://demo.academy-lms.com/default/home/instructor_page/1">
+                                            {{ instructor.name }}
+                                        </a>
+                                    </span>
+                                    <span class="last-updated-date">Last updated {{ course.updated_at | moment("dddd, MMMM Do YYYY") }}</span>
+                                    <span class="comment"><i class="fas fa-comment"></i>{{ course.language }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="ml-3">
+                                <div class="card shadow-sm" style="position: fixed; margin-top: 0; width: 350px; top: 10px">
+                                    <div class="card-body p-0">
+                                        <div v-if="enrolled_course" class="p-1 px-3 bg-info w-100">
+                                            <p class="mb-0 text-white">
+                                                <small><fa icon="info-circle" fxied-width /> &nbsp; You purchased this course on {{ enrolled_at.pivot.created_at | moment('MMM. D, YYYY') }} </small>
 
-            <popup-navbar :enrolled_at="enrolled_at" :enrolled="enrolled_course" :course="course" :items="includes" :percentage="percentage"></popup-navbar>
+                                            </p>
+                                        </div>
+                                        <div class="p-4">
+                                            <div class="pricing">
+                                                <h2 class="font-weight-500">
+                                                <div class="d-flex">
+                                                    <template v-if="!course.free_course">
+                                                        <div>
+                                                            <client-only>
+                                                                <span class="font-weight-bold" v-if="!course.has_discount">₱{{course.price | numeral}}</span>
+                                                                <span class="font-weight-bold" v-else>₱{{course.discount | numeral}}</span>
+                                                            </client-only>
+                                                        </div>
+                                                        <div v-if="course.has_discount" class="ml-2">
+                                                            <client-only>
+                                                                <strike class="text-muted small"><small>₱{{course.price | separator }}</small></strike>
+                                                                <span class="text-danger small"><small>{{percentage}}% off</small></span>
+                                                            </client-only>
+                                                        </div>
+                                                    </template>
+                                                    <template v-else>
+                                                        <h2 class="font-weight-bold mb-0" v-if="!enrolled_course">Free Course </h2>
+                                                    </template>
+                                                </div>
+                                                </h2>
+                                            </div>
+                                            <div>
+                                                <!-- // Add to Cart  -->
+                                                <template v-if="!course.free_course">
+                                                    <template v-if="user">
+                                                        <div>
+                                                            <button class="btn btn-danger btn-lg text-capitalize btn-block border rounded" :class="{ 'btn-loading' : busy }" :disabled="busy" @click="addToCart">
+                                                                <span v-if="!addedToCart">Add to cart</span>
+                                                                <span v-else>Added to Cart</span>
+                                                            </button>
+                                                            <button class="btn btn-neutral btn-danger btn-lg text-capitalize btn-block text-dark rounded border">
+                                                                Buy Now
+                                                            </button>
+                                                        </div>
+                                                    </template>
+                                                    <template v-else>
+                                                        <div>
+                                                            <button class="btn btn-danger btn-lg text-capitalize btn-block border rounded" @click="openLoginModal">
+                                                                Add to cart
+                                                            </button>
+                                                            <button class="btn btn-neutral btn-danger btn-lg text-capitalize btn-block text-dark rounded border" @click="openLoginModal">
+                                                                Buy Now
+                                                            </button>
+                                                        </div>
+                                                    </template>
+                                                </template>
+                                                <template v-else>
+                                                    <template v-if="!enrolled_course">
+                                                        <template v-if="user">
+                                                            <button v-if="user.id != teacher_id" class="btn btn-danger btn-lg text-capitalize btn-block rounded border" :class="{ 'btn-loading' : busy }" :disabled="busy" @click="enroll">
+                                                                Enroll Now
+                                                            </button>
+                                                        </template>
+                                                        <template v-else>
+                                                            <button class="btn btn-danger btn-lg text-capitalize btn-block border rounded" @click="openLoginModal">
+                                                                Enroll Now
+                                                            </button>
+                                                        </template>
+                                                    </template>
+                                                    <template v-else>
+                                                        <router-link :to="{ name: 'student.courses.learn' , params: { slug: course.slug, lesson_id: course.first_lesson.id } }" class="btn btn-primary btn-lg text-capitalize btn-block rounded border">
+                                                            Go to course 
+                                                        </router-link> 
+                                                    </template>
+                                                </template>
+                                            </div>
+                                            <div class="mt-3">
+                                                <p class="font-weight-bold mb-2 text-dark">Includes:</p>
+                                                <ul class="list-unstyled small" style="color: #505763;">
+                                                    <li v-for="item in includes" :key="item.id" class="mb-1">
+                                                        <fa :icon="item.icon" fixed-width /> &nbsp; {{item.value}} 
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="mt-3 text-center border-top">
+                                                <button class="btn btn-link text-capitalize pb-0" @click="openShareButtonsModal">
+                                                    <fa icon="share-square" fixed-width /> Share
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <transition name="fade" mode="out-in">
+                    <share-buttons v-if="showShareButtons" @close="closeShareButtonsModal" :course="course"></share-buttons>
+                </transition>
+            </section>
 
             <!-- // Main Course -->
             <section class="section-sm">
@@ -199,6 +324,12 @@
                                 </div>
                             </div>
 
+                            <!-- // Student Feedbacks -->
+                            <div class="mt-5">
+                                <h4>Student Feedback</h4>
+                                <student-feedback :ratings_count="course.ratings_count" :average="avgRating" :ratings="feedBacks" :five="fiveRating" :four="fourRating" :three="threeRating" :two="twoRating" :one="oneRating"></student-feedback>
+                            </div>
+
 
                         </div>
                         <!-- // Card Course Video Overview -->
@@ -214,7 +345,7 @@
                                         </div>
                                         <div v-if="enrolled_course" class="p-1 px-3 bg-info w-100">
                                             <p class="mb-0 text-white">
-                                                <small><fa icon="info-circle" /> You purchased this course on {{ enrolled_at.pivot.created_at | moment(' L') }} </small>
+                                                <small><fa icon="info-circle" fxied-width /> &nbsp; You purchased this course on {{ enrolled_at.pivot.created_at | moment('MMM. D, YYYY') }} </small>
                                             </p>
                                         </div>
                                         <div class="p-4">
@@ -241,7 +372,50 @@
                                                 </div>
                                                 </h2>
                                             </div>
-                                            <add-to-cart :enrolled="enrolled_course" :course_id="course.id" :free_course="course.free_course == 1 ? true : false" :price="course.has_discount == true ? course.discount : course.price" :courseInCart="courseInCart" :slug="course.slug"></add-to-cart>
+                                            <div>
+                                                <template v-if="!course.free_course">
+                                                    <template v-if="user">
+                                                        <div>
+                                                            <button class="btn btn-danger btn-lg text-capitalize btn-block border rounded" :class="{ 'btn-loading' : busy }" :disabled="busy" @click="addToCart">
+                                                                <span v-if="!addedToCart">Add to cart</span>
+                                                                <span v-else>Added to Cart</span>
+                                                            </button>
+                                                            <button class="btn btn-neutral btn-danger btn-lg text-capitalize btn-block text-dark rounded border">
+                                                                Buy Now
+                                                            </button>
+                                                        </div>
+                                                    </template>
+                                                    <template v-else>
+                                                        <div>
+                                                            <button class="btn btn-danger btn-lg text-capitalize btn-block border rounded" @click="openLoginModal">
+                                                                Add to cart
+                                                            </button>
+                                                            <button class="btn btn-neutral btn-danger btn-lg text-capitalize btn-block text-dark rounded border" @click="openLoginModal">
+                                                                Buy Now
+                                                            </button>
+                                                        </div>
+                                                    </template>
+                                                </template>
+                                                <template v-else>
+                                                    <template v-if="!enrolled_course">
+                                                        <template v-if="user">
+                                                            <button v-if="user.id != teacher_id" class="btn btn-danger btn-lg text-capitalize btn-block rounded border" :class="{ 'btn-loading' : busy }" :disabled="busy" @click="enroll">
+                                                                Enroll Now
+                                                            </button>
+                                                        </template>
+                                                        <template v-else>
+                                                            <button class="btn btn-danger btn-lg text-capitalize btn-block border rounded" @click="openLoginModal">
+                                                                Enroll Now
+                                                            </button>
+                                                        </template>
+                                                    </template>
+                                                    <template v-else>
+                                                        <router-link :to="{ name: 'student.courses.learn' , params: { slug: course.slug, lesson_id: course.first_lesson.id } }" class="btn btn-primary btn-lg text-capitalize btn-block rounded border">
+                                                            Go to course 
+                                                        </router-link> 
+                                                    </template>
+                                                </template>
+                                            </div>
                                             <div class="mt-3">
                                                 <p class="font-weight-bold mb-2">Includes:</p>
                                                 <ul class="list-unstyled small" style="color: #505763;">
@@ -273,6 +447,11 @@
                 <video-plyr v-if="isModalVisible" @close="closePlayerModal" :title="course.title"></video-plyr>
             </transition>
 
+            <!-- // Modal -->
+            <transition name="fade" mode="out-in">
+                <modal-login v-if="showLoginModal" @close="closeLoginModal"></modal-login>
+            </transition>
+    
         </div>
 
     </div>
@@ -288,24 +467,39 @@
     import VideoPlyr from '../../components/courses/show/video-plyr'
     import SectionAccordion from '../../components/courses/show/accordion'
 
-    // Popup navbar
-    import PopupNavbar from '../../components/courses/show/popup-navbar'
-
     import ShareButtons from '../../components/courses/show/share'
-
     import AddToCart from '../../components/courses/show/add-to-cart'
+    import StarRating from 'vue-star-rating'
+    import ModalLogin from '~/components/auth/modal_login'
+
+    import StudentFeedback from '~/components/courses/show/student_feedback'
+
+    import { mapGetters } from 'vuex'
 
     export default {
         
         components: {
             MightLikes, VideoPlyr, AddToCart,
-            SectionAccordion, PopupNavbar, ShareButtons
+            SectionAccordion, ShareButtons,
+            StarRating, ModalLogin, StudentFeedback
         },
     
         layout: 'default',
 
         head() {
-            return { title: this.course.title }
+            return { 
+                title: this.course.title,
+                meta: [
+                    { hid: 'description', name: 'description', content: this.course.excerpt },
+                    { hid: 'keywords', name: 'keywords', content: this.course.meta_keywords},
+
+                    // Facebook Meta Tags
+                    { hid: 'og:url', name: 'og:url', content: this.url },
+                    { hid: 'og:title', name: 'og:title', content: this.course.title },
+                    { hid: 'og:image', name: 'og:image', content: this.image },
+                    { hid: 'og:description', name: 'og:description', content: this.course.excerpt }
+                ]
+            }
         },
 
         data: function () {
@@ -313,14 +507,14 @@
                 isModalVisible: false,
                 isExpandedOutcome: false,
                 MightLikes: [],
-
                 showShareButtons: false,
-
                 // Detect scroll
                 showPopup: false,
                 lastScrollPosition: 0,
-
-                courseInCart: false
+                courseInCart: false,
+                url: '',
+                showLoginModal: false,
+                busy: false
             }
         },
 
@@ -353,15 +547,31 @@
 
                     enrolled_course: data.enrolled_course,
                     enrolled_at: data.enrolled_at,
-                    students: data.enrolled_students
-                    
+                    students: data.enrolled_students,
+
+                    avgRating: data.avgRating,
+
+                    feedBacks: data.feedBacks,
+
+                    fiveRating: data.fiveRating,
+                    fourRating: data.fourRating,
+                    threeRating: data.threeRating,
+                    twoRating: data.twoRating,
+                    oneRating: data.oneRating
                 }
             } catch (e) {
                 error({ statusCode: 500, message: 'Something went wrong!' })
             }
         },
 
+        created: function () {
+            this.url = 'http://192.168.2.112:3000' + this.$route.path
+        },
+
         computed: {
+            ...mapGetters({
+                user: 'auth/user'
+            }),
             includes() {
                 return [
                     {
@@ -440,7 +650,39 @@
 
                 this.showPopup = currentScrollPosition >= 350
                 this.lastScrollPosition = currentScrollPosition
-            }
+            },
+
+            openLoginModal: function () {
+                this.showLoginModal = true
+
+                // Add class to body
+                myBody.classList.toggle('modal-open')
+            },
+
+            closeLoginModal: function () {
+                this.showLoginModal = false
+                myBody.classList.remove('modal-open')
+            },
+
+            async enroll() {
+                this.busy = true
+                try {
+                    let { data } = await axios.post(`/cart/subscribe/course/${this.course.id}/post`)
+                    this.$router.push({ name: 'student.courses.learn', params: { slug: this.$route.params.slug, lesson_id: this.course.first_lesson.id } })
+                    this.busy = false
+                    this.$swal({
+                        type: 'success',
+                        text: data.message
+                    })
+                } catch (e) {
+                    this.busy = false
+                    this.$swal({
+                        type: 'error',
+                        text: e.resonse.data.message
+                    })
+                }
+            },
+
         },
 
         

@@ -106,7 +106,17 @@
 		},
 
 		head () {
-			return { title: this.$t('register') }
+			return { 
+				title: this.$t('register'),
+				
+				meta: [
+					{ hid: 'description', name: 'description', content: "Start Learning now! Create your free account." },
+
+					{ hid: 'og:url', name: 'og:url', content: 'http://192.168.2.112:3000' + this.$route.path },
+					{ hid: 'og:title', name: 'og:title', content: 'Register now to Heroacademy' },
+					{ hid: 'og:description', name: 'og:description', content: 'Start Learning now! Create your free account.' }
+				]
+			}
 		},
 
 		data: () => ({

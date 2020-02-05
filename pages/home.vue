@@ -76,7 +76,7 @@
 		middleware: 'auth',
 
 		head() {
-			return { title: 'Welcome to E-Learning' }
+			return { title: 'Online Courses - Anytime, Anywhere' }
 		},
 
 		async asyncData({ error }) {

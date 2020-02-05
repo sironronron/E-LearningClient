@@ -38,7 +38,7 @@
                     </template>
                 </template>
                 <template v-else>
-                    <router-link :to="{ name: 'student.courses.learn' , params: { slug: slug } }" class="btn btn-primary btn-lg text-capitalize btn-block rounded border">
+                    <router-link :to="{ name: 'student.courses.learn' , params: { slug: slug, lesson_id: lessonId } }" class="btn btn-primary btn-lg text-capitalize btn-block rounded border">
                         Go to course
                     </router-link> 
                 </template>
@@ -68,7 +68,7 @@
 
         name: 'AddToCart',
 
-        props: ['course_id', 'price', 'free_course', 'enrolled', 'slug', 'teacher_id'],
+        props: ['course_id', 'price', 'free_course', 'enrolled', 'slug', 'teacher_id', 'lessonId'],
 
         data: () => ({
             showLoginModal: false,
@@ -107,7 +107,7 @@
                 this.busy = true
                 try {
                     let { data } = await axios.post(`/cart/subscribe/course/${this.course_id}/post`)
-                    this.$router.push({ name: 'student.courses.learn', params: { slug: this.$route.params.slug } })
+                    this.$router.push({ name: 'student.courses.learn', params: { slug: this.$route.params.slug, lesson_id: this.lessonId } })
                     this.busy = false
                     this.$swal({
                         type: 'success',

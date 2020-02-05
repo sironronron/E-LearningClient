@@ -128,7 +128,9 @@
 		layout: 'default',
 
 		head () {
-			return { title: this.$t('home') }
+			return { 
+				title: 'Online Courses - Anytime, Anywhere'
+			}
 		},
 
 		async asyncData({ error }) {

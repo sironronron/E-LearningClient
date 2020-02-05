@@ -94,7 +94,7 @@
                                         <div class="row justify-content-center">
                                             <div class="col-lg-7">
 
-                                                <add-curriculums :course_id="course.id" :sections="sections" :lessons="lessons" :quizzes="quizzes"></add-curriculums>
+                                                <add-curriculums :course_id="course.id" :sections="sections" :lessons="lessons" :quizBanks="quizBanks" :quizzes="quizzes"></add-curriculums>
 
                                             </div>
                                         </div>
@@ -188,6 +188,7 @@
                                                     <label for="description" class="col-lg-2 col-form-label">Requirement {{index + 1}} <span class="text-danger">*</span></label>
                                                     <div class="col-lg-9">
                                                         <input type="text" name="description" v-model="requirement.description" :class="{ 'is-invalid' : form.errors.has(`requirements.${index}.description`) }" class="form-control rounded" placeholder="Place your requirement">
+                                                        <has-error :form="form" :field="`description`"></has-error>
                                                     </div>
                                                     <div class="col-lg-1">
                                                         <a href="#" class="close-button text-muted" @click.prevent="remove('requirements', index)">
@@ -629,6 +630,7 @@
                 course: data.course,
                 sections: data.sections,
                 lessons: data.lessons,
+                quizBanks: data.quizBanks,
                 quizzes: data.quizzes
             }
         },

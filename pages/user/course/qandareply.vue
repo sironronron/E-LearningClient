@@ -2,7 +2,7 @@
 	<div>
 
 		<div>
-			<router-link :to="{ name: 'student.courses.learn.qanda', params: { slug: slug } }" class="btn btn-outline-primary btn-sm text-capitalize">
+			<router-link :to="{ name: 'student.courses.learn.qanda', params: { slug: slug } }" class="btn btn-outline-default text-capitalize">
 				Back to All Questions
 			</router-link>
 		</div>
@@ -38,9 +38,9 @@
 										<fa icon="check" fixed-width />
 									</span>
 								</h6>
-								<p class="text-dark">
+								<div v-html="qna.details" class="text-dark">
 									{{ qna.details }}
-								</p>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -113,17 +113,12 @@
 			<div v-if="!addAnswer" class="comment">
 				<div class="d-inline-flex">
 					<div>
-						<div v-if="user.avatar != 'users/default.png'">
-							<client-only>
-								<cld-image :publicId="`${user.avatar_public_id}.png`" alt="" >
-									<cld-transformation height="40" width="40" crop="fill" radius="100" />
-								</cld-image>
-							</client-only>
-						</div>
-						<!-- // Default Image -->
-						<div v-if="user.avatar == 'users/default.png'" >
-							<img src="user.photo_url" class="rounded-circle img-fluid course__user-img" alt="">
-						</div>
+						<img v-if="user.avatar == 'users/default.png'" :src="user.photo_url" class="rounded-circle mr-1" height="50" width="50" alt="">
+						<client-only v-else>
+							<cld-image :publicId="`${user.avatar_public_id}.png`" class="mr-1 profile-photo" alt="">
+								<cld-transformation height="50" width="50" crop="fill" radius="100" />
+							</cld-image>
+						</client-only>
 					</div>
 					<div>
 						<input type="text" placeholder="Add Reply" class="form-control ml-3" @click="toggleAddAnswer">
@@ -138,8 +133,12 @@
 						<textarea name="details" id="details" :class="{ 'is-invalid' : form.errors.has('details') }" cols="30" rows="4" v-model="form.details" class="form-control"></textarea>
 						<has-error :form="form" field="details"></has-error>
 					</div>
+		
+					<button v-if="form.details == ''" type="button" disabled class="btn btn-default text-capitalize">
+						Send Answer
+					</button>
 
-					<v-button :loading="form.busy" class="text-capitalize rounded">
+					<v-button v-else :loading="form.busy" class="text-capitalize rounded">
 						Send Answer
 					</v-button>
 				</form>
@@ -188,32 +187,36 @@
 			},
 
 			async save () {
-				let { data } = await this.form.post(`/student/account/my-courses/learning/${this.qna.id}/reply/save`)
-				// show success
-				this.$swal({
-					toast: true,
-					position: 'bottom-end',
-					showConfirmButton: false,
-					timer: 5000,
-					type: 'success',
-					text: data.message
-				})
+				try {
+					let { data } = await this.form.post(`/student/account/my-courses/learning/${this.qna.id}/reply/save`)
+					// show success
+					this.$swal({
+						toast: true,
+						position: 'bottom-end',
+						showConfirmButton: false,
+						timer: 5000,
+						type: 'success',
+						text: data.message
+					})
 
-				this.replies.push({
-					id: data.newValue.id,
-					parent_id: data.newValue.parent_id,
-					user_id: data.newValue.user_id,
-					course_id: data.newValue.course_id,
-					title: data.newValue.title,
-					details: data.newValue.details,
-					user: data.user,
-					created_at: data.newValue.created_at,
-					updated_at: data.newValue.updated_at
-				})
+					this.replies.push({
+						id: data.newValue.id,
+						parent_id: data.newValue.parent_id,
+						user_id: data.newValue.user_id,
+						course_id: data.newValue.course_id,
+						title: data.newValue.title,
+						details: data.newValue.details,
+						user: data.user,
+						created_at: data.newValue.created_at,
+						updated_at: data.newValue.updated_at
+					})
 
-				this.form.details = ''
+					this.form.details = ''
 
-				this.addAnswer = false
+					this.addAnswer = false
+				} catch (e) {
+					return
+				}
 			},
 
 			async markAsAnswered () {

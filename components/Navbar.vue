@@ -103,7 +103,7 @@
 							>
 								<img v-if="user.avatar == 'users/default.png'" :src="user.photo_url" class="rounded-circle profile-photo mr-1" alt="">
 								<client-only v-else>
-									<cld-image :publicId="`${user.avatar_public_id}.png`" class="mr-1 profile-photo" alt="">
+									<cld-image :publicId="`${user.avatar_public_id}.png`" class="mr-1 profile-photo rounded-circle" alt="">
 										<cld-transformation height="30" width="30" crop="fill" radius="100" />
 									</cld-image>
 								</client-only>

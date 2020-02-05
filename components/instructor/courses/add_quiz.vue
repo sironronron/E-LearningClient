@@ -13,28 +13,23 @@
 
             <template slot="form">
                 <div class="modal-body">
-                    <!-- // Quiz Title -->
+
+                    <alert-error :form="form"><fa icon="exclamation-triangle" fixed-width /> &nbsp; There were some problems with your input.</alert-error>
+
                     <div class="form-group">
-                        <label for="quiz_title" class="col-form-label">Quiz Title</label>
-                        <input type="text" name="title" :class="{ 'is-invalid' : form.errors.has('title') }" v-model="form.title" class="form-control rounded">
-                        <has-error :form="form" field="title"></has-error>
+                        <label class="col-form-label">Title</label>
+                        <div>
+                            <input type="text" name="title" v-model="form.title" :class="{ 'is-invalid' : form.errors.has('title') }" class="form-control rounded" placeholder="Quiz Title">
+                            <has-error :form="form" field="title"></has-error>
+                        </div>
                     </div>
 
-                    <!-- // Section Id -->
-                    <div class="form-group">
-                        <label for="course_curriculum_section_id" class="col-form-label">Section</label>
-                        <select name="course_curriculum_section_id" :class="{ 'is-invalid' : form.errors.has('course_curriculum_section_id') }" v-model="form.course_curriculum_section_id" class="custom-select rounded">
-                            <option value="">Select Section</option>
-                            <option v-for="(item, index) in sections" :key="index" :value="item.id">{{item.title}}</option>
-                        </select>
-                        <has-error :form="form" field="course_curriculum_section_id"></has-error>
-                    </div>
-
-                    <!-- // Instruction -->
                     <div class="form-group">
                         <label for="instruction" class="col-form-label">Instruction</label>
-                        <input type="text" name="instruction" :class="{ 'is-invalid' : form.errors.has('instruction') }" v-model="form.instruction" class="form-control rounded">
-                        <has-error :form="form" field="instruction"></has-error>
+                        <div>
+                            <textarea name="instruction" id="instruction" v-model="form.instruction" cols="30" rows="5" :class="{ 'is-invalid' : form.errors.has('instruction') }" class="form-control rounded"></textarea>
+                            <has-error :form="form" field="instruction"></has-error>
+                        </div>
                     </div>
 
                 </div>
@@ -56,13 +51,15 @@
 
         name: 'AddQuizMOdal',
 
-        props: ['course_id'],
+        props: ['course_id', 'bank', 'index'],
 
         data: () => ({
             form: new Form({
                 title: '',
-                course_curriculum_section_id: '',
-                instruction: ''
+                instruction: '',
+                course_id: '',
+                bank_id: '',
+                section_id: ''
             }),
             sections: [],
             isLoading: false
@@ -83,8 +80,12 @@
             },
             
             async addQuiz(event) {
+                this.form.bank_id = this.bank.id
+                this.form.course_id = this.course_id
+                this.form.section_id = this.bank.section_id
                 try {
-                    const { data } = await this.form.post('/instructor/courses/section/add_quiz/post/' + this.course_id)
+                    const { data } = await this.form.post('/instructor/courses/section/add_quiz/store')
+
                     this.$swal({
                         type: 'success',
                         text: 'Quiz has been saved'
@@ -93,8 +94,9 @@
                     var quizData = {
                         id: data.id,
                         title: data.title,
+                        bank_id: data.bank_id,
+                        section_id: data.section_id,
                         course_id: data.course_id,
-                        course_curriculum_section_id: data.course_curriculum_section_id,
                         instruction: data.instruction,
                     }
 

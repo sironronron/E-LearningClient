@@ -7,7 +7,7 @@
 
             <button v-if="!showAddLessonModal" class="btn btn-outline-primary rounded btn-sm ml-1" @click.prevent="openLessonModal"><fa icon="plus" /> Add Lesson</button>
 
-            <button v-if="!showAddQuizModal" class="btn btn-outline-primary rounded btn-sm ml-1" @click.prevent="openQuizModal"><fa icon="plus" /> Add Quiz</button>
+            <button v-if="!showAddQuizbankModal" class="btn btn-outline-primary rounded btn-sm ml-1" @click.prevent="openQuizbankModal"><fa icon="plus" /> Add Quiz bank</button>
         </div>
 
         <div v-if="!isLoading">
@@ -24,18 +24,24 @@
                             <!-- // Draggable -->
                             <div class="d-inline-flex float-right">
                                 <span class="my-handle">
+                                    <a href="#" class="btn p-1 px-2 btn-outline-default btn-sm" @click.prevent="openEditSectionModal(section, index)"><fa :icon="['far', 'edit']" fixed-width /> Edit</a>
                                     <span class="drag-me">
                                         <fa class="mt-1" icon="grip-vertical" fixed-width style="cursor: move;" />
                                     </span>
                                 </span> 
                             </div>
 
-                            <draggable class="drag-area" :list="lessonsNew" :options="{ animation: 200, handle: '.my-lessons-handle' }" :element="'div'" :noTransitionOnDrag="false" @change="updateLessonsOrder">
+                            <draggable class="drag-area" :list="lessonsNew" :options="{ animation: 200, handle: '.drag-me-lesson' }" :element="'div'" :noTransitionOnDrag="false" @change="updateLessonsOrder">
                                 <!-- // Lessons -->
                                 <div v-for="(lesson, index) in lessonsNew" :key="`${index}-lesson`" class="course__section-lesson">
                                     <div v-if="lesson.course_section_id == section.id" class="p-3 bg-white border rounded mb-2">
                                         <span class="float-right my-lessons-handle">
-                                            <fa icon="grip-vertical" fixed-width style="cursor: move;" />
+                                            <a href="#" class="btn p-1 px-2 btn-outline-default btn-sm" @click.prevent="openEditLessonModal(lesson, index)">
+                                                <fa :icon="['far', 'edit']" fixed-width /> Edit
+                                            </a>
+                                            <span class="drag-me-lesson">
+                                                <fa icon="grip-vertical" fixed-width style="cursor: move;" />
+                                            </span>
                                         </span> 
                                         <h6 class="mb-0" style="line-height: 1.5rem;"><fa icon="play-circle" v-if="lesson.lesson_type === 'VIDEO'" /> <span class="text-muted">
                                             Lesson {{index + 1}}</span><span class="font-weight-bold"> : &nbsp; {{lesson.title}}</span>
@@ -52,17 +58,23 @@
                                     </div>
                                 </div>
                             </draggable>
-                            <hr v-if="quizzes.length != ''">
-                            <!-- // Quizzes -->
-                            <div v-for="(quiz, index) in quizzes" :key="`${index}-quiz`">
-                                <div v-if="quiz.course_curriculum_section_id == section.id" class="p-3 bg-white border rounded mb-2">
-                                    <h6 class="mb-0">
-                                        <fa icon="clipboard-list" fixed-width />
-                                        <span class="text-muted">Quiz {{index + 1 }}</span>
-                                        <span class="font-weight-bold"> : {{quiz.title}}</span>
-                                    </h6>
+                            
+                            <div v-if="quizBanks.length != ''">
+                                <div v-for="(bank, index) in quizBanks" :key="`quizbank-${index + 1}`" class="course__section-quiz-bank">
+                                    <div class="border-top" v-if="bank.section_id == section.id">
+                                        <div class="p-3 mt-2 bg-white border rounded mb-2">
+                                            <span class="font-weight-bold"><fa icon="university" fixed-width /> Quiz Bank - </span>
+                                            <span class="small text-muted">{{ bank.number_of_questions }} Questions to Show</span>
+                                            <div class="d-inline-flex float-right">
+                                                <span class="my-quiz-bank">
+                                                    <button v-if="!showAddQuizModal" class="btn btn-outline-default rounded btn-sm" @click.prevent="openQuizModal(bank, index)"><fa icon="plus" /> Quiz</button>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+
                         </section>
                     </draggable>
                 </div>
@@ -90,11 +102,23 @@
         </transition>
 
         <transition name="fade">
+            <edit-section-modal :data="sectionData" :index="indexNum" v-if="showEditSectionModal" @close="closeEditSectionModal" @clicked="saveNewEditedSection"></edit-section-modal>
+        </transition>
+
+        <transition name="fade">
             <add-lesson-modal :course_id="course_id" v-if="showAddLessonModal" @close="closeLessonModal" @clicked="saveNewLesson"></add-lesson-modal>
         </transition>
 
         <transition name="fade">
-            <add-quiz-modal :course_id="course_id" v-if="showAddQuizModal" @close="closeQuizModal" @clicked="saveNewQuiz"></add-quiz-modal>
+            <edit-lesson-modal :data="lessonData" :index="indexLes" :sections="sections" v-if="showEditLessonModal" @close="closeEditLessonModal" @clicked="saveNewEditedLesson"></edit-lesson-modal>
+        </transition>
+
+        <transition name="fade">
+            <add-quizbank-modal :course_id="course_id" :sections="sections" v-if="showAddQuizbankModal" @close="closeQuizbankModal" @clicked="saveNewQuizbank"></add-quizbank-modal>
+        </transition>
+
+        <transition name="fade">
+            <add-quiz-modal :course_id="course_id" :bank="bankData" :index="bankIndex" v-if="showAddQuizModal" @close="closeQuizModal" @clicked="saveNewQuiz"></add-quiz-modal>
         </transition>
 
     </div>
@@ -106,14 +130,14 @@
     import Form from 'vform'
     import axios from 'axios'
 
-    // Modals
 
-        // Section Cruds
-        import AddSectionModal from './add_section'
-        import EditSectionModal from './edit_section.vue'
-        // End
-
+    import AddSectionModal from './add_section'
+    import EditSectionModal from './edit_section'
+    
     import AddLessonModal from './add_lesson'
+    import EditLessonModal from './edit_lesson'
+
+    import AddQuizbankModal from './add_quizbank'
     import AddQuizModal from './add_quiz'
 
     // Draggable
@@ -121,11 +145,11 @@
 
     export default {
 
-        props: ['course_id', 'sections', 'lessons', 'quizzes'],
+        props: ['course_id', 'sections', 'lessons', 'quizBanks', 'quizzes'],
 
         components: {
             AddSectionModal, AddLessonModal, AddQuizModal,
-            draggable, EditSectionModal
+            draggable, AddQuizbankModal, EditSectionModal, EditLessonModal
         },
 
         data: function() {
@@ -135,8 +159,12 @@
                 // Section Create, Update, Edit, Delete
                 showAddSectionModal: false,
                 showEditSectionModal: false,
+
                 showAddLessonModal: false,
+                showEditLessonModal: false,
+
                 showAddQuizModal: false,
+                showAddQuizbankModal: false,
 
                 isLoading: false,
 
@@ -191,8 +219,18 @@
                 myBody.classList.remove('modal-open')
             },
 
-            editSection: function () {
-                this.editingSection = !this.editingSection
+            openEditSectionModal: function (data, index) {
+                this.sectionData = data
+                this.indexNum = index
+                this.showEditSectionModal = true
+
+                // Add modal-open to body
+                myBody.classList.toggle('modal-open')
+            },
+
+            closeEditSectionModal: function () {
+                this.showEditSectionModal = false
+                myBody.classList.remove('modal-open')
             },
 
             openLessonModal: function () {
@@ -207,7 +245,38 @@
                 myBody.classList.remove('modal-open')
             },
 
-            openQuizModal: function () {
+            openEditLessonModal: function (data, index) {
+                this.showEditLessonModal = true
+
+                this.lessonData = data
+                this.indexLes = index
+           
+                // Add class to body
+                myBody.classList.toggle('modal-open')
+            },
+
+            closeEditLessonModal: function () {
+                this.showEditLessonModal = false
+
+                myBody.classList.remove('modal-open')
+            },
+
+            openQuizbankModal: function () {
+                this.showAddQuizbankModal = true
+
+                // add Class to Body
+                myBody.classList.toggle('modal-open')
+            },
+
+            closeQuizbankModal: function() {
+                console.log('modal close')
+                this.showAddQuizbankModal = false
+                myBody.classList.remove('modal-open')
+            },
+
+            openQuizModal: function (data, index) {
+                this.bankData = data
+                this.bankIndex = index
                 this.showAddQuizModal = true
 
                 // Add Class to Body
@@ -228,6 +297,10 @@
                 })
             },
 
+            saveNewEditedSection: function (value) {
+                this.$set(this.sections[value.index], 'title', value.title)
+            },
+
             // Save New Lesson
             saveNewLesson: function (value) {
                 this.lessons.push({
@@ -242,6 +315,22 @@
                     lesson_attachment: value.lesson_attachment,
                     summary: value.summary,
                     id: value.id
+                })
+            },
+
+            saveNewEditedLesson: function (value) {
+                this.$set(this.lessons[value.index], 'title', value.title)
+                this.$set(this.lessons[value.index], 'course_section_id', value.course_section_id)
+            },
+
+
+            saveNewQuizbank: function (value) {
+                this.quizBanks.push({
+                    id: value.id,
+                    course_id: value.course_id,
+                    section_id: value.section_id,
+                    number_of_questions: value.number_of_questions,
+                    created_at: value.created_at
                 })
             },
 
@@ -300,6 +389,12 @@
     }
     .my-handle {
         display: none;
+    }
+    .my-quiz-bank {
+        display: none;
+    }
+    .course__section-quiz-bank:hover .my-quiz-bank {
+        display: block;
     }
     .course__section:hover .my-handle {
         display: block;
