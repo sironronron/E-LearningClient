@@ -94,7 +94,7 @@
                                         <div class="row justify-content-center">
                                             <div class="col-lg-7">
 
-                                                <add-curriculums :course_id="course.id" :sections="sections" :lessons="lessons" :quizBanks="quizBanks" :quizzes="quizzes"></add-curriculums>
+                                                <add-curriculums :course_id="course.id" :courseStatus="course.status" :sections="sections" :lessons="lessons" :quizBanks="quizBanks" :quizzes="quizzes"></add-curriculums>
 
                                             </div>
                                         </div>
@@ -105,7 +105,7 @@
                                         <div class="row justify-content-center">
                                             <div class="col-lg-8">
 
-                                                <div class="form-group row mb-4">
+                                                <div class="form-group row mb-4" v-if="form.status != 'PENDING'">
                                                     <label for="status" class="col-form-label col-lg-2">Status</label>
                                                     <div class="col-lg-10">
                                                         <select name="status" id="" v-model="form.status" :class="{ 'is-invalid' : form.errors.has('status') }" class="custom-select form-control rounded">
@@ -379,11 +379,11 @@
                                                     <div class="col-lg-10">
 
                                                         <change-image></change-image>
-                                                        
+
                                                     </div>
                                                 </div>
 
-                                            
+
                                             </div>
                                         </div>
                                     </div>
@@ -393,7 +393,7 @@
                                         <div class="row justify-content-center">
                                             <div class="col-lg-8">
 
-                                                <div class="form-group row mb-4">   
+                                                <div class="form-group row mb-4">
                                                     <label for="keywords" class="col-lg-2 col-form-label">Meta Keywords <span class="text-danger">*</span></label>
                                                     <div class="col-lg-10">
                                                         <input type="text" name="meta_keywords" v-model="form.meta_keywords" :class="{ 'is-invalid' : form.errors.has('meta_keywords') }" class="form-control rounded" placeholder="Separate your keywords with comma">
@@ -417,7 +417,7 @@
                                     <div v-if="step == 8"  id="finish">
                                         <div class="row justify-content-center">
                                             <div class="col-lg-8">
-                                                
+
                                                 <div class="text-center mb-5">
                                                     <h5><fa icon="check-double" fixed-width /></h5>
                                                     <h4>Thank you!</h4>
@@ -436,24 +436,24 @@
                                         <div class="col-lg-auto">
                                             <!-- // Previous button -->
                                             <button v-if="step <= 1" class="btn btn-sm btn-default" disabled @click.prevent="prev()">
-                                                <fa icon="arrow-left" fixed-width /> 
+                                                <fa icon="arrow-left" fixed-width />
                                             </button>
-                                            
+
                                             <button v-else class="btn btn-sm btn-default" @click.prevent="prev()">
-                                                <fa icon="arrow-left" fixed-width /> 
+                                                <fa icon="arrow-left" fixed-width />
                                             </button>
 
                                         </div>
                                         <div class="col-lg-auto">
                                             <!-- // Next Button -->
                                             <button v-if="step >= 8" disabled class="btn btn-sm btn-default" @click.prevent="next()">
-                                                <fa icon="arrow-right" fixed-width /> 
+                                                <fa icon="arrow-right" fixed-width />
                                             </button>
 
                                             <button v-else class="btn btn-sm btn-default" @click.prevent="next()">
-                                                <fa icon="arrow-right" fixed-width /> 
+                                                <fa icon="arrow-right" fixed-width />
                                             </button>
-                                            
+
 
                                         </div>
                                     </div>
@@ -471,7 +471,7 @@
 
 <script>
     let myBody = null
-   
+
     import axios from 'axios'
     import Form from 'vform'
 
@@ -541,7 +541,7 @@
             }),
             percentage: '',
             config: {
-                // Add Config for Froala WYSIWYG   
+                // Add Config for Froala WYSIWYG
             },
             step: 1,
             showEmbed: false
@@ -588,7 +588,7 @@
             addRequirement: function () {
                 this.form.requirements.push({
                     description: ''
-                })  
+                })
             },
 
             addOutcome: function () {
@@ -668,7 +668,7 @@
 
     }
 
-  
+
 
 </script>
 

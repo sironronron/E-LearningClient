@@ -139,17 +139,7 @@
 						</div>
 					</div>
 				</div>
-				<div v-else>
-					<div class="text-center mt-3">
-						<svg width="150" height="150"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <image xlink:href="https://res.cloudinary.com/dl9phqhv0/image/upload/v1576466808/Online%20Learning%20Icon%20Pack/038-ebook_aeejuk.svg" width="150" height="150"/>
-                        </svg>
-						<div class="mt-3">
-							There's no written review yet.
-						</div>
-					</div>
-				</div>
+				
 			</div>
 		</div>
 	</div>

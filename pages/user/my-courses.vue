@@ -50,7 +50,7 @@
 											</h6>
 										</div>
 										<p class="small text-dark"><small>{{course.user.name}}</small></p>
-										<div v-if="course.first_progress.status != 0 && course.first_progress.user_id == user.id">
+										<div v-if="course.has_finished_lesson != null">
 											<div class="progress mb-0" style="height: 3px;">
 												<div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="progress-bar bg-danger" :style="`width: ${totalPercentage(course)}%;`">
 												</div>

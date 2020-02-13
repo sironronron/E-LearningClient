@@ -101,6 +101,10 @@ h1 {
     box-sizing: border-box;
 }
 
+html, body {
+    height: 100%;
+}
+
 body {
     margin: 0;
     font-family: $font-family-sans-serif;
@@ -116,7 +120,7 @@ p, ul {
 
 
 
-@media (min-width: 1200px) { 
+@media (min-width: 1200px) {
     .container {
     	max-width: 1140px !important;
     }
@@ -368,6 +372,29 @@ p {
     color: #505763;
 }
 
+    .rating-stars {
+        margin-top: 7px;
+        font-size: 11px;
+        display: flex;
+        padding-top: 2px;
+        margin-top: -2px;
+        background: 0 0;
+        margin-bottom: 10px;
+    }
+    .rating-star-container {
+        position: relative;
+        top: 1px;
+    }
+    .rating-review-numbers {
+        margin-top: 4px;
+        margin-left: 5px;
+    }
+    .rating-review-stats {
+        font-weight: 600;
+        color: #505763;
+    }
+
+
 .course__curriculum-accordion .lecture__group-title-2 .title {
     max-width: 60%;
     font-weight: 600;
@@ -499,19 +526,6 @@ p {
     color: #686f7a;
 }
 
-.VueCarousel-navigation-button {
-    width: 47px;
-    height: 47px;
-    border-radius: 50%;
-    background-color: #fff;
-    box-shadow: 0 0 1px 1px rgba(20,23,28,.1), 0 3px 1px 0 rgba(20,23,28,.1);
-    z-index: 1;
-    top: calc( 50% - 25px);
-}
-
-.VueCarousel-dot-container {
-    margin-top: 0 !important;
-}
 
 .text-other {
     color: $otherMuted;
@@ -557,4 +571,23 @@ section.course__header-area {
 
 .course__header-area.duplicated .subtitle, .course__header-area.duplicated .course-badge, .course__header-area.duplicated .created-row {
     display: none;
+}
+
+.VueCarousel-navigation-button {
+    background-color: #fff;
+    border-radius: 50%;
+    border-width: 0;
+    box-shadow: 0 0 1px 1px rgba(20,23,28,.1), 0 3px 1px 0 rgba(20,23,28,.1);
+    color: #007791 !important;
+    font-size: 24px;
+    height: 47px;
+    line-height: 1;
+    padding: 11px 0;
+    text-align: center;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: 300ms;
+    width: 47px;
+    z-index: 3;
+    position: absolute;
 }

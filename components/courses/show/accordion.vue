@@ -6,10 +6,10 @@
             </div>
             <div class="float-right m-t-5">
                 <span class="total-lectures">
-                    {{countLessons}} Lessons              
+                    {{countLessons}} Lessons
                 </span>
                 <span class="total-time">
-                    {{duration}} Hours              
+                    {{duration}} Hours
                 </span>
             </div>
         </div>
@@ -19,7 +19,7 @@
                     <div class="lecture__group-title clearfix mb-0" data-toggle="collapse" :data-target="`#collapse-${index}`" :aria-expanded="index == 0 ? 'true' : 'false'" aria-controls="collapseOne">
                         <div class="title float-left">
                             <button class="btn btn-link text-capitalize text-dark" type="button">
-                                {{section.title}}
+                                <span class="w-25">{{section.title}}</span>
                             </button>
                         </div>
                         <!-- // Lesson Data -->

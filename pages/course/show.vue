@@ -43,7 +43,7 @@
                     </div>
                 </section>
             </div>
-            
+
             <!-- // Popup -->
             <section class="course__header-area duplicated" :class="{ 'd-none' : !showPopup }">
                 <div class="container">
@@ -109,7 +109,7 @@
                                                 <template v-if="!course.free_course">
                                                     <template v-if="user">
                                                         <div>
-                                                            <button class="btn btn-danger btn-lg text-capitalize btn-block border rounded" :class="{ 'btn-loading' : busy }" :disabled="busy" @click="addToCart">
+                                                            <button class="btn btn-danger btn-lg text-capitalize btn-block border rounded" :class="{ 'btn-loading' : busy }" :disabled="busy">
                                                                 <span v-if="!addedToCart">Add to cart</span>
                                                                 <span v-else>Added to Cart</span>
                                                             </button>
@@ -132,7 +132,7 @@
                                                 <template v-else>
                                                     <template v-if="!enrolled_course">
                                                         <template v-if="user">
-                                                            <button v-if="user.id != teacher_id" class="btn btn-danger btn-lg text-capitalize btn-block rounded border" :class="{ 'btn-loading' : busy }" :disabled="busy" @click="enroll">
+                                                            <button class="btn btn-danger btn-lg text-capitalize btn-block rounded border" :class="{ 'btn-loading' : busy }" :disabled="busy" @click="enroll">
                                                                 Enroll Now
                                                             </button>
                                                         </template>
@@ -144,8 +144,8 @@
                                                     </template>
                                                     <template v-else>
                                                         <router-link :to="{ name: 'student.courses.learn' , params: { slug: course.slug, lesson_id: course.first_lesson.id } }" class="btn btn-primary btn-lg text-capitalize btn-block rounded border">
-                                                            Go to course 
-                                                        </router-link> 
+                                                            Go to course
+                                                        </router-link>
                                                     </template>
                                                 </template>
                                             </div>
@@ -153,7 +153,7 @@
                                                 <p class="font-weight-bold mb-2 text-dark">Includes:</p>
                                                 <ul class="list-unstyled small" style="color: #505763;">
                                                     <li v-for="item in includes" :key="item.id" class="mb-1">
-                                                        <fa :icon="item.icon" fixed-width /> &nbsp; {{item.value}} 
+                                                        <fa :icon="item.icon" fixed-width /> &nbsp; {{item.value}}
                                                     </li>
                                                 </ul>
                                             </div>
@@ -180,7 +180,7 @@
                 <div class="container">
                     <div class="row">
                         <!-- // More Course Information -->
-                        <div class="col-lg-8">  
+                        <div class="col-lg-8">
 
                             <!-- // What Will I learn? -->
                             <div class="course__outcome">
@@ -206,7 +206,7 @@
                                     </ul>
                                     <div class="mt-2">
                                         <a href="#" @click.prevent="lessOutcome"><fa icon="minus" fixed-width /> &nbsp; Show Less</a>
-                                    </div>                    
+                                    </div>
                                 </template>
                             </div>
 
@@ -252,7 +252,7 @@
                                 <hr class="mb-0 mt-3" style="border-top: 0.25rem solid rgba(0, 0, 0, 0.1);">
                                 <div v-for="(item, key) in mightLikes" :key="key" class="search_body py-2 pl-2 pr-3 border-bottom">
                                     <router-link :to="{ name: 'course.show', params: { slug: item.slug } }">
-                                        <div class="row">
+                                        <div class="row justify-content-between">
                                             <div class="col-lg-auto">
                                                 <client-only>
                                                     <cld-image :publicId="`${item.image_public_id}.png`" alt="" >
@@ -264,11 +264,17 @@
                                                 <h6 class="mb-0 font-weight-600">{{item.title}}</h6>
                                                 <h6 class="text-muted mt-1"><small>Updated {{item.updated_at | moment(' L')}}</small></h6>
                                             </div>
-                                            <div class="col-lg-1">
-                                                <h6 class="mb-0"><fa icon="star" fixed-width style="color: #f4c150" /> 4.4</h6>
-                                            </div>
-                                            <div class="col-lg-1">
-                                                <h6 class="mb-0"><fa icon="user" fixed-width class="text-muted" /> 350</h6>
+                                            <div class="col-lg-2">
+                                                <div class="d-inline-flex">
+                                                    <div>
+                                                        <p class="mb-0 text-dark"><fa icon="star" fixed-width style="color: #f4c150" />{{ averageRating(item) }}</p>
+                                                    </div>
+                                                    <div>
+                                                        <div class="ml-3">
+                                                            <p class="mb-0 text-dark"><fa icon="user" fixed-width class="text-muted" />{{ item.students_count }}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="col-lg-2">
                                                 <div class="float-right">
@@ -282,7 +288,7 @@
                                                         </div>
                                                     </template>
                                                     <template v-else>
-                                                        <h5 class="text-right"><strong>Free Course</strong></h5> 
+                                                        <h6 class="text-right">Free Course</h6>
                                                     </template>
                                                 </div>
                                             </div>
@@ -302,14 +308,14 @@
                                                 </cld-image>
                                             </client-only>
                                         </template>
-                                        
+
                                         <img v-if="instructor.avatar == 'users/default.png'" :src="instructor.photo_url" class="rounded-circle img-fluid course__user-img" alt="">
 
                                         <ul class="list-unstyled mt-3">
-                                            <li class=" mb-1"><fa icon="star" fixed-width /> <b>4.5</b> Instructor rating</li>
-                                            <li class=" mb-1"><fa icon="comment" fixed-width /> <b>160,475</b> Reviews</li>
-                                            <li class=" mb-1"><fa icon="user" fixed-width /> <b>644,590</b> Students</li>
-                                            <li class=""><fa icon="play-circle" fixed-width /> <b>{{ instructor.courses.length }}</b> Courses</li>
+                                            <li class=" mb-1"><fa icon="star" fixed-width /> <b>{{ instructorAverage(instructorDatas) }}</b> Instructor rating</li>
+                                            <li class=" mb-1"><fa icon="comment" fixed-width /> <b>{{ instructor.my_reviews_count }}</b> Reviews</li>
+                                            <li class=" mb-1"><fa icon="user" fixed-width /> <b>{{ instructorDatas.students_count }}</b> Students</li>
+                                            <li class=""><fa icon="play-circle" fixed-width /> <b>{{ instructor.courses_count }}</b> Courses</li>
                                         </ul>
                                     </div>
                                     <div class="col-lg-8">
@@ -327,7 +333,9 @@
                             <!-- // Student Feedbacks -->
                             <div class="mt-5">
                                 <h4>Student Feedback</h4>
-                                <student-feedback :ratings_count="course.ratings_count" :average="avgRating" :ratings="feedBacks" :five="fiveRating" :four="fourRating" :three="threeRating" :two="twoRating" :one="oneRating"></student-feedback>
+                                <div class="mt-4">
+                                    <student-feedback :ratings_count="course.ratings_count" :average="avgRating" :ratings="feedBacks" :five="fiveRating" :four="fourRating" :three="threeRating" :two="twoRating" :one="oneRating"></student-feedback>
+                                </div>
                             </div>
 
 
@@ -376,7 +384,7 @@
                                                 <template v-if="!course.free_course">
                                                     <template v-if="user">
                                                         <div>
-                                                            <button class="btn btn-danger btn-lg text-capitalize btn-block border rounded" :class="{ 'btn-loading' : busy }" :disabled="busy" @click="addToCart">
+                                                            <button class="btn btn-danger btn-lg text-capitalize btn-block border rounded" :class="{ 'btn-loading' : busy }" :disabled="busy">
                                                                 <span v-if="!addedToCart">Add to cart</span>
                                                                 <span v-else>Added to Cart</span>
                                                             </button>
@@ -399,7 +407,7 @@
                                                 <template v-else>
                                                     <template v-if="!enrolled_course">
                                                         <template v-if="user">
-                                                            <button v-if="user.id != teacher_id" class="btn btn-danger btn-lg text-capitalize btn-block rounded border" :class="{ 'btn-loading' : busy }" :disabled="busy" @click="enroll">
+                                                            <button class="btn btn-danger btn-lg text-capitalize btn-block rounded border" :class="{ 'btn-loading' : busy }" :disabled="busy" @click="enroll">
                                                                 Enroll Now
                                                             </button>
                                                         </template>
@@ -411,8 +419,8 @@
                                                     </template>
                                                     <template v-else>
                                                         <router-link :to="{ name: 'student.courses.learn' , params: { slug: course.slug, lesson_id: course.first_lesson.id } }" class="btn btn-primary btn-lg text-capitalize btn-block rounded border">
-                                                            Go to course 
-                                                        </router-link> 
+                                                            Go to course
+                                                        </router-link>
                                                     </template>
                                                 </template>
                                             </div>
@@ -420,7 +428,7 @@
                                                 <p class="font-weight-bold mb-2">Includes:</p>
                                                 <ul class="list-unstyled small" style="color: #505763;">
                                                     <li v-for="item in includes" :key="item.id" class="mb-1">
-                                                        <fa :icon="item.icon" fixed-width /> &nbsp; {{item.value}} 
+                                                        <fa :icon="item.icon" fixed-width /> &nbsp; {{item.value}}
                                                     </li>
                                                 </ul>
                                             </div>
@@ -433,7 +441,7 @@
                                     </div>
                                 </div>
                             </div>
-                           
+
                         </div>
                     </div>
                 </div>
@@ -443,15 +451,18 @@
                 <share-buttons v-if="showShareButtons" @close="closeShareButtonsModal" :course="course"></share-buttons>
             </transition>
 
-            <transition name="fade" mode="out-in">
-                <video-plyr v-if="isModalVisible" @close="closePlayerModal" :title="course.title"></video-plyr>
-            </transition>
+            <div v-show="isModalVisible" tabindex="0" @keydown.esc.stop="closePlayerModal">
+                <transition name="fade" mode="out-in">
+                    <video-plyr v-if="isModalVisible" @close="closePlayerModal" :title="course.title"></video-plyr>
+                </transition>
+            </div>
+
 
             <!-- // Modal -->
             <transition name="fade" mode="out-in">
                 <modal-login v-if="showLoginModal" @close="closeLoginModal"></modal-login>
             </transition>
-    
+
         </div>
 
     </div>
@@ -462,7 +473,7 @@
 
     import axios from 'axios'
     import MightLikes from '../../components/global/MightLike'
-    
+
     // Modals
     import VideoPlyr from '../../components/courses/show/video-plyr'
     import SectionAccordion from '../../components/courses/show/accordion'
@@ -477,17 +488,17 @@
     import { mapGetters } from 'vuex'
 
     export default {
-        
+
         components: {
             MightLikes, VideoPlyr, AddToCart,
             SectionAccordion, ShareButtons,
             StarRating, ModalLogin, StudentFeedback
         },
-    
+
         layout: 'default',
 
         head() {
-            return { 
+            return {
                 title: this.course.title,
                 meta: [
                     { hid: 'description', name: 'description', content: this.course.excerpt },
@@ -529,7 +540,7 @@
 
                     // Computation of discount percentage
                     percentage: ((1 - (data.course.discount / data.course.price)) * 100).toFixed(0),
-                    
+
                     // Course the user might like
                     mightLikes: data.mightLikes,
 
@@ -557,7 +568,9 @@
                     fourRating: data.fourRating,
                     threeRating: data.threeRating,
                     twoRating: data.twoRating,
-                    oneRating: data.oneRating
+                    oneRating: data.oneRating,
+
+                    instructorDatas: data.instructorDatas
                 }
             } catch (e) {
                 error({ statusCode: 500, message: 'Something went wrong!' })
@@ -576,7 +589,7 @@
                 return [
                     {
                         icon: ['far', 'file-video'],
-                        value: `${this.duration} Hours on demand video` 
+                        value: `${this.duration} Hours on demand video`
                     },
                     {
                         icon: ['far', 'file'],
@@ -591,7 +604,7 @@
 
             courseAddedToCart: function () {
                 if (addedToCart) {
-                    this.courseInCart = true 
+                    this.courseInCart = true
                 } else {
                     this.courseInCart = false
                 }
@@ -619,6 +632,7 @@
             // Open Video Player Modal
             openPlayerModal() {
                 this.isModalVisible = true
+                this.$el.focus()
 
                 // Add class to body
                 myBody.classList.toggle('modal-open')
@@ -683,9 +697,17 @@
                 }
             },
 
+            averageRating: function (item) {
+                return parseFloat(item.rating_average).toFixed(1)
+            },
+
+            instructorAverage: function (instructorDatas) {
+                return parseFloat(instructorDatas.rating_average).toFixed(1)
+            }
+
         },
 
-        
+
     }
 
 </script>
@@ -759,7 +781,7 @@
         &_body {
             cursor: pointer;
         }
-        &_body:hover {  
+        &_body:hover {
             background: whitesmoke;
         }
     }

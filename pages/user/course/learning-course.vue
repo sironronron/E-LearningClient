@@ -16,22 +16,39 @@
 
 							<template v-if="lesson.lesson_type === 'TFILE'">
 								<div class="section">
-									<div class="px-5">
-										<h3 class="display-4">{{lesson.title}}</h3>
+									<div class="row justify-content-center">
+										<div class="col-lg-7">
+											<h3 class="display-4">{{lesson.title}}</h3>
+											<div class="mt-4" v-html="lesson.text_file">
+												{{ lesson.text_file }}
+											</div>
+											<div v-if="lesson.lesson_attachment != null" class="file mt-4">
+												<a href="#" @click.prevent="download">
+													<div class="border rounded p-3 w-50">
+														<p class="mb-0"><fa :icon="['far', 'file-archive']" fixed-width /> &nbsp; Download Attachment</p>
+													</div>
+												</a>
+											</div>
+										</div>
 									</div>
 								</div>
+							</template>
+							<template v-if="lesson.lesson_type === 'PDF'">
+								<section class="section">
+									<div class="px-5">
+										<h3 class="display-4">{{lesson.title}}</h3>
+										<div>
+
+										</div>
+									</div>
+								</section>
 							</template>
 							<template v-else-if="lesson.lesson_type === 'VIDEO'">
 								<div>
 									<client-only>
 										<!-- // Youtube -->
-										<vue-plyr v-if="lesson.lesson_provider === 'Youtube'">
-											<div class="plyr__video-embed">
-												<iframe
-													:src="`https://www.youtube.com/embed/${lesson.video_url}?iv_load_policy=3&modestbranding=1&playsinline=1&showinfo=0&rel=0&enablejsapi=1`"
-													allowfullscreen allowtransparency allow="autoplay">
-												</iframe>
-											</div>
+										<vue-plyr v-if="lesson.lesson_provider === 'Youtube'" :options="options" :crossorigin="true">
+											  <div data-plyr-provider="youtube" :data-plyr-embed-id="lesson.video_url"></div>
 										</vue-plyr>
 
 										<vue-plyr v-else-if="lesson.lesson_provider === 'Vimeo'">
@@ -59,7 +76,7 @@
 						</div>
 
                         <div>
-                        	<ul class="list-unstyled pt-3 border-bottom px-5">
+                        	<ul class="list-unstyled pt-3 border-bottom border-top px-5">
 	                        	<!-- // Overview -->
 								<li class="d-inline-block mr-5" v-for="(link, key) in links" :key="key">
 									<router-link :to="{ name: link.route }" class="page-header text-dark" >
@@ -77,7 +94,7 @@
 							</div>
                         </div>
 
-						<div> 
+						<div>
 							<footer class="bg-white border-top" style="border-bottom: solid 5px #bc4e9c">
 								<section class="section-sm">
 									<div class="container">
@@ -145,7 +162,7 @@
 		},
 
 		middleware: 'auth',
-		
+
 		head() {
 			return { title: this.course.title }
 		},
@@ -153,7 +170,11 @@
 		data: function () {
 			return {
 				showShareButtons: false,
-				hideSidebar: false
+				hideSidebar: false,
+
+				options: {
+					settings: { captions: true }
+				}
 			}
 		},
 
@@ -166,7 +187,7 @@
 					lessons: data.lessons,
 					progress: data.progress,
 					lesson: data.lesson,
-				}	
+				}
 			} catch (e) {
 				error({ statusCode: 404, message: "Woops, something is wrong!"})
 			}
@@ -223,6 +244,23 @@
 				this.$set(this.lessons[value.index].get_progress, 'status', 1)
 				this.progress++
 				console.log(this.lessons[value.index].get_progress)
+			},
+
+			download: function (index) {
+				axios({
+					url: 'https://res.cloudinary.com/dl9phqhv0/image/upload/v1581489573/' + this.lesson.lesson_attachment,
+					method: 'GET',
+					responseType: ' blob'
+				}).then((res) => {
+					var fileURL = window.URL.createObjectURL(new Blob([res.data]));
+                    var fileLink = document.createElement('a');
+
+                    fileLink.href = fileURL;
+                    fileLink.setAttribute('download', this.lesson.lesson_attachment);
+                    document.body.appendChild(fileLink);
+
+                    fileLink.click();
+				})
 			}
 		}
 	}
@@ -274,11 +312,11 @@
         margin-right: 20px;
     }
 	.cinematic-view {
-		background: black; 
-		margin-left: -12.35vw; 
-		padding-left: 12.35vw; 
-		margin-right: -12.35vw; 
-		padding-right: 12.35vw; 
+		background: black;
+		margin-left: -12.35vw;
+		padding-left: 12.35vw;
+		margin-right: -12.35vw;
+		padding-right: 12.35vw;
 		position: relative;
 	}
 </style>

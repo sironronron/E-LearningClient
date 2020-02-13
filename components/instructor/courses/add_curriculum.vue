@@ -16,35 +16,42 @@
                 <div class="my-5">
                     <draggable class="drag-area" :list="sectionsNew" :options="{ animation: 200, handle: '.drag-me' }" :element="'div'" :noTransitionOnDrag="false" @change="update">
                         <section class="p-4 rounded bg-secondary mb-3 course__section" v-for="(section, index) in sectionsNew" :key="`${section.id}-section`">
-                            <!-- // Section description -->
-                            <div class="d-inline-flex">
-                                <h6 class="mb-4">Section {{index + 1}} : &nbsp; <b>{{section.title}}</b> </h6> 
-                            </div>
-                            
                             <!-- // Draggable -->
-                            <div class="d-inline-flex float-right">
-                                <span class="my-handle">
-                                    <a href="#" class="btn p-1 px-2 btn-outline-default btn-sm" @click.prevent="openEditSectionModal(section, index)"><fa :icon="['far', 'edit']" fixed-width /> Edit</a>
-                                    <span class="drag-me">
-                                        <fa class="mt-1" icon="grip-vertical" fixed-width style="cursor: move;" />
-                                    </span>
-                                </span> 
-                            </div>
+                            <span class="float-right my-handle">
+                                <button v-if="courseStatus == 'PENDING'" class="btn btn-outline-danger btn-sm" @click.prevent="removeSection(section, index)">
+                                    <fa icon="trash-alt" fixed-width />
+                                </button>
+                                <a href="#" class="btn p-1 px-2 btn-outline-default btn-sm" @click.prevent="openEditSectionModal(section, index)"><fa :icon="['far', 'edit']" fixed-width /> Edit</a>
+                                <span class="drag-me">
+                                    <fa class="mt-1" icon="grip-vertical" fixed-width style="cursor: move;" />
+                                </span>
+                            </span>
+
+                            <!-- // Section description -->
+                            <h6 class="mb-4">Section {{index + 1}} : &nbsp; <b>{{section.title}}</b> </h6>
 
                             <draggable class="drag-area" :list="lessonsNew" :options="{ animation: 200, handle: '.drag-me-lesson' }" :element="'div'" :noTransitionOnDrag="false" @change="updateLessonsOrder">
                                 <!-- // Lessons -->
                                 <div v-for="(lesson, index) in lessonsNew" :key="`${index}-lesson`" class="course__section-lesson">
                                     <div v-if="lesson.course_section_id == section.id" class="p-3 bg-white border rounded mb-2">
                                         <span class="float-right my-lessons-handle">
+                                            <button class="btn btn-outline-danger btn-sm" @click.prevent="removeLesson(lesson, index)">
+                                                <fa icon="trash-alt" fixed-width />
+                                            </button>
                                             <a href="#" class="btn p-1 px-2 btn-outline-default btn-sm" @click.prevent="openEditLessonModal(lesson, index)">
                                                 <fa :icon="['far', 'edit']" fixed-width /> Edit
                                             </a>
                                             <span class="drag-me-lesson">
                                                 <fa icon="grip-vertical" fixed-width style="cursor: move;" />
                                             </span>
-                                        </span> 
-                                        <h6 class="mb-0" style="line-height: 1.5rem;"><fa icon="play-circle" v-if="lesson.lesson_type === 'VIDEO'" /> <span class="text-muted">
-                                            Lesson {{index + 1}}</span><span class="font-weight-bold"> : &nbsp; {{lesson.title}}</span>
+                                        </span>
+                                        <h6 class="mb-0" style="line-height: 1.5rem;">
+                                            <fa icon="play-circle" fixed-width v-if="lesson.lesson_type === 'VIDEO'" />
+                                            <fa :icon="['far', 'file']" fixed-width v-if="lesson.lesson_type === 'TFILE'" />
+                                            <span class="text-muted">
+                                                Lesson {{index + 1}}
+                                            </span>
+                                            <span class="font-weight-bold"> : &nbsp; {{lesson.title}}</span>
                                         </h6>
                                         <div v-if="lesson.lesson_provider === 'HTML5'" class="mt-3">
                                             <client-only>
@@ -58,17 +65,30 @@
                                     </div>
                                 </div>
                             </draggable>
-                            
+
                             <div v-if="quizBanks.length != ''">
                                 <div v-for="(bank, index) in quizBanks" :key="`quizbank-${index + 1}`" class="course__section-quiz-bank">
                                     <div class="border-top" v-if="bank.section_id == section.id">
                                         <div class="p-3 mt-2 bg-white border rounded mb-2">
                                             <span class="font-weight-bold"><fa icon="university" fixed-width /> Quiz Bank - </span>
                                             <span class="small text-muted">{{ bank.number_of_questions }} Questions to Show</span>
-                                            <div class="d-inline-flex float-right">
+                                            <div v-if="quizzes.length < bank.number_of_questions" class="d-inline-flex float-right">
                                                 <span class="my-quiz-bank">
                                                     <button v-if="!showAddQuizModal" class="btn btn-outline-default rounded btn-sm" @click.prevent="openQuizModal(bank, index)"><fa icon="plus" /> Quiz</button>
                                                 </span>
+                                            </div>
+                                            <!-- // Quizzes -->
+                                            <div class="mt-3" v-if="quizzes.length != ''">
+                                                <div class="p-3 bg-secondary rounded">
+                                                    <h6 class="font-weight-600"><fa icon="bolt" fixed-width /> Quizzes</h6>
+                                                    <div>
+                                                        <ul class="mb-0">
+                                                            <li v-for="(quiz, index) in quizzes" :key="quiz.id">
+                                                                {{ quiz.title }}
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -133,7 +153,7 @@
 
     import AddSectionModal from './add_section'
     import EditSectionModal from './edit_section'
-    
+
     import AddLessonModal from './add_lesson'
     import EditLessonModal from './edit_lesson'
 
@@ -145,7 +165,7 @@
 
     export default {
 
-        props: ['course_id', 'sections', 'lessons', 'quizBanks', 'quizzes'],
+        props: ['course_id', 'sections', 'lessons', 'quizBanks', 'quizzes', 'courseStatus'],
 
         components: {
             AddSectionModal, AddLessonModal, AddQuizModal,
@@ -155,7 +175,7 @@
         data: function() {
             return {
 
-                // Modals 
+                // Modals
                 // Section Create, Update, Edit, Delete
                 showAddSectionModal: false,
                 showEditSectionModal: false,
@@ -174,9 +194,11 @@
                 sectionsNew: this.sections,
                 lessonsNew: this.lessons,
 
-                editingSection: false
+                editingSection: false,
+
+                isRemoving: false
             }
-        },  
+        },
 
         methods: {
 
@@ -250,7 +272,7 @@
 
                 this.lessonData = data
                 this.indexLes = index
-           
+
                 // Add class to body
                 myBody.classList.toggle('modal-open')
             },
@@ -282,7 +304,7 @@
                 // Add Class to Body
                 myBody.classList.toggle('modal-open')
             },
-            
+
             closeQuizModal: function () {
                 this.showAddQuizModal = false
                 myBody.classList.remove('modal-open')
@@ -344,13 +366,69 @@
                 })
             },
 
-            updateDataSection: function(value) {
-                // Code here
-            },
-
             toggleHoverSection: function () {
                 this.hoverSection = !this.hoverSection
+            },
+
+            removeLesson: function (lesson, index) {
+                this.isRemoving = true
+                this.$swal({
+                    title: "Are you sure?",
+                    text: "You will not be able to recover this lesson!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#ee395b",
+                    confirmButtonText: "Yes, delete it!",
+                    cancelButtonText: "Cancel"
+                }).then((res) => {
+                    if (res.value) {
+                        axios.delete(`/instructor/courses/section/delete_lesson/${lesson.id}`)
+                        this.$delete(this.lessons, index)
+                        this.$swal({
+                            type: 'success',
+                            text: 'Lesson is deleted permanently',
+                        })
+                    } else {
+                        this.$swal({
+                            type: 'info',
+                            text: 'Delete Cancelled'
+                        })
+                        this.isRemoving = false
+
+                    }
+                })
+            },
+
+            removeSection: function (section, index) {
+                this.isRemoving = true
+                this.$swal({
+                    title: "Are you sure?",
+                    text: "You will not be able to recover this section!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#ee395b",
+                    confirmButtonText: "Yes, delete it!",
+                    cancelButtonText: "Cancel"
+                }).then((res) => {
+                    if (res.value) {
+                        axios.delete(`/instructor/courses/section/delete_section/${section.id}`)
+                        this.$delete(this.sections, index)
+                        this.$swal({
+                            type: 'success',
+                            text: 'Section is deleted permanently',
+                        })
+                    } else {
+                        this.$swal({
+                            type: 'info',
+                            text: 'Delete Cancelled'
+                        })
+                        this.isRemoving = false
+
+                    }
+                })
             }
+
+
         },
 
         watch: {
@@ -373,7 +451,7 @@
                     }
                 }
             }
-            
+
         }
 
 

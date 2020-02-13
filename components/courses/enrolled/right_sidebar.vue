@@ -39,7 +39,7 @@
                                                                             type="checkbox"
                                                                             class="custom-control-input"
                                                                         >
-                                                                        <label :for="`id-lesson-${index + 1}`" class="custom-control-label my-auto" @click.prevent="checkboxToggle(lesson, index)">
+                                                                        <label :for="`id-lesson-${index + 1}`" class="custom-control-label my-auto" @click.prevent="checkboxToggle(lesson, index, section)">
                                                                         </label>
                                                                     </div>
                                                                 </div>
@@ -47,7 +47,7 @@
                                                                 <!-- // Else -->
                                                                 <div v-else>
                                                                     <div class="custom-control custom-checkbox d-flex">
-                                                                        <input 
+                                                                        <input
                                                                             :id="`id-lesson-${index + 1}`"
                                                                             :name="`name-lesson-${index + 1}`"
                                                                             :checked="lesson.get_progress.status == 1"
@@ -62,6 +62,9 @@
                                                                     <span class="lecture-title">{{ index + 1 }}.  {{lesson.title}}</span>
                                                                     <div v-if="lesson.lesson_type === 'VIDEO'">
                                                                         <small><fa icon="play-circle" fixed-width /> {{ lesson.duration }}</small>
+                                                                    </div>
+                                                                    <div v-if="lesson.lesson_type === 'TFILE'">
+                                                                        <small><fa :icon="['far', 'file']" fixed-width /> File Attachment</small>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -99,9 +102,10 @@
         },
 
         methods: {
-            async checkboxToggle(lesson, index) {
+            async checkboxToggle(lesson, index, section) {
                 try {
                     let { data } = await this.form.patch(`/student/account/my-courses/learning/lesson/${lesson.id}/finish`)
+
                     this.$swal({
                         toast: true,
                         position: 'bottom-end',
@@ -110,7 +114,10 @@
                         type: 'success',
                         text: data.message
                     })
+
                     this.form.status = true
+
+                    section.progress_count++
 
                     var newValue = {
                         index: index,

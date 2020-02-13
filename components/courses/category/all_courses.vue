@@ -3,33 +3,48 @@
         <template v-if="!isLoading">
             <div v-if="courses.length != 0">
                 <div v-for="(item, key) in courses.data" :key="key">
-                    <div class="search_body pt-2 pb-5 pl-2 pr-3 border-bottom">
+                    <div class="search_body pt-2 pb-3 pl-2 pr-3 border-bottom">
                         <router-link :to="{ name: 'course.show', params: { slug: item.slug } }">
-                            <div class="row">
-                                <div class="col-lg-3">
+                            <div class="row justify-content-between">
+                                <div class="col-lg-auto">
                                     <img :src="item.image" class="search_image img-fluid" alt="">
                                 </div>
-                                <div class="col-lg-7">
-                                    <h5 class="mb-0 font-weight-600">{{item.title}}</h5>
+                                <div class="col-lg-5">
+                                    <h5 class="mb-2 font-weight-600">{{item.title}}</h5>
                                     <div class="rating-row">
                                         <span class="course-badge best-seller mr-2">{{item.level}}</span>
-                                        <small>
-                                            <span class="d-inline-block average-rating text-dark mr-2"></span>
-                                            <span class="text-dark mr-2"></span>
-                                            <span class="enrolled-num">
-                                            </span>
+                                        <small class="mr-2">
+                                            <span class="text-other">{{item.lessons_count}} Lectures &#9679;</span>
+                                            <span class="text-other">{{ item.students_count }} Students enrolled &#9679;</span>
+                                            <span class="text-other">All Levels</span>
                                         </small>
                                     </div>
-                                    <h6 class="text-muted mt-1"><small>{{item.excerpt}}</small></h6>
+                                    <p class="text-muted mt-2" style="font-size: 13px !important;">{{item.excerpt}} | By {{ item.user.name }}</p>
                                 </div>
-                                <div class="col-lg-2">
+                                <div class="col-lg-4">
                                     <div class="float-right">
-                                        <div v-if="item.has_discount == 0">
-                                            <h5 class="font-weight-bold text-right">₱{{item.price | numeral('0,0.00')}}</h5>
-                                        </div>
-                                        <div v-if="item.has_discount == 1">
-                                            <h5 class="font-weight-bold text-right">₱{{item.discount | numeral('0,0.00')}}</h5>
-                                            <h6 class="text-muted float-right"><strike>₱{{item.price | numeral('0,0.00')}}</strike></h6>
+                                        <template v-if="!item.free_course">
+                                            <div v-if="item.has_discount == 0">
+                                                <h6 class="font-weight-bold text-right">₱{{item.price | numeral('0,0.00')}}</h6>
+                                            </div>
+                                            <div v-if="item.has_discount == 1">
+                                                <h6 class="font-weight-bold text-right">₱{{item.discount | numeral('0,0.00')}}</h6>
+                                                <h6 class="text-muted float-right"><strike>₱{{item.price | numeral('0,0.00')}}</strike></h6>
+                                            </div>
+                                        </template>
+                                        <template v-else>
+                                            <p class="mb-0 text-dark text-right">Free Course</p>
+                                        </template>
+                                        <div class="rating-stars mt-5 mb-0">
+    										<span class="rating-star-container">
+    											<star-rating :star-size="15" :inline="true" :read-only="true" :show-rating="false" :increment="0.5" :rating="item.rating_average"></star-rating>
+    										</span>
+    										<span class="rating-review-numbers">
+    											<span class="rating-review-stats">{{ ratingAverage(item) }}</span>
+    										</span>
+    									</div>
+                                        <div class="float-right">
+                                            <span class="text-muted ml-1 small">({{ item.ratings_count }} Ratings)</span>
                                         </div>
                                     </div>
                                 </div>
@@ -55,11 +70,12 @@
 <script>
     import axios from 'axios'
     import Pagination from 'laravel-vue-pagination'
+    import StarRating from 'vue-star-rating'
 
     export default {
 
         components: {
-            Pagination
+            Pagination, StarRating
         },
 
         data: () => ({
@@ -79,7 +95,12 @@
                     this.isLoading = false
                     this.courses = res.data.courses
                 }).catch((err) => {
+                    console.log(err)
                 })
+            },
+
+            ratingAverage: function (item) {
+                return parseFloat(item.rating_average).toFixed(1)
             }
         }
 

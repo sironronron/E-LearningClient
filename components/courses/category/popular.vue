@@ -2,9 +2,9 @@
 	<div>
 		<template v-if="!isLoading">
 			<client-only>
-				<carousel :perPage="5" :loop="false" :paginationEnabled="false" >
-					<slide v-for="(course, key) in mostPopular" :key="key" style="margin-right: 10px;" class="py-4">
-						<router-link v-if="course.views.length > 10" :to="{ name: 'course.show', params: { slug: course.slug } }">
+				<carousel :perPage="5" :loop="true" :paginationEnabled="false" :mouse-drag="false" :autoplay="true" easing="ease" :autoWidth="true" :autoHeight="true" :center="true" :navigationEnabled="true" navigationNextLabel="&rsaquo;" navigationPrevLabel="&lsaquo;">
+					<slide v-for="(course, key) in mostPopular" :key="key" class="py-4">
+						<router-link :to="{ name: 'course.show', params: { slug: course.slug } }">
 							<div class="card border shadow-sm shadow--hover rounded">
 								<img :src="course.image" class="card-img-top border-bottom" alt="">
 								<div class="card-body py-3">
@@ -13,13 +13,15 @@
 											<strong>{{course.title}}</strong>
 										</h6>
 									</div>
-									<p class="mt-1 mb-1 small text-muted">{{course.user.name}} - {{ course.views.length }} Views</p>
-									<div class="rating">
-										<fa icon="star" fixed-width style="color: #f4c150" />
-										<fa icon="star" fixed-width style="color: #f4c150" />
-										<fa icon="star" fixed-width style="color: #f4c150" />
-										<fa icon="star" fixed-width style="color: #f4c150" />
-										<fa icon="star" fixed-width style="color: #f4c150" />
+									<p class="mt-1 mb-1 small text-muted">{{course.user.name}}</p>
+									<div class="rating-stars">
+										<span class="rating-star-container">
+											<star-rating :star-size="15" :inline="true" :read-only="true" :show-rating="false" :increment="0.5" :rating="course.rating_average"></star-rating>
+										</span>
+										<span class="rating-review-numbers">
+											<span class="rating-review-stats">{{ courseAverage(course) }}</span>
+											<span class="text-muted ml-1">({{ course.ratings_count }})</span>
+										</span>
 									</div>
 									<div class="price float-right">
 										<template v-if="course.free_course != 1">
@@ -30,7 +32,7 @@
 												</client-only>
 											</h6>
 										</template>
-										<template v-else>													
+										<template v-else>
 											<h6 class="mt-3">Free Course</h6>
 										</template>
 									</div>
@@ -51,8 +53,13 @@
 
 <script>
 	import axios from 'axios'
+	import StarRating from 'vue-star-rating'
 
 	export default {
+
+		components: {
+			StarRating
+		},
 
 		name: 'MostPopular',
 
@@ -77,13 +84,19 @@
 				}).catch((err) => {
 					return
 				})
+			},
+			courseAverage: function (course) {
+				return parseFloat(course.rating_average).toFixed(1)
 			}
 		}
-		
+
 	}
 
 </script>
 
-<style>
-
+<style scoped>
+	.VueCarousel-slide {
+		padding-left: 0px !important;
+		padding-right: 10px !important;
+	}
 </style>

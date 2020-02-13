@@ -1,6 +1,6 @@
 <template>
     <transition name="fade" mode="out-in">
-        <div class="modal-mask focused" @keyup.esc="$emit('close')">
+        <div class="modal-mask focused">
             <div class="modal with-transitions fade show" tabindex="-1" role="dialog" style="display: block;">
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content bg-dark">

@@ -19,11 +19,6 @@
 				</ul>
 
 				<ul class="navbar-nav ml-auto">
-					<li class="nav-item mr-4" v-if="course.rating == null" v-show="rating == false">
-						<a href="#" class="text-white p-2 nav-link" @click="openRatingModal">
-							<fa icon="star" fixed-width /> Leave a Rating
-						</a>
-					</li>
 					<li class="nav-item dropdown mr-4">
 						<a href="#" class="text-white dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							<div class="d-inline-block p-2">
@@ -64,9 +59,6 @@
 		<transition name="fade" mode="out-in">
         	<share-buttons v-if="showShareButtons" @close="closeShareButtonsModal" :course="course"></share-buttons>
         </transition>
-
-        <rating-modal v-if="showRatingModal" @close="closeRatingModal" :data="course" @clicked="saveNewRating(index)">
-		</rating-modal>
 
 	</nav>
 </template>

@@ -10,11 +10,11 @@
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="$emit('close')">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
-                                
+
                                 <!-- // Modal Data Content -->
                                     <div class="row justify-content-center mt-5 mb-5">
                                         <div class="col-lg-8">
-                                            
+
                                             <form @submit.prevent="save" @keydown="form.onKeydown($event)">
                                                 <div class="text-center">
                                                     <h4 class="font-weight-300">
@@ -67,6 +67,7 @@
         data: function () {
             return {
                 form: new Form({
+                    teacher_id: '',
                     course_id: '',
                     rating: 0,
                     comments: ''
@@ -83,9 +84,10 @@
             async save() {
                 try {
                     this.form.course_id = this.data.id
+                    this.form.teacher_id = this.data.teacher_id
 
                     let { data } = await this.form.post(`/student/account/my-courses/rating/save`)
-                    
+
                     this.$swal({
                         toast: true,
                         position: 'bottom-end',
@@ -100,6 +102,7 @@
                         id: data.id,
                         user_id: data.user_id,
                         course_id: data.course_id,
+                        teacher_id: data.teacher_id,
                         rating: data.rating,
                         comments: data.comments,
                         created_at: data.created_at,
@@ -123,7 +126,7 @@
             },
 
             toggleShowComments: function () {
-                this.showComments = !this.showComments    
+                this.showComments = !this.showComments
             }
 
         }

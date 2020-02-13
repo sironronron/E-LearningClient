@@ -8,7 +8,7 @@
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</template>
-			
+
 			<!-- // Body -->
 			<template slot="form">
 				<div class="modal-body">
@@ -17,7 +17,7 @@
                     <div class="form-group">
                         <label for="title" class="col-form-label">Title</label>
                         <input type="text" name="title" v-model="form.title" :class="{ 'is-invalid' : form.errors.has('title') }" class="form-control rounded">
-                        <has-error :form="form" field="title"></has-error> 
+                        <has-error :form="form" field="title"></has-error>
                     </div>
 
 					<!-- // Section  -->
@@ -87,12 +87,23 @@
                                             v-model="form.duration"
                                             placeholder="Duration">
                             </flat-pickr>
-                                        
+
                             <has-error :form="form" field="duration"></has-error>
                         </div>
                     </template>
 
-                    <template v-if="form.lesson_type === 'TFILE' || form.lesson_type === 'PDF' || form.lesson_type === 'DF' || form.lesson_type === 'IFILE'">
+					<template v-if="form.lesson_type === 'TFILE'">
+                        <div class="form-group">
+							<label for="Text" class="col-form-label">Text</label>
+                            <textarea name="text_file" id="text_file" cols="30" rows="10" v-model="form.text_file" class="form-control" :class="{ 'is-invalid' : form.errors.has('text_file') }"></textarea>
+                            <div class="form-group">
+                                <label for="attachment" class="col-form-label">Attachment</label>
+                                <input type="file" name="lesson_attachment" @change="selectFileAttachment" class="form-control" id="">
+                            </div>
+                        </div>
+                    </template>
+
+                    <template v-if="form.lesson_type === 'PDF' || form.lesson_type === 'DF' || form.lesson_type === 'IFILE'">
                         <div class="form-group">
                             <label for="attachment" class="col-form-label">Attachment</label>
                             <input type="file" name="lesson_attachment" @change="selectFileAttachment" class="form-control" id="">
@@ -143,7 +154,8 @@
 					video_url: '',
 					duration: '',
 					lesson_attachment: '',
-					summary: ''
+					summary: '',
+					text_file: ''
 				}),
 
 				config: {
@@ -219,6 +231,11 @@
 					console.log(err)
 				})
 			},
+
+			selectFileAttachment(e) {
+                const file = e.target.files[0]
+                this.form.lesson_attachment = file
+            },
 
 			async editLesson () {
 				let { data } = await this.form.patch(`/instructor/courses/section/edit_lesson/patch/${this.data.id}`)
