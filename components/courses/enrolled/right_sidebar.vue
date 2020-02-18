@@ -6,7 +6,7 @@
                     Course Content
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="$emit('close')"><span aria-hidden="true">&times;</span></button>
                 </div>
-                <div class="sidebar--content" style="height: 549px;">
+                <div class="sidebar--content" :style="`height: ${window.height}px;`">
                     <div>
                         <div class="accordion course__curriculum-accordion" id="accordionExample">
                             <div class="card border-0 lecture__group-wrapper bg-transparent" v-for="(section, index) in sections" :key="index">
@@ -21,7 +21,7 @@
                                     </div>
                                 </div>
 
-                                <div :id="`collapse-${index}`" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                <div :id="`collapse-${index}`" class="collapse" :class="{ 'show' : index == 0 }" aria-labelledby="headingOne" data-parent="#accordionExample">
                                     <div class="card-body p-0 bg-white">
                                         <div class="lecture-list-2">
                                             <ul class="list-unstyled mb-0">
@@ -97,7 +97,26 @@
             return {
                 form: new Form({
                     status: false
-                })
+                }),
+
+                window: {
+                    height: '549'
+                },
+
+                params: ''
+            }
+        },
+
+        created() {
+            if (process.client) {
+                window.addEventListener('resize', this.handleResize)
+            }
+            this.handleResize()
+        },
+
+        destroyed() {
+            if (process.client) {
+                window.removeEventListener('resize', this.handleResize)
             }
         },
 
@@ -131,6 +150,17 @@
                 }
             },
 
+            handleResize: function () {
+                if (process.client) {
+                    this.window.height = window.innerHeight
+                }
+            }
+        },
+
+        computed: {
+            currentParam: function () {
+                this.params = this.$route.params.lesson_id
+            }
         }
 
     }

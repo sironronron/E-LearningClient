@@ -1,6 +1,6 @@
 <template>
     <div>
-        <template v-if="!isLoading">
+        <template>
             <div v-if="courses.length != 0">
                 <div v-for="(item, key) in courses.data" :key="key">
                     <div class="search_body pt-2 pb-3 pl-2 pr-3 border-bottom">
@@ -59,11 +59,6 @@
                 </div>
             </div>
         </template>
-        <template v-else>
-            <div class="py-5 text-center">
-				<img src="https://res.cloudinary.com/dl9phqhv0/image/upload/v1574394025/Loader/ajax-loader_sln1xw.gif" alt="">
-			</div>
-        </template>
     </div>
 </template>
 
@@ -78,27 +73,9 @@
             Pagination, StarRating
         },
 
-        data: () => ({
-            courses: [],
-            isLoading: false
-        }),
-
-        created() {
-            this.getAllCourses()
-        },
+        props: ['courses'],
 
         methods: {
-            getAllCourses(page = 1) {
-                this.isLoading = true
-                axios.get(`/course/category/${this.$route.params.slug}?page=` + page)
-                .then((res) => {
-                    this.isLoading = false
-                    this.courses = res.data.courses
-                }).catch((err) => {
-                    console.log(err)
-                })
-            },
-
             ratingAverage: function (item) {
                 return parseFloat(item.rating_average).toFixed(1)
             }

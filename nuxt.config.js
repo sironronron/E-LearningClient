@@ -114,6 +114,10 @@ module.exports = {
     extractCSS: true
   },
 
+  generate: {
+    dir: './app/static/spa'
+  },
+
   hooks: {
     build: {
       done (builder) {

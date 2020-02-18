@@ -248,7 +248,7 @@
 
 			download: function (index) {
 				axios({
-					url: 'https://res.cloudinary.com/dl9phqhv0/image/upload/v1581489573/' + this.lesson.lesson_attachment,
+					url: this.lesson.lesson_attachment,
 					method: 'GET',
 					responseType: ' blob'
 				}).then((res) => {

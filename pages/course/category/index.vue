@@ -34,7 +34,7 @@
 					</ul>
 
 					<template v-if="isMostPopular == true">
-						<most-popular></most-popular>
+						<most-popular :mostPopular="mostPopular"></most-popular>
 					</template>
 
 					<template v-else-if="isTrending == true">
@@ -156,7 +156,7 @@
 						<div class="row">
 							<!-- // Main Category Courses -->
 							<div class="col-lg-12">
-								<category-courses></category-courses>
+								<category-courses :courses="courses"></category-courses>
 							</div>
 						</div>
 					</div>
@@ -196,7 +196,9 @@
 				return {
 					category: data.category,
 					featuredCourse: data.featuredCourse,
-					countCourses: data.countCourses
+					countCourses: data.countCourses,
+					mostPopular: data.mostPopular,
+					courses: data.courses
 				}
 			} catch (e) {
 				error({ statusCode: 404, message: 'Page not found' })

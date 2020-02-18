@@ -1,8 +1,8 @@
 <template>
 	<div>
-		<template v-if="!isLoading">
+		<template>
 			<client-only>
-				<carousel :perPage="5" :loop="true" :paginationEnabled="false" :mouse-drag="false" :autoplay="true" easing="ease" :autoWidth="true" :autoHeight="true" :center="true" :navigationEnabled="true" navigationNextLabel="&rsaquo;" navigationPrevLabel="&lsaquo;">
+				<carousel :perPage="5" :loop="true" :paginationEnabled="false" :mouse-drag="false" :autoplay="false" easing="ease" :autoWidth="true" :autoHeight="true" :center="true" :navigationEnabled="true" navigationNextLabel="&rsaquo;" navigationPrevLabel="&lsaquo;">
 					<slide v-for="(course, key) in mostPopular" :key="key" class="py-4">
 						<router-link :to="{ name: 'course.show', params: { slug: course.slug } }">
 							<div class="card border shadow-sm shadow--hover rounded">
@@ -43,11 +43,6 @@
 				</carousel>
 			</client-only>
 		</template>
-		<template v-else>
-			<div class="py-5 text-center">
-				<img src="https://res.cloudinary.com/dl9phqhv0/image/upload/v1574394025/Loader/ajax-loader_sln1xw.gif" alt="">
-			</div>
-		</template>
 	</div>
 </template>
 
@@ -63,28 +58,9 @@
 
 		name: 'MostPopular',
 
-		data: () => ({
-			mostPopular: {
-				user: []
-			},
-			isLoading: false
-		}),
-
-		created() {
-			this.getMostPopularCourses()
-		},
+		props: ['mostPopular'],
 
 		methods: {
-			getMostPopularCourses() {
-				this.isLoading = true
-				axios.get(`/course/category/${this.$route.params.slug}`)
-				.then((res) => {
-					this.isLoading = false
-					this.mostPopular = res.data.mostPopular
-				}).catch((err) => {
-					return
-				})
-			},
 			courseAverage: function (course) {
 				return parseFloat(course.rating_average).toFixed(1)
 			}

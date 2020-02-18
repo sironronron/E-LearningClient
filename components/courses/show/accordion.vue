@@ -45,9 +45,11 @@
                                     </li>
                                 </template>
                                 <template v-for="(quiz, index) in quizzes">
-                                    <li v-if="quiz.course_curriculum_section_id == section.id" :key="`${index}-quiz`" class="lecture lecture-quiz has-preview">
-                                        <span class="lecture-title">{{quiz.title}}</span>
-                                    </li>
+                                    <template v-for="(bolt, index) in quiz.quizzes">
+                                        <li v-if="bolt.section_id == section.id" :key="`${index}-quiz`" class="lecture lecture-quiz has-preview">
+                                            <span class="lecture-title">{{quiz.title}}</span>
+                                        </li>
+                                    </template>
                                 </template>
                             </ul>
                         </div>
