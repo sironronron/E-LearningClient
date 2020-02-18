@@ -3,7 +3,7 @@
         <modal :form_action="addSection" @keydown="form.onKeydown($event)" header="Add New Section">
             <template slot="header">
                 <h5 class="modal-title">Add new section</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="$emit('close')">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" v-on:keydown.esc="$emit('close')" tabindex="0" @click="$emit('close')">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </template>
@@ -44,6 +44,10 @@
                 try {
                     const { data } = await this.form.post(`/instructor/courses/section/add_section/${this.course_id}`)
                     this.$swal({
+                        toast: true,
+                        position: 'bottom-end',
+                        timer: 3000,
+                        showConfirmButton: false,
                         type: 'success',
                         text: data.message
                     })

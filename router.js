@@ -50,18 +50,16 @@ const routes = [
   // My Courses
   { path: '/student/account/my-courses/learning/all', name: 'student.courses', component: page('user/my-courses.vue') },
   { 
-    path: '/student/account/my-courses/learning/', 
+    path: '/student/account/my-courses/learning/:lesson_id/lesson/:slug/show/', 
     component: page('user/course/learning-course.vue'),
     children: [
       { path: '', redirect: { name: 'student.courses.learn' } },
-      { path: ':slug/show/overview', name: 'student.courses.learn', component: page('user/course/overview.vue') },
-      { path: ':slug/show/q-and-a', name: 'student.courses.learn.qanda', component: page('user/course/qanda.vue') },
-      { path: ':slug/show/q-and-a/:id', name: 'student.courses.learn.qna.reply', component: page('user/course/qandareply.vue') },
-      { path: ':slug/show/announcements', name: 'student.courses.learn.announcements', component: page('user/course/announcements.vue') },
+      { path: 'overview', name: 'student.courses.learn', component: page('user/course/overview.vue') },
+      { path: 'q-and-a', name: 'student.courses.learn.qanda', component: page('user/course/qanda.vue') },
+      { path: 'q-and-a/:id', name: 'student.courses.learn.qna.reply', component: page('user/course/qandareply.vue') },
+      { path: 'announcements', name: 'student.courses.learn.announcements', component: page('user/course/announcements.vue') },
     ]
   },
-
-
 
   // Help Center
   {

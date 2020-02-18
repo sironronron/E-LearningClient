@@ -35,7 +35,7 @@
 									</h6>
 								</div>
 							</div>
-								
+
 							<div class="text-center">
 								<v-button :loading="form.busy" class="btn-block btn-lg">
 									{{ $t('login') }}
@@ -76,7 +76,17 @@
 		middleware: 'guest',
 
 		head () {
-			return { title: this.$t('login') }
+			return {
+				title: this.$t('login'),
+
+				meta: [
+					{ hid: 'description', name: 'description', content: "Start Learning now! Login on your current account to start." },
+
+					{ hid: 'og:url', name: 'og:url', content: 'http://192.168.2.112:3000' + this.$route.path },
+					{ hid: 'og:title', name: 'og:title', content: 'Log In to Heroacademy' },
+					{ hid: 'og:description', name: 'og:description', content: 'Start Learning now! Login on your current account to start.' }
+				]
+			}
 		},
 
 		data: () => ({
@@ -111,7 +121,7 @@
 			// Save the token.
 			this.$store.dispatch('auth/saveToken', {
 				token: data.token,
-				remember: this.remember
+				remember: true
 			})
 
 			// Fetch the user.

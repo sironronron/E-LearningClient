@@ -83,7 +83,10 @@
                                     <tbody>
                                         <tr role="row" class="odd" v-for="course in allCourses.data" :key="course.id">
                                             <td>
-                                                <router-link :to="{ name: 'instructor.courses.show', params: { slug: course.slug } }">
+                                                <router-link v-if="course.first_lesson" :to="{ name: 'instructor.courses.show', params: { slug: course.slug } }">
+                                                    {{course.title}}
+                                                </router-link>
+                                                <router-link v-else :to="{ name: 'instructor.courses.edit', params: { slug: course.slug } }">
                                                     {{course.title}}
                                                 </router-link>
                                                 <br>
@@ -95,11 +98,11 @@
                                                 <span class="badge badge-dark" style="font-size: 9px;">{{course.category.name}}</span>
                                             </td>
                                             <td style="font-size: 13px;">
-                                                <small class="text-muted"><b>Total section</b>: 3</small><br>
-                                                <small class="text-muted"><b>Total lesson</b>: 7</small><br>
+                                                <small class="text-muted"><b>Total section</b>: {{course.sections.length}}</small><br>
+                                                <small class="text-muted"><b>Total lesson</b>: {{course.lessons.length}}</small><br>
                                             </td>
                                             <td style="font-size: 12px;">
-                                                <small class="text-muted"><b>Total enrolment</b>: 0</small>
+                                                <small class="text-muted"><b>Total enrollment</b>: {{course.students.length}}</small>
                                             </td>
                                             <td style="font-size: 12px;">
                                                 <span class="badge badge-success" v-if="course.status === 'APPROVED'">{{course.status}}</span>

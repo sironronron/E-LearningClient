@@ -2,7 +2,7 @@
 	<div>
 		<h4 class="font-weight-600">About this course</h4>
 		<p>{{ course.excerpt }}</p>
-		<hr>
+		<hr class="my-3">
 		<div class="row">
 			<div class="col-lg-3">
 				<p>By the numbers</p>
@@ -21,7 +21,7 @@
 				</ul>
 			</div>
 		</div>
-		<hr>
+		<hr class="my-3">
 		<div class="row">
 			<div class="col-lg-3">
 				Features
@@ -30,7 +30,7 @@
 				Full Lifetime Access
 			</div>
 		</div>
-		<hr>
+		<hr class="my-3">
 		<div class="row">
 			<div class="col-lg-3">
 				Description
@@ -41,7 +41,7 @@
 				</client-only>
 			</div>
 		</div>
-		<hr>
+		<hr class="my-3">
 		<div class="row">
 			<div class="col-lg-3">
 				Instructor				
@@ -79,10 +79,6 @@
 	import axios from 'axios'
 
 	export default {
-
-		head() {
-			return { title: this.course.title }
-		},
 
 		async asyncData({ params, error }) {
 			try {

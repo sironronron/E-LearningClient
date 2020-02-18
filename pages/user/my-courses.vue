@@ -39,9 +39,9 @@
 				
 				<div class="mt-4">
 					<div v-if="courses.length != 0" class="row">
-						<div class="col-lg-3 col-sm-6 item-col-lg-3 mb-4" v-for="course in courses" :key="course.id">
-							<router-link :to="{ name: 'student.courses.learn', params: { slug: course.slug } }">
-								<div class="card shadow-sm shadow--hover card-lift--hover rounded">
+						<div class="col-lg-3 col-sm-6 item-col-lg-3 mb-4" v-for="(course, index) in courses" :key="index">
+							<router-link :to="{ name: 'student.courses.learn', params: { slug: course.slug, lesson_id: course.first_lesson.id } }">
+								<div class="card shadow-sm shadow--hover rounded">
 									<img :src="course.image" class="card-img-top border-bottom" alt="">
 									<div class="card-body py-3">
 										<div class="grid-course-name">
@@ -50,26 +50,46 @@
 											</h6>
 										</div>
 										<p class="small text-dark"><small>{{course.user.name}}</small></p>
-										<div class="progress mb-0" style="height: 3px;">
-											<div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="progress-bar bg-danger" style="width: 0%;">
+										<div v-if="course.has_finished_lesson != null">
+											<div class="progress mb-0" style="height: 3px;">
+												<div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="progress-bar bg-danger" :style="`width: ${totalPercentage(course)}%;`">
+												</div>
+											</div>
+											<small class="text-muted">{{totalPercentage(course)}}% Complete</small>
+											<!-- // If there's a rating -->
+											<div v-if="course.rating != null">
+												<div>
+													<div class="rating your-rating-box" style="position: unset; margin-top: -18px;">
+														<star-rating :star-size="15" :inline="true" :read-only="true" :show-rating="false" :increment="0.5" :rating="course.rating.rating"></star-rating>
+														<p class="your-rating-text" @click.prevent="openEditRatingModal(course, index)">
+															<small>Edit Your Rating</small>
+														</p>
+													</div>
+												</div>
+											</div>
+											<!-- If no rating -->
+											<div v-else>
+												<div>
+													<div class="rating your-rating-box" style="position: unset; margin-top: -18px;">
+														<star-rating :star-size="15" :inline="true" :rating="0" :read-only="true" :show-rating="false"></star-rating>
+														<p class="your-rating-text" @click.prevent="openRatingModal(course, index)">
+															<small>Leave a rating</small>
+														</p>
+													</div>
+												</div>
 											</div>
 										</div>
-										<small class="text-muted">3% Complete</small>
-										<div>
-											<div class="rating your-rating-box" style="position: unset; margin-top: -18px;">
-												<fa icon="star" fixed-width style="color: #f4c150" />
-												<fa icon="star" fixed-width style="color: #f4c150" />
-												<fa icon="star" fixed-width style="color: #f4c150" />
-												<fa icon="star" fixed-width style="color: #f4c150" />
-												<fa icon="star" fixed-width style="color: #f4c150" />
-												<p class="your-rating-text">
-													<small>Edit Rating</small>
-												</p>
+										<div v-else>
+											<div class="progress mb-0" style="height: 3px;">
+												<div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="progress-bar bg-danger" style="width: 0%;">
+												</div>
 											</div>
+											<small class="text-muted">Start Course</small>
 										</div>
 									</div>
 								</div>
 							</router-link>
+
 						</div>
 					</div>
 					<div v-else>
@@ -87,22 +107,46 @@
 						</div>
 					</div>
 				</div>
-
 			</div>			
 		</section>
+
+		<rating-modal v-if="showRatingModal" @close="closeRatingModal" :data="courseData" :index="courseIndex" @clicked="saveNewRating">
+		</rating-modal>
+
+		<edit-rating-modal v-if="showEditRatingModal" @close="closeEditRatingModal" :data="courseData" :index="courseIndex" @clicked="saveUpdateRating"></edit-rating-modal>
 
 	</div>
 </template>
 
 <script>
+	let myBody = null
+
 	import axios from 'axios'
+	import { mapGetters } from 'vuex'
+
+	// Modal
+	import RatingModal from '~/components/courses/enrolled/rating'
+	import EditRatingModal from '~/components/courses/enrolled/edit_rating'
+
+	import StarRating from 'vue-star-rating'
 
 	export default {
 
 		middleware: 'auth',
 
+		components: {
+			RatingModal, StarRating, EditRatingModal
+		},
+
 		head() {
 			return { title: 'My Courses' }
+		},
+
+		data: function() {
+			return {
+				showRatingModal: false,
+				showEditRatingModal: false
+			}
 		},
 
 		async asyncData ({ error }) {
@@ -117,6 +161,9 @@
 		},
 		
 		computed: {
+			...mapGetters({
+				user: 'auth/user'
+			}),
 			tabs() {
 				return [
 					{
@@ -124,8 +171,57 @@
 						route: 'student.courses'
 					}
 				]
+			},
+		},
+
+		mounted: function () {
+            myBody = document.getElementsByTagName('body')[0]
+        },
+
+		methods: {
+			openRatingModal: function (data, index) {
+				this.courseData = data
+				this.courseIndex = index
+				this.showRatingModal = true
+
+				// Add modal-open to Body tag
+				myBody.classList.toggle('modal-open')
+			},
+
+			closeRatingModal: function () {
+				this.showRatingModal = false
+				myBody.classList.remove('modal-open')
+			},
+
+			saveNewRating: function (value) {
+				this.$set(this.courses[value.index], 'rating', value)
+			},
+
+			// Edit Rating Modal
+			openEditRatingModal: function (data, index) {
+				this.courseData = data
+				this.courseIndex = index
+				this.showEditRatingModal = true
+
+				// Add Modal-open to body tag
+				myBody.classList.toggle('modal-open')
+			},
+
+			closeEditRatingModal: function () {
+				this.showEditRatingModal = false
+				myBody.classList.remove('modal-open')
+			},
+
+			saveUpdateRating: function (value) {
+				this.$set(this.courses[value.index], 'rating', value)
+			},
+
+
+			totalPercentage: function (course) {
+				return parseInt((course.progress_count / course.lessons_count) * 100)
 			}
-		}
+
+		},
 
 	}
 

@@ -191,7 +191,7 @@
                     <!-- // Actions -->
                     <div class="row mt-3">
                         <div class="col-lg-6">
-                            <router-link :to="{ name: 'student.courses.learn', params: { slug: course.slug } }" class="btn btn-default btn-block text-capitalize">
+                            <router-link :to="{ name: 'student.courses.learn', params: { slug: course.slug, lesson_id: course.first_lesson.id } }" class="btn btn-default btn-block text-capitalize">
                                 View course
                             </router-link>
                         </div>
@@ -200,6 +200,12 @@
                                 Edit Course
                             </router-link>
                         </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <button type="button" class="btn btn-outline-danger btn-block" @click="remove">
+                            <fa icon="trash-alt" fixed-width /> Delete
+                        </button>
                     </div>
                 </div>
             </div>
@@ -226,7 +232,9 @@
 
             form: new Form({
                 status: ''
-            })
+            }),
+
+            isRemoving: false
         }),
 
         async asyncData({ params }) {
@@ -273,6 +281,35 @@
                     return
                 }
             },
+
+            remove: function () {
+                this.isRemoving = true
+                this.$swal({
+                    title: "Are you sure?",
+                    text: "You will not be able to recover this course!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#ee395b",
+                    confirmButtonText: "Yes, delete it!",
+                    cancelButtonText: "Cancel"
+                }).then((res) => {
+                    if (res.value) {
+                        axios.delete(`/instructor/courses/${this.course.id}`)
+                        this.$swal({
+                            type: 'success',
+                            text: 'Course is deleted permanently',
+                        })
+                        this.$router.push({ name: 'instructor.courses' })
+                    } else {
+                        this.$swal({
+                            type: 'info',
+                            text: 'Delete Cancelled'
+                        })
+                        this.isRemoving = false
+
+                    }
+                })
+            }
 
         }
 

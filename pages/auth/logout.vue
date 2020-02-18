@@ -6,7 +6,7 @@
                 <div class="alert alert-success">
                     <h6 class="mb-0 text-white">
                         <fa icon="check-circle" fixed-width /> You've successfully logged out of E-Learning. Come back soon!
-                    </h6>     
+                    </h6>
                 </div>
 
                 <div class="jumbotron bg-image mb-0 rounded">
@@ -42,26 +42,28 @@
                                                 </h6>
                                             </div>
                                             <p class="mt-1 mb-1 small text-muted">{{course.user.name}}</p>
-                                            <div class="rating">
-                                                <fa icon="star" fixed-width style="color: #f4c150" />
-                                                <fa icon="star" fixed-width style="color: #f4c150" />
-                                                <fa icon="star" fixed-width style="color: #f4c150" />
-                                                <fa icon="star" fixed-width style="color: #f4c150" />
-                                                <fa icon="star" fixed-width style="color: #f4c150" />
-                                            </div>
-                                            <div class="price float-right">
-                                                <template v-if="course.free_course != 1">
-                                                    <h6 class="mt-3" v-if="course.has_discount == 1"><small class="text-muted"><strike>₱{{course.price}}</strike> </small>&nbsp; <b>₱{{course.discount}}</b> </h6>
-                                                    <h6 class="mt-3" v-else>
-                                                        <client-only>
-                                                            <b>₱{{ course.price | numeral('0,0') }}</b>
-                                                        </client-only>
-                                                    </h6>
-                                                </template>
-                                                <template v-else>													
-                                                    <h6 class="mt-3">Free Course</h6>
-                                                </template>
-                                            </div>
+                                            <div class="rating-stars">
+    											<span class="rating-star-container">
+    												<star-rating :star-size="15" :inline="true" :read-only="true" :show-rating="false" :increment="0.5" :rating="course.rating_average"></star-rating>
+    											</span>
+    											<span class="rating-review-numbers">
+    												<span class="rating-review-stats">{{ courseAverage(course) }}</span>
+    												<span class="text-muted ml-1">({{ course.ratings_count }})</span>
+    											</span>
+    										</div>
+    										<div class="price float-right">
+    											<template v-if="course.free_course != 1">
+    												<h6 class="mt-3" v-if="course.has_discount == 1"><small class="text-muted"><strike>₱{{course.price}}</strike> </small>&nbsp; <b>₱{{course.discount}}</b> </h6>
+    												<h6 class="mt-3" v-else>
+    													<client-only>
+    														₱<b>{{course.price | numeral('0,0')}}</b>
+    													</client-only>
+    												</h6>
+    											</template>
+    											<template v-else>
+    												<h6 class="mt-3">Free Course</h6>
+    											</template>
+    										</div>
                                         </div>
                                     </div>
                                 </router-link>
@@ -77,8 +79,14 @@
 
 <script>
     import axios from 'axios'
+    import StarRating from 'vue-star-rating'
 
     export default {
+
+        components: {
+            StarRating
+        },
+
         layout: 'default',
 
         middleware: 'guest',
@@ -96,13 +104,19 @@
             } catch (e) {
                 return
             }
+        },
+
+        methods: {
+            courseAverage: function (course) {
+                return parseFloat(course.rating_average).toFixed(1)
+            }
         }
     }
 </script>
 
 <style scoped>
     .bg-image {
-		background-image: url('https://i.udemycdn.com/notices/featured_banner/image/0d4f1c65-363c-4c91-af1a-b8b10c8cb3ff.jpg'); 
+		background-image: url('https://i.udemycdn.com/notices/featured_banner/image/0d4f1c65-363c-4c91-af1a-b8b10c8cb3ff.jpg');
 		-webkit-background-size: cover;
 		-moz-background-size: cover;
 		-o-background-size: cover;

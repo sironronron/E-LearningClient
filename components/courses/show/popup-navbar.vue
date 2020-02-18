@@ -32,7 +32,7 @@
                             <div class="card-body p-0">
                                 <div v-if="enrolled" class="p-1 px-3 bg-info w-100">
                                     <p class="mb-0 text-white">
-                                        <small><fa icon="info-circle" /> You purchased this course on {{ enrolled_at.pivot.created_at | moment(' L') }} </small>
+                                        <small><fa icon="info-circle" /> You purchased this course on {{ enrolled_at.pivot.created_at | moment('MMM. D, YYYY') }} </small>
                                     </p>
                                 </div>
                                 <div class="p-4">
@@ -59,7 +59,7 @@
                                         </div>
                                         </h2>
                                     </div>
-                                    <add-to-cart :enrolled="enrolled" :course_id="course.id" :free_course="course.free_course == 1 ? true : false"  :price="course.has_discount == true ? course.discount : course.price"></add-to-cart>
+                                    <add-to-cart :lessonId="lessonId" :enrolled="enrolled" :course_id="course.id" :free_course="course.free_course == 1 ? true : false" :price="course.has_discount == true ? course.discount : course.price" :courseInCart="courseInCart" :slug="course.slug"></add-to-cart>
                                     <div class="mt-3">
                                         <p class="font-weight-bold mb-2 text-dark">Includes:</p>
                                         <ul class="list-unstyled small" style="color: #505763;">
@@ -103,7 +103,7 @@
             AddToCart, ShareButtons
         },
 
-        props: ['course', 'items', 'percentage', 'enrolled', 'enrolled_at'],
+        props: ['course', 'items', 'percentage', 'enrolled', 'enrolled_at', 'lessonId'],
 
         data: function () {
             return {

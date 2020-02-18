@@ -11,14 +11,11 @@
 			</section>
 		</div>
 
-		<!-- // Main Content -->
 		<section class="section-sm">
 			<div class="container">
-				
-				<!-- // Carousels -->
 				<div>
 					<h3 class="font-weight-600">Courses to get you started!</h3>
-		
+
 					<ul class="nav mt-4">
 						<li class="nav-item">
 							<h5>
@@ -35,14 +32,15 @@
 							</h5>
 						</li> -->
 					</ul>
-			
+
 					<template v-if="isMostPopular == true">
-						<most-popular></most-popular>
+						<most-popular :mostPopular="mostPopular"></most-popular>
 					</template>
 
 					<template v-else-if="isTrending == true">
 						<trending></trending>
 					</template>
+
 				</div>
 			</div>
 		</section>
@@ -76,135 +74,77 @@
 
 		<section class="section-sm">
 			<div class="container">
-				<!-- // Featured Courses -->
 				<div class="mt-3">
-					<h5 class="font-weight-300">
+					<h4 class="font-weight-300">
 						Featured Course
-					</h5>
-					<div class="slider">
-						<div class="py-3">
-							<card class="rounded shadow--hover border">
-								<!-- // Rows -->
-								<div class="row">
-									<div class="col-lg-5">
-										<client-only>
-											<cld-image :publicId="`${featuredCourse.image_public_id}.png`" responsive="width" alt="">
-												<cld-transformation height="236" width="420" crop="fill" />
-												<cld-transformation border="1px_solid_rgb:00390b" />
-											</cld-image>
-										</client-only>
-									</div>
-									<div class="col-lg-7 pl-3">
-										<!-- // Content -->
-										<h5 class="font-weight-600 mb-0">{{featuredCourse.title}}</h5>
-										<p class="text-other">Last Updated {{featuredCourse.updated_at | moment('dddd, MMMM Do YYYY')}}</p>
-
-										<div class="rating-row">
-											<span class="course-badge best-seller mr-2">{{featuredCourse.level}}</span>
-											<small class="mr-4">
-												<span class="d-inline-block average-rating mr-2 text-other">1 Hour</span> &middot;
-												<span class="mr-2 text-other"> &nbsp; {{featuredCourse.lessons.length}} Lectures</span>
-												<span class="enrolled-num text-other"> &middot;
-													&nbsp; 3 Students enrolled
-												</span>
-											</small>
-											<fa icon="star" fixed-width style="color: #f4c150" />
-											<fa icon="star" fixed-width style="color: #f4c150" />
-											<fa icon="star" fixed-width style="color: #f4c150" />
-											<fa icon="star" fixed-width style="color: #f4c150" />
-											<fa icon="star" fixed-width style="color: whitesmoke" />
-											<small>
-												<span class="d-inline-block average-rating text-other mr-2">4</span><span class="text-other mr-2">(2 Ratings)</span>
-											</small>
-										</div>
-
-										<p class="mt-3" style="font-size: 15px !important;">
-											{{featuredCourse.excerpt}} | By {{featuredCourse.user.name}}
-										</p>
-
-										<router-link :to="{ name: 'course.show', params: { slug: featuredCourse.slug } }" class="btn btn-default rounded text-capitalize">
-											Explore Course
-										</router-link>
-
-										<div class="d-block">
-											<div class="float-right">
-												<template v-if="featuredCourse.free_course != 1">
-													<div class="mt-3" v-if="featuredCourse.has_discount == 1">
-														<h4 class=" d-inline-block"><small class="text-muted"></small>&nbsp; <b>₱{{featuredCourse.discount}}</b> </h4>
-														<strike class="text-other">₱{{featuredCourse.price}}</strike>  
+					</h4>
+					<client-only>
+						<carousel :perPage="1" :loop="true" :paginationEnabled="false" :mouse-drag="false" :autoplay="true" easing="ease" :autoWidth="true" :autoHeight="true" :center="true" :navigationEnabled="true" navigationNextLabel="&rsaquo;" navigationPrevLabel="&lsaquo;">
+							<slide v-for="(course, key) in featuredCourse" :key="key" class="py-4">
+								<div>
+									<div class="card border shadow-sm--hover rounded">
+										<div class="card-body pt-3 pb-2">
+											<div class="row">
+												<!-- // Image -->
+												<div class="col-lg-5">
+													<client-only>
+														<cld-image :publicId="`${course.image_public_id}.png`" responsive="width" alt="">
+															<cld-transformation height="236" width="420" crop="fill" radius="2" />
+														</cld-image>
+													</client-only>
+												</div>
+												<!-- // Course Details -->
+												<div class="col-lg-7">
+													<div>
+														<h5 class="font-weight-600 mb-0">{{ course.title }}</h5>
+														<p class="published-time">Last Updated {{ course.updated_at | moment("from", "now") }}</p>
+														<div class="rating-row d-inline-block">
+															<div>
+																<span class="course-badge best-seller mr-2">{{course.level}}</span>
+																<small class="mr-2">
+																	<span class="text-other"> {{course.lessons_count}} Lectures &#9679;</span>
+																	<span class="enrolled-num text-other">{{ course.students_count }} Students enrolled</span>
+																</small>
+															</div>
+															<div>
+																<div class="rating-stars mt-2">
+																	<span class="rating-star-container">
+																		<star-rating :star-size="15" :inline="true" :read-only="true" :show-rating="false" :increment="0.5" :rating="course.rating_average"></star-rating>
+																	</span>
+																	<span class="rating-review-numbers">
+																		<span class="rating-review-stats">{{ courseAverage(course) }}</span>
+																		<span class="text-muted ml-1">({{ course.ratings_count }})</span>
+																	</span>
+																</div>
+															</div>
+														</div>
+														<div class="excerpt text-dark">
+															{{ course.excerpt }} | By: {{ course.user.name }}
+															<div class="mt-3">
+																<router-link :to="{ name: 'course.show', params: { slug: course.slug } }" class="btn btn-default rounded text-capitalize">
+																	Explore Course
+																</router-link>
+															</div>
+														</div>
+														<div class="float-right">
+															<p v-if="course.free_course == 1" class="mb-0 text-dark">
+																Free Course
+															</p>
+														</div>
 													</div>
-													<h6 class="mt-3" v-else>
-														<client-only>
-															₱<b>{{featuredCourse.price | numeral('0,0')}}</b>
-														</client-only>
-													</h6>
-												</template>
-												<template v-else>													
-													<h4 class="mt-3">Free Course</h4>
-												</template>
+												</div>
 											</div>
 										</div>
-										
 									</div>
 								</div>
-							</card>
-						</div>
-					</div>
+							</slide>
+						</carousel>
+					</client-only>
 				</div>
-
-				<!-- // Popular Topics -->
 				<div class="mt-3">
-					<h5 class="font-weight-300 mb-4">
-						Popular Topics
-					</h5>
-					<div class="row">
-						<div class="col-lg-3 mb-3">
-							<card class="p-1 shadow-sm shadow--hover">
-								<h6 class="mb-0">Lifetime Access</h6>
-							</card>
-						</div>
-						<div class="col-lg-3">
-							<card class="p-1 shadow-sm shadow--hover">
-								<h6 class="mb-0">Lifetime Access</h6>
-							</card>
-						</div>
-						<div class="col-lg-3">
-							<card class="p-1 shadow-sm shadow--hover">
-								<h6 class="mb-0">Lifetime Access</h6>
-							</card>
-						</div>
-						<div class="col-lg-3">
-							<card class="p-1 shadow-sm shadow--hover">
-								<h6 class="mb-0">Lifetime Access</h6>
-							</card>
-						</div>
-						<div class="col-lg-3">
-							<card class="p-1 shadow-sm shadow--hover">
-								<h6 class="mb-0">Lifetime Access</h6>
-								</card>
-						</div>
-						<div class="col-lg-3">
-							<card class="p-1 shadow-sm shadow--hover">
-								<h6 class="mb-0">Lifetime Access</h6>
-							</card>
-						</div>
-						<div class="col-lg-3">
-							<card class="p-1 shadow-sm shadow--hover">
-								<h6 class="mb-0">Lifetime Access</h6>
-							</card>
-						</div>
-						<div class="col-lg-3">
-							<card class="p-1 shadow-sm shadow--hover">
-								<h6 class="mb-0">Lifetime Access</h6>
-							</card>
-						</div>
-					</div>
-				</div>
-
-				<!-- // All Category Courses -->
-				<div class="mt-5">
-					<h3 class="font-weight-600 mb-3">All {{category.name}} Courses</h3>
-						<!-- // Filters -->
+					<h4 class="font-weight-300">
+						All {{ category.name }} Courses
+					</h4>
 					<div>
 						<div class="d-block">
 							<p class="mb-0">{{countCourses}} courses</p>
@@ -215,24 +155,15 @@
 
 						<div class="row">
 							<!-- // Main Category Courses -->
-							<div class="col-lg-9">
-								<category-courses></category-courses>
+							<div class="col-lg-12">
+								<category-courses :courses="courses"></category-courses>
 							</div>
-
-							<div class="col-lg-3">
-								<!-- // Money Back Guarantee -->
-								<div class="mt-2 pt-4 pb-2 px-4 border rounded">
-									<h6><b><fa icon="calendar-alt" class="text-info" /> &nbsp; Not Sure?</b></h6>
-									<p>Every course comes with a 30-day money-back-guarantee</p>
-								</div>
-							</div>
-
 						</div>
-
 					</div>
 				</div>
 			</div>
 		</section>
+
 
 	</div>
 </template>
@@ -242,11 +173,12 @@
 	import MostPopular from '../../../components/courses/category/popular.vue'
 	import Trending from '../../../components/courses/category/trending.vue'
 	import CategoryCourses from '../../../components/courses/category/all_courses.vue'
+	import StarRating from 'vue-star-rating'
 
 	export default {
 
 		components: {
-			MostPopular, Trending, CategoryCourses
+			MostPopular, Trending, CategoryCourses, StarRating
 		},
 
 		head() {
@@ -264,7 +196,9 @@
 				return {
 					category: data.category,
 					featuredCourse: data.featuredCourse,
-					countCourses: data.countCourses
+					countCourses: data.countCourses,
+					mostPopular: data.mostPopular,
+					courses: data.courses
 				}
 			} catch (e) {
 				error({ statusCode: 404, message: 'Page not found' })
@@ -281,6 +215,10 @@
 				this.isTrending = true
 				this.isMostPopular = false
 			},
+
+			courseAverage: function (course) {
+				return parseFloat(course.rating_average).toFixed(1)
+			}
 		},
 
 		computed: {
@@ -311,6 +249,13 @@
 
 <style lang="scss" scoped>
 
+	.published-time {
+		color: #686f7a;
+	    font-size: 13px !important;
+	    line-height: 20px;
+	    margin-bottom: 12px;
+	}
+
 	.search {
         &_image {
             width: 210px;
@@ -331,7 +276,7 @@
 		margin-right: 2rem;
 		color: #000;
 	}
-	
+
 	.router-link-active {
 		border-bottom: 5px solid red;
 		cursor: text;

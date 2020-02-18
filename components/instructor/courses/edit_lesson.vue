@@ -1,30 +1,26 @@
 <template>
-    <transition name="fade" mode="out-in">
-        <modal :form_action="addSectionLesson" @keydown="form.onKeydown($event)" header="Add new lesson">
+	<transition name="fade" mode="out-in">
+		<modal :form_action="editLesson" @keydown="form.onKeydown($event)" header="Edit Lesson">
+			<!-- // Header -->
+			<template slot="header">
+				<h5 class="modal-title">Edit Lesson</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="close" @click="$emit('close')">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</template>
 
-            <template slot="close">
-                <div @click="close">
+			<!-- // Body -->
+			<template slot="form">
+				<div class="modal-body">
 
-                </div>
-            </template>
-
-            <template slot="header">
-                <h5 class="modal-title">Add new lesson</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="$emit('close')"><span aria-hidden="true">&times;</span></button>
-            </template>
-
-            <template slot="form">
-
-                <div class="modal-body">
-
-                    <!-- // Lesson Title -->
+					<!-- // Lesson Title -->
                     <div class="form-group">
                         <label for="title" class="col-form-label">Title</label>
                         <input type="text" name="title" v-model="form.title" :class="{ 'is-invalid' : form.errors.has('title') }" class="form-control rounded">
                         <has-error :form="form" field="title"></has-error>
                     </div>
 
-                    <!-- // Section  -->
+					<!-- // Section  -->
                     <div class="form-group">
                         <label for="course_section_id" class="col-form-label">Section</label>
                         <select name="course_section_id" id="course_section_id" v-model="form.course_section_id" :class="{ 'is-invalid' : form.errors.has('course_section_id') }" class="custom-select rounded">
@@ -96,9 +92,9 @@
                         </div>
                     </template>
 
-                    <template v-if="form.lesson_type === 'TFILE'">
+					<template v-if="form.lesson_type === 'TFILE'">
                         <div class="form-group">
-                            <label for="Text" class="col-form-label">Text</label>
+							<label for="Text" class="col-form-label">Text</label>
                             <textarea name="text_file" id="text_file" cols="30" rows="10" v-model="form.text_file" class="form-control" :class="{ 'is-invalid' : form.errors.has('text_file') }"></textarea>
                             <div class="form-group">
                                 <label for="attachment" class="col-form-label">Attachment</label>
@@ -109,82 +105,81 @@
 
                     <template v-if="form.lesson_type === 'PDF' || form.lesson_type === 'DF' || form.lesson_type === 'IFILE'">
                         <div class="form-group">
-                            <label for="attachment" class="col-form-label">Text</label>
+                            <label for="attachment" class="col-form-label">Attachment</label>
                             <input type="file" name="lesson_attachment" @change="selectFileAttachment" class="form-control" id="">
                         </div>
                     </template>
 
-                    <div class="form-group">
+					<div class="form-group">
                         <label for="summary" class="col-form-label">Summary</label>
                         <textarea name="summary" id="summary" cols="30" rows="3" :class="{ 'is-invalid' : form.errors.has('summary') }" class="form-control rounded" v-model="form.summary"></textarea>
                         <has-error :form="form" field="summary"></has-error>
                     </div>
+				</div>
 
-                </div>
-
-                <div class="modal-footer">
+				<div class="modal-footer">
                     <v-button :loading="form.busy" class="btn-primary rounded btn-sm">Add Lesson</v-button>
                 </div>
-
-            </template>
-
-        </modal>
-    </transition>
+			</template>
+		</modal>
+	</transition>
 </template>
 
 <script>
-    import axios from 'axios'
-    import Form from 'vform'
+	import axios from 'axios'
+	import Form from 'vform'
 
-    if (process.client) {
+	if (process.client) {
         let objectToFormData = document.createElement('script')
         objectToFormData.setAttribute('src', "https://cdn.rawgit.com/cretueusebiu/412715093d6e8980e7b176e9de663d97/raw/aea128d8d15d5f9f2d87892fb7d18b5f6953e952/objectToFormData.js")
         document.head.appendChild(objectToFormData)
     }
 
-    export default {
+	export default {
+		name: 'EditLesson',
 
-        name: 'AddLessonName',
+		props: ['data', 'index', 'sections'],
 
-        props: ['course_id'],
+		data: function () {
+			return {
+				lesson: [],
 
-        data: () => ({
-            form: new Form({
-                course_id: '',
-                course_section_id: '',
-                lesson_image: '',
-                title: '',
-                lesson_type: '',
-                text_file: '',
-                lesson_provider: '',
-                thumbnail: '',
-                video_url: '',
-                duration: '',
-                lesson_attachment: '',
-                summary: ''
-            }),
-            sections: [],
-            isLoading: false,
-            config: {
-                timePicker: {
-                    wrap: true,
-                    enableTime: true,
-                    enableSeconds: true,
-                    noCalendar: true,
-                    time_24hr: true,
-                    timeFormat: "H:i:s"
-                },
-            }
-        }),
+				form: new Form({
+					title: '',
+					lesson_image: '',
+					lesson_type: '',
+					lesson_provider: '',
+					course_section_id: '',
+					thumbnail: '',
+					video_url: '',
+					duration: '',
+					lesson_attachment: '',
+					summary: '',
+					text_file: ''
+				}),
 
-        created() {
-            this.getSections()
-        },
+				config: {
+					timePicker: {
+						wrap: true,
+						enableTime: true,
+						enableSeconds: true,
+						noCalendar: true,
+						time_24hr: true,
+						timeFormat: "H:i:s"
+					}
+				}
 
-        computed: {
-            lessonTypes() {
-                return [
-                    {
+			}
+		},
+
+		created() {
+			this.getLesson()
+		},
+
+		computed: {
+			lessonTypes: function () {
+				return [
+					{
                         value: 'VIDEO',
                         name: 'Video URL'
                     },
@@ -204,11 +199,12 @@
                         value: 'IFILE',
                         name: 'Image File'
                     }
-                ]
-            },
-            lessonProvider() {
-                return [
-                    {
+				]
+			},
+
+			lessonProvider: function () {
+				return [
+					{
                         value: 'Youtube',
                         name: 'Youtube'
                     },
@@ -220,77 +216,64 @@
                         value: 'HTML5',
                         name: 'HTML5'
                     }
-                ]
-            }
-        },
+				]
+			}
+		},
 
-        methods: {
+		methods: {
+			// Get Lesson
+			async getLesson() {
+				await axios.get(`/instructor/courses/section/edit_lesson/get/${this.data.id}`)
+				.then((res) => {
+					this.lesson = res.data.lesson
+					this.form.fill(this.lesson)
+				}).catch((err) => {
+					console.log(err)
+				})
+			},
 
-            getSections() {
-                this.isLoading = true
-                axios.get(`/instructor/courses/section/add_lesson/get/${this.course_id}`)
-                .then((res) => {
-                    this.form.course_id = this.course_id
-                    this.isLoading = false
-                    this.sections = res.data.sections
-                })
-            },
-
-            selectFileThumbnail(e) {
-                const file = e.target.files[0]
-                this.form.thumbnail = file
-            },
-
-            selectFileAttachment(e) {
+			selectFileAttachment(e) {
                 const file = e.target.files[0]
                 this.form.lesson_attachment = file
             },
 
-            selectFileVideo: function (e) {
-                const file = e.target.files[0]
-                this.form.video_url = file
-            },
+			async editLesson () {
+				let { data } = await this.form.patch(`/instructor/courses/section/edit_lesson/patch/${this.data.id}`)
 
-            close: function (e) {
-                if (this.$refs.content.contains(e.target)) return;
-                this.$emit('close')
-            },
+				this.$swal({
+					toast: true,
+					position: 'bottom-end',
+					timer: 3000,
+					showConfirmButton: false,
+					type: 'success',
+					text: data.message
+				})
 
-            async addSectionLesson(event) {
-                try {
-                    const { data } = await this.form.submit('post', `/instructor/courses/section/add_lesson/post`, {
-                        transformRequest: [function (data, headers) {
-                            return objectToFormData(data)
-                        }]
-                    })
-                    var lessonData = {
-                        course_id: this.course_id,
-                        course_section_id: data.course_section_id,
-                        lesson_image: data.lesson_image,
-                        title: data.title,
-                        lesson_type: data.lesson_type,
-                        lesson_provider: data.lesson_provider,
-                        thumbnail: data.thumbnail,
-                        video_url: data.video_url,
-                        duration: data.duration,
-                        lesson_attachment: data.lesson_attachment,
-                        summary: data.summary,
-                        id: data.id
-                    }
-                    this.$swal({
-                        toast: true,
-                        timer: 5000,
-                        position: 'bottom-end',
-                        showConfirmButton: false,
-                        type: 'success',
-                        text: 'Lesson is added'
-                    })
-                    this.$emit('close')
-                    this.$emit('clicked', lessonData)
-                } catch(e) {
-                    return
-                }
-            }
-        }
-    }
+				var newLessonData = {
+                    course_section_id: data.lesson.course_section_id,
+                    lesson_image: data.lesson.lesson_image,
+                    title: data.lesson.title,
+                    lesson_type: data.lesson.lesson_type,
+                    lesson_provider: data.lesson.lesson_provider,
+                    thumbnail: data.lesson.thumbnail,
+                    video_url: data.lesson.video_url,
+                    duration: data.lesson.duration,
+                    lesson_attachment: data.lesson.lesson_attachment,
+                    summary: data.lesson.summary,
+                    id: data.lesson.id,
+                    index: this.index
+				}
+
+				// Close window
+				this.$emit('close')
+				this.$emit('clicked', newLessonData)
+			}
+		}
+
+	}
+
 </script>
+
+<style lang="scss" scoped>
+
+</style>

@@ -87,7 +87,7 @@
 
         created: function () {
             var currentUrl = window.location.pathname
-            this.url = 'http://192.168.2.112:3000' + currentUrl
+            this.url = 'http://192.168.2.112:3000/course/' + this.course.slug 
         },
 
         methods: {

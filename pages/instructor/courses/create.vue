@@ -235,7 +235,7 @@
                                                 <div class="form-group row mb-4" :class="{ 'is-invalid has-danger' : form.errors.has('free_course') }">
                                                     <label for="top_course" class="col-lg-2 col-form-label"></label>
                                                     <div class="col-lg-10">
-                                                        <checkbox v-model="form.free_course"  name="free_course">
+                                                        <checkbox v-model="form.free_course" name="free_course">
                                                             Check if Free Course
                                                         </checkbox>
                                                     </div>
@@ -526,7 +526,7 @@
 
             prev: function () {
                 this.step--
-            }
+            },
             
         },
 

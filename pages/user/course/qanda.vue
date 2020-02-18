@@ -1,17 +1,33 @@
 <template>
 	<div>
-		<a v-if="user.id != teacherId" href="#" class="float-right" @click.prevent="showAddQuestionForm">
-			<span v-if="!addQuestion">
-				Ask a new question
-			</span>
-			<span v-else>
-				Back to All Questions
-			</span>
-		</a>
+		<div v-if="!addQuestion">
+			
+			<div class="form-group">
+				<form class="my-auto d-inline w-25">
+					<div class="input-group">
+						<input aria-describedby="addon-right addon-left" type="text" name="search" placeholder="Search for solutions" class="form-inline form-control">
+						<div class="input-group-prepend">
+							<span class="input-group-text rounded-right btn btn-danger shadow-none">
+								<fa icon="search" fixed-width />
+							</span>
+						</div>
+					</div>
+				</form>
+			</div>
 
-		<h5 class="font-weight-600">{{ qnas.length }} Questions in this course</h5>
-		
-		<hr class="mt-3 mb-0">
+			<a v-if="user.id != teacherId" href="#" class="float-right" @click.prevent="showAddQuestionForm">
+				<span v-if="!addQuestion">
+					Ask a new question
+				</span>
+				<span v-else>
+					Back to All Questions
+				</span>
+			</a>
+
+			<h6 class="font-weight-600">{{ qnas.length }} questions in this course</h6>
+			
+			<hr class="mt-3 mb-0">
+		</div>
 		
 		<div v-if="!addQuestion">
 			<div v-if="qnas.length != 0">
@@ -29,21 +45,21 @@
 								</div>
 								<!-- // details -->
 								<div>
-									<div class="ml-4 mt-2">
+									<div class="ml-4 mt-1">
 										<div>
 											<div>
-												<h6 class="font-weight-600 text-capitalize">
+												<h6 class="font-weight-600 text-capitalize text-dark">
 													{{ qna.title }} &nbsp; 
 													<span v-if="qna.answered != 1" class="badge badge-dark">No Answer</span>
 													<span v-else class="badge badge-success">Answered</span>
 												</h6>
-												<p class="text-dark">
+												<div v-html="qna.details" class="text-dark">
 													{{ qna.details }}
-												</p>
+												</div>
 											</div>
 										</div>
 									</div>
-									<div class="mt-4 ml-4">
+									<div class="ml-4">
 										<p class="text-dark mb-0 small">
 											<small>
 												{{ qna.user.name }} &middot; {{ qna.created_at | moment("from", "now") }} &nbsp; &middot; &nbsp; <span class="text-muted">
@@ -70,7 +86,7 @@
 				<!-- // No Questions -->
 				<div class="text-center">
 					<div class="mt-5 text-center">
-						<h5>Do you guys have any questions?</h5>
+						<h5 class="mb-4">Do you guys have any questions?</h5>
 						<svg width="150" height="150"
                         	xmlns="http://www.w3.org/2000/svg">
                         	<image xlink:href="https://res.cloudinary.com/dl9phqhv0/image/upload/v1576466799/Online%20Learning%20Icon%20Pack/016-search_jut7qz.svg" width="150" height="150"/>
@@ -83,7 +99,19 @@
 		<div v-else>
 			
 			<div class="row justify-content-center mt-3">
-				<div class="col-lg-7">
+				<div class="col-lg-10">
+					<button type="button" class="btn btn-outline-default text-capitalize" @click.prevent="showAddQuestionForm">
+						Back to all Questions
+					</button>
+					<div class="p-3 bg-secondary border mt-3">
+						<h6 class="text-dark font-weight-600">Tips on getting your question answered faster</h6>
+						<ul>
+							<li>Search to see if your question has been asked before</li>
+							<li>Be detailed; provide screenshots, error messages, code, or other clues whenever possible</li>
+							<li>Check grammar and spelling</li>
+						</ul>
+					</div>
+
 					<form @submit.prevent="save" @keydown="form.onKeydown($event)">
 				
 						<div class="form-group">
@@ -97,7 +125,7 @@
 						<div class="form-group">
 							<label for="details" class="col-form-label">Details</label>
 							<div>
-								<textarea name="details" id="details" :class="{ 'is-invalid' : form.errors.has('details') }" v-model="form.details" cols="30" rows="5" class="form-control rounded" placeholder="e.g: How can we do that"></textarea>
+								<textarea name="details" id="details" cols="30" rows="5" v-model="form.details" :class="{ 'is-invalid' : form.errors.has('details') }" class="form-control"></textarea>
 								<has-error :form="form" field="details"></has-error>
 							</div>
 						</div>
@@ -137,7 +165,10 @@
 					title: '',
 					details: '',
 					course_id: ''
-				})
+				}),
+				config: {
+					// Froala config here
+				}
 			}
 		},
 

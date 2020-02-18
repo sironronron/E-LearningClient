@@ -18,14 +18,28 @@ module.exports = {
 
   head: {
     title: process.env.APP_NAME,
-    titleTemplate: '%s - ' + process.env.APP_NAME,
+    titleTemplate: '%s | ' + process.env.APP_NAME,
     htmlAttrs: {
       lang: 'en',
     },
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'Nuxt.js project' }
+      
+      // Descriptions and Keywords
+      { hid: 'description', name: 'description', content: 'Unlock opportunity, study any topic, anytime. Explore thousands of courses for the lowest price ever!' },
+      { hid: 'keywords', name: 'keywords', content: 'e-learning, academy, learn, your time, value'},
+
+      // Facebook Metas
+      { hid: 'og:url', name: 'og:url', content: process.env.CLIENT_URL },
+      { hid: 'og:title', name: 'og:title', content: 'Online Courses - Anytime, Anywhere | Heroacademy' },
+      { hid: 'og:site_name', name: 'og:site_name', content: 'Online Courses | Heroacademy' },
+      { hid: 'og:image', name: 'og:image', content: 'https://res.cloudinary.com/dl9phqhv0/image/upload/c_scale,h_630,w_1200/v1573179687/HQ%20Images/alexis-brown-omeaHbEFlN4-unsplash_m9sxu6.jpg' },
+      { hid: 'og:description', name: 'og:description', content: 'Unlock opportunity, study any topic, anytime. Explore thousands of courses for the lowest price ever!' },
+      
+    ],
+    noscript: [
+      { innerHTML: 'Body No Scripts', body: true }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/icon.png' },
@@ -58,6 +72,7 @@ module.exports = {
     '~plugins/vue-plyr',
     '~plugins/cloudinary',
     '~plugins/vue-draggable',
+    '~plugins/star-rating',
   
     // '~plugins/nuxt-client-init', // Comment this for SSR
   
@@ -84,7 +99,7 @@ module.exports = {
   },
 
   manifest: {
-    short_name: 'EL',
+    short_name: 'HA',
     name: 'Heroacademy',
     start_url: '/',
     theme_color: '#bc4e9c'
@@ -97,6 +112,10 @@ module.exports = {
 
   build: {
     extractCSS: true
+  },
+
+  generate: {
+    dir: './app/static/spa'
   },
 
   hooks: {

@@ -1,11 +1,11 @@
 <template>
 	<transition name="fade" mode="out-in">
-        <modal :form_action="update" @keydown="form.onKeydown($event)" header="Edit section">
+		<modal :form_action="editSection" @keydown="form.onKeydown($event)" header="Add New Section">
             <template slot="header">
-                <h5 class="modal-title">Add new section</h5>
-                <router-link type="button" class="close" data-dismiss="modal" aria-label="Close" to="../">
+                <h5 class="modal-title">Edit Section</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="$emit('close')">
                     <span aria-hidden="true">&times;</span>
-                </router-link>
+                </button>
             </template>
             <template slot="form">
                 <div class="modal-body">
@@ -21,54 +21,74 @@
                 </div>
             </template>
         </modal>
-    </transition>
+	</transition>
 </template>
 
 <script>
 	import axios from 'axios'
-	import Form from 'vform'
+	import Form from 'vform' 
 
 	export default {
+		name: 'EditSectionmodal',
 
-		data: () => ({
-			section: [],
+		props: ['data', 'index'],
 
-			form: new Form({
-				title: ''
-			})
-		}),
+		data: function () {
+			return {
+				section: [],
+
+				form: new Form({
+					course_id: '',
+					title: ''
+				}),
+			}
+		},
 
 		created() {
-			this.getSectionData()
-
-			this.form.fill(this.section)
+			this.getSection();
 		},
 
 		methods: {
-			// Get section editable data
-			async getSectionData() {
-				await axios.get(`/instructor/courses/section/edit_section/${this.$route.params.id}/get`)
+			async getSection() {
+				await axios.get(`/instructor/courses/section/edit_section/${this.data.id}/get`)
 				.then((res) => {
 					this.section = res.data.section
-					this.form.title = this.section.title
+					this.form.fill(this.section)
 				}).catch((err) => {
 					console.log(err)
 				})
 			},
 
-			async update () {
-				let { data } = await this.form.patch(`/instructor/courses/section/edit_section/${this.$route.params.id}/patch`)
-				this.$swal({
-					type: 'success',
-					text: data.message
-				})
-				this.$router.push({ name: 'instructor.courses.edit', params: { slug: this.$route.params.slug } })
-			}
-		},
+			async editSection() {
+				try {
+					let { data } = await this.form.patch(`/instructor/courses/section/edit_section/${this.data.id}/patch`)
 
+					this.$swal({
+						toast: true,
+						position: 'bottom-end',
+						timer: 3000,
+						showConfirmButton: false,
+						type: 'success',
+						text: data.message
+					})
+
+					var newSectionData = {
+						index: this.index,
+						id: data.section.id,
+						title: data.section.title
+					}
+
+					this.$emit('close')
+					this.$emit('clicked', newSectionData)
+				} catch (error) {
+					return
+				}
+			}
+
+		}
 	}
 </script>
 
-<style lang="scss" scoped>
+<style>
 
 </style>
