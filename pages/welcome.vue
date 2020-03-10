@@ -81,7 +81,9 @@
 						<div class="col-lg-3 col-sm-6 item-col-lg-3 mb-4" v-for="course in courses" :key="course.id">
 							<router-link :to="{ name: 'course.show', params: { slug: course.slug } }">
 								<div class="card shadow-sm shadow--hover card-lift--hover rounded">
-									<img :src="course.image" class="card-img-top border-bottom" alt="">
+									<cld-image :publicId="`${course.image_public_id}.png`" class="mr-2 rounded" alt="">
+										<cld-transformation height="130" width="211" crop="fill" />
+									</cld-image>
 									<div class="card-body py-3">
 										<div class="grid-course-name">
 											<h6 class="text-capitalize">
@@ -91,7 +93,9 @@
 										<p class="mt-1 mb-1 small text-muted">{{course.user.name}}</p>
                                         <div class="rating-stars">
 											<span class="rating-star-container">
-												<star-rating :star-size="15" :inline="true" :read-only="true" :show-rating="false" :increment="0.5" :rating="course.rating_average"></star-rating>
+												<client-only>
+                                                    <star-rating :star-size="15" :inline="true" :read-only="true" :show-rating="false" :increment="0.5" :rating="course.rating_average"></star-rating>
+                                                </client-only>
 											</span>
 											<span class="rating-review-numbers">
 												<span class="rating-review-stats">{{ courseAverage(course) }}</span>

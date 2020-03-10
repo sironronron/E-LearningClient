@@ -109,10 +109,13 @@
                                                 <template v-if="!course.free_course">
                                                     <template v-if="user">
                                                         <div>
-                                                            <button class="btn btn-danger btn-lg text-capitalize btn-block border rounded" :class="{ 'btn-loading' : busy }" :disabled="busy">
-                                                                <span v-if="!addedToCart">Add to cart</span>
-                                                                <span v-else>Added to Cart</span>
-                                                            </button>
+                                                            <form @submit.prevent="addToCart">
+                                                                <button type="submit" class="btn btn-danger btn-lg text-capitalize btn-block border rounded" :class="{ 'btn-loading' : busy }" :disabled="busy">
+                                                                    <span v-if="!addedToCart">Add to cart</span>
+                                                                    <span v-else>Added to Cart</span>
+                                                                </button>
+                                                            </form>
+                                                           
                                                             <button class="btn btn-neutral btn-danger btn-lg text-capitalize btn-block text-dark rounded border">
                                                                 Buy Now
                                                             </button>
@@ -384,11 +387,16 @@
                                                 <template v-if="!course.free_course">
                                                     <template v-if="user">
                                                         <div>
-                                                            <button class="btn btn-danger btn-lg text-capitalize btn-block border rounded" :class="{ 'btn-loading' : busy }" :disabled="busy">
-                                                                <span v-if="!addedToCart">Add to cart</span>
-                                                                <span v-else>Added to Cart</span>
+                                                            <form v-if="!addedToCart" @submit.prevent="addToCart">
+                                                                <v-button :loading="form.busy" :block="true" type="danger" class="border-rounded text-capitalize">
+                                                                    <span v-if="!addedToCart">Add to cart</span>
+                                                                    <span v-else>Added to Cart</span>
+                                                                </v-button>
+                                                            </form>
+                                                            <button v-else class="btn btn-danger btn-lg text-capitalize btn-block  rounded border mt-3">
+                                                                Added To Cart
                                                             </button>
-                                                            <button class="btn btn-neutral btn-danger btn-lg text-capitalize btn-block text-dark rounded border">
+                                                            <button class="btn btn-neutral btn-lg text-capitalize btn-block text-dark rounded border mt-3">
                                                                 Buy Now
                                                             </button>
                                                         </div>
@@ -487,6 +495,8 @@
 
     import { mapGetters } from 'vuex'
 
+    import Form from 'vform'
+
     export default {
 
         components: {
@@ -525,7 +535,12 @@
                 courseInCart: false,
                 url: '',
                 showLoginModal: false,
-                busy: false
+                busy: false,
+
+                form: new Form({
+                    course_id: '',
+                    price: ''
+                })
             }
         },
 
@@ -579,6 +594,13 @@
 
         created: function () {
             this.url = 'http://192.168.2.112:3000' + this.$route.path
+            this.form.course_id = this.course.id
+
+            if (this.course.has_discount == 1) {
+                this.form.price = this.course.discount
+            } else {
+                this.form.price = this.course.price
+            }
         },
 
         computed: {
@@ -622,9 +644,25 @@
         },
 
         methods: {
+            async addToCart() {
+                let { data } = await this.form.post(`/cart/store`)
+
+                this.$swal({
+                    type: 'success',
+                    toast: true,
+                    position: 'bottom-end',
+                    timer: 3000,
+                    text: data.message,
+                    showConfirmButton: false
+                })
+
+                this.addedToCart = true
+            },
+
             showOutcome() {
                 this.isExpandedOutcome = true
             },
+
             lessOutcome() {
                 this.isExpandedOutcome = false
             },

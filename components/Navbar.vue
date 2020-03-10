@@ -77,12 +77,28 @@
 								<span style="z-index: 100;"><fa icon="shopping-cart" class="h5 mb-0" fixed-width /></span>
 							</a>
 							<div class="dropdown-menu dropdown-menu-right">
-								<template>
+								<template v-if="cartItems == null">
 									<div>
 										<div class="p-3 text-center">
 											<h6>Your cart is empty.</h6>
 											<h6 class="mt-2 text-small mb-0"><a href="#">Keep Shopping</a></h6>
 										</div>
+									</div>
+								</template>
+								<template v-else>
+									<div class="py-1 px-3">
+										<div class="d-flex mb-2" v-for="(item, index) in cartItems" :key="index">
+											<div>
+												<cld-image :publicId="`${item.course.image_public_id}.png`" class="mr-2 rounded" alt="">
+													<cld-transformation height="64" width="64" crop="fill" />
+												</cld-image>
+											</div>
+											<div>
+												<h6 class="mb-0 font-weight-bold">{{ item.course.title }}</h6>
+												<p class="mb-0"><small>{{ item.price }}</small></p>
+											</div>
+										</div>
+										<router-link :to="{ name: 'cart' }">View my Cart</router-link>
 									</div>
 								</template>
 							</div>
@@ -185,7 +201,9 @@
 
 			form: new Form({
 				search_term: '',
-			})
+			}),
+
+			cartItems: []
 
 		}),
 		
@@ -197,6 +215,7 @@
 
 		created() {
 			this.getCategories()
+			this.getCartItems()
 		},
 
 		methods: {
@@ -220,6 +239,17 @@
 					this.categories = res.data.categories
 				})
 			},
+
+			getCartItems() {
+				this.isLoading  = true
+				axios.get(`/cart/cartItems`)
+				.then((res) => {
+					this.isLoading = false
+					this.cartItems = res.data.cartItems
+				}).catch((err) => {
+					console.log(err)
+				})
+			}
 
 		}
 	}

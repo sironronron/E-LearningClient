@@ -11,7 +11,8 @@ import {
   faSchool, faArrowLeft, faArrowRight, faCalendarAlt, faShoppingCart, faHistory, faPlay, faPencilRuler, faLaptopCode,
   faChartBar, faCoins, faTv, faBook, faDog, faCamera, faMusic, faAtom, faShareSquare, faGripVertical, faChevronUp,
   faChevronDown, faArrowUp, faArrowDown, faComments, faEllipsisV, faTrophy, faTrashAlt, faUniversity, faExclamationTriangle, faCloudDownloadAlt,
-  faBolt
+  faBolt,
+  faHome
 } from '@fortawesome/free-solid-svg-icons'
 
 import {
@@ -32,7 +33,7 @@ library.add(
   faClock, faPiggyBank, faInstagram, faPinterest, faTwitterSquare, faQuestionCircle, faInfoCircle, faArchive, faCogs, faWallet, faBookOpen, faPlus, faLink, faUnlink, faBookmark, faStar, faTags, faPenNib, faBackspace, faTimes, faPlusCircle, faPollH, faDollarSign, faPhotoVideo, faCheckDouble,
   faFilter, faComment, faCircle, faYoutubeSquare, faMinus, faLanguage, faPlayCircle, faTh, faEdit, faSchool, faArrowLeft, faArrowRight, faCalendarAlt, faShoppingCart, faHistory, faPlay, faThumbsUp, faThumbsDown, faPencilRuler, faLaptopCode, faChartBar, faCoins, faTv, faBook, faDog, faCamera, faMusic, faAtom, faFileVideo, faFile, faCompass, faShareSquare, faCopy,
   faGripVertical, faChevronUp, faChevronDown, faWindowClose, faFacebook, faLinkedinIn, faTwitter, faFacebookF,
-  faArrowUp, faArrowDown, faComments, faEllipsisV, faTrophy, faTrashAlt, faStar, faUniversity, faExclamationTriangle, faCloudDownloadAlt, faFileArchive, faBolt
+  faArrowUp, faArrowDown, faComments, faEllipsisV, faTrophy, faTrashAlt, faStar, faUniversity, faExclamationTriangle, faCloudDownloadAlt, faFileArchive, faBolt, faHome
 
 )
 

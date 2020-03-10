@@ -8,9 +8,10 @@ module.exports = {
   srcDir: __dirname,
 
   env: {
+    baseUrl: 'http://heroacademy.online',
     apiUrl: process.env.API_URL || process.env.APP_URL + '/api',
     appName: process.env.APP_NAME || 'Heroacademy',
-    appLocale: process.env.APP_LOCALE || 'en',  
+    appLocale: process.env.APP_LOCALE || 'en',
     githubAuth: !!process.env.GITHUB_CLIENT_ID,
     facebookAuth: !!process.env.FACEBOOK_CLIENT_ID,
     googleAuth: !!process.env.GOOGLE_CLIENT_ID,
@@ -25,7 +26,7 @@ module.exports = {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      
+
       // Descriptions and Keywords
       { hid: 'description', name: 'description', content: 'Unlock opportunity, study any topic, anytime. Explore thousands of courses for the lowest price ever!' },
       { hid: 'keywords', name: 'keywords', content: 'e-learning, academy, learn, your time, value'},
@@ -36,7 +37,7 @@ module.exports = {
       { hid: 'og:site_name', name: 'og:site_name', content: 'Online Courses | Heroacademy' },
       { hid: 'og:image', name: 'og:image', content: 'https://res.cloudinary.com/dl9phqhv0/image/upload/c_scale,h_630,w_1200/v1573179687/HQ%20Images/alexis-brown-omeaHbEFlN4-unsplash_m9sxu6.jpg' },
       { hid: 'og:description', name: 'og:description', content: 'Unlock opportunity, study any topic, anytime. Explore thousands of courses for the lowest price ever!' },
-      
+
     ],
     noscript: [
       { innerHTML: 'Body No Scripts', body: true }
@@ -72,10 +73,10 @@ module.exports = {
     '~plugins/vue-plyr',
     '~plugins/cloudinary',
     '~plugins/vue-draggable',
-    '~plugins/star-rating',
-  
+    { src: '~plugins/star-rating', mode: 'client' },
+
     // '~plugins/nuxt-client-init', // Comment this for SSR
-  
+
     { src: '~plugins/tags-input', mode: 'client' },
     { src: '~plugins/social-share', mode: 'client' },
     { src: '~plugins/clipboard2', mode: 'client' },
@@ -86,7 +87,8 @@ module.exports = {
     { src: '~plugins/recaptchaV3', mode: 'client' },
     { src: '~plugins/froala', mode: 'client' },
     { src: '~plugins/vue-sweetalert2', mode: 'client' },
-    { src: '~plugins/bootstrap', mode: 'client' }
+    { src: '~plugins/bootstrap', mode: 'client' },
+    { src: '~plugins/stripe', mode: 'client' }
   ],
 
   modules: [
@@ -112,10 +114,6 @@ module.exports = {
 
   build: {
     extractCSS: true
-  },
-
-  generate: {
-    dir: './app/static/spa'
   },
 
   hooks: {

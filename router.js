@@ -26,10 +26,17 @@ const routes = [
   { path: '/email/verify/:id', name: 'verification.verify', component: page('auth/verification/verify.vue') },
   { path: '/email/resend', name: 'verification.resend', component: page('auth/verification/resend.vue') },
 
+  // terms and conditions
+  { path: '/privacy-policy', name: 'privacy.policy', component: page('privacy') },
+  { path: '/terms-and-conditions', name: 'terms.conditions', component: page('terms') },
+  // privacy policy
+
   // Cart
   { path: '/cart', name: 'cart', component: page('cart/cart.vue') },
-    // Subscription Page
-    { path: '/cart/subscribe/course/:id', name: 'cart.subscribe.course', component: page('cart/subscribe/index.vue') },
+  // Checkout
+  { path: '/cart/checkout', name: 'cart.checkout', component: page('cart/checkout.vue') },
+  // Subscription Page
+  { path: '/cart/subscribe/course/:id', name: 'cart.subscribe.course', component: page('cart/subscribe/index.vue') },
 
   // courses student enrolled routes
   { path: '/course/:slug/learn/:lesson', name: 'course.learn', component: page('course/enrolled/learn/lesson/index.vue') },
@@ -49,8 +56,8 @@ const routes = [
 
   // My Courses
   { path: '/student/account/my-courses/learning/all', name: 'student.courses', component: page('user/my-courses.vue') },
-  { 
-    path: '/student/account/my-courses/learning/:lesson_id/lesson/:slug/show/', 
+  {
+    path: '/student/account/my-courses/learning/:lesson_id/lesson/:slug/show/',
     component: page('user/course/learning-course.vue'),
     children: [
       { path: '', redirect: { name: 'student.courses.learn' } },
@@ -95,9 +102,9 @@ const routes = [
       // Course Show
       { path: 'courses/show/:slug', name: 'instructor.courses.show', component: page('instructor/courses/show.vue') },
       // Course Edit
-      { 
-        path: 'courses/:slug/edit', 
-        name: 'instructor.courses.edit', 
+      {
+        path: 'courses/:slug/edit',
+        name: 'instructor.courses.edit',
         component: page('instructor/courses/edit.vue'),
 
         // Edit Lesson Modal Router
@@ -111,7 +118,7 @@ const routes = [
               showEditSectionModal: true
             }
           }
-        ] 
+        ]
       },
       // Course Statuses
 

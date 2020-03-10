@@ -9,7 +9,7 @@
 				<nuxt />
 			</div>
 
-			<div class="mt-5"> 
+			<div class="mt-5">
 				<footer class="bg-white border-top" style="border-bottom: solid 5px #bc4e9c">
 					<section class="section-sm">
 						<div class="container">
@@ -20,13 +20,10 @@
 								<div class="col-lg-6">
 									<ul class="nav justify-content-md-end footer-menu">
 										<li class="nav-item">
-											<a class="nav-link" href="http://demo.academy-lms.com/default/home/about_us">About</a>
+											<router-link class="nav-link" :to="{ name: 'privacy.policy' }">Privacy policy</router-link>
 										</li>
 										<li class="nav-item">
-											<a class="nav-link" href="http://demo.academy-lms.com/default/home/privacy_policy">Privacy policy</a>
-										</li>
-										<li class="nav-item">
-											<a class="nav-link" href="http://demo.academy-lms.com/default/home/terms_and_condition">Terms &amp; condition</a>
+											<router-link class="nav-link" :to="{ name: 'terms.conditions' }">Terms &amp; condition</router-link>
 										</li>
 										<li class="nav-item">
 											<router-link :to="{ name: 'help-center.student' }" class="nav-link">
@@ -60,7 +57,7 @@
 </script>
 
 <style scoped>
-    
+
 	.footer-menu .nav-link {
         padding: 6px 0;
         font-size: 13px;
