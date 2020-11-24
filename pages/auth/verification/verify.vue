@@ -16,7 +16,7 @@
 							<div class="text-center mt-5 mb-5">
 								<svg width="120" height="120"
 									xmlns="http://www.w3.org/2000/svg">
-									<image xlink:href="https://res.cloudinary.com/http-book-keeping-com/image/upload/c_scale,h_120,q_40/v1572840179/Icon/email.svg" height="120" width="120"/>
+									<image xlink:href="https://res.cloudinary.com/dl9phqhv0/image/upload/v1573184488/Logos/email_urnhbj.svg" height="120" width="120"/>
 								</svg>
 							</div>
 							<p class="lead mt-4">
